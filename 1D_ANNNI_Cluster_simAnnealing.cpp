@@ -1,3 +1,13 @@
+/*
+    This program aims to run a simulation of the ANNNI model in 1 dimension (the 'ANNNI Chain'),
+    in which we use a modified Wolff algorithm (to account for anti-FM interactions), as well as
+    simulated annealing to allow systems to equilibrate faster at lower temperatures.
+
+    One can obtain information in 1 of 2 ways: 
+        -    To get a snapshot of the lattice at each step (getLattice)
+        -    To get data of energy, magnetzn, specific heat and suscepty (getData)
+*/
+
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
@@ -115,9 +125,8 @@ void Initialize(SpinCluster lattice[], int L)
 {
     int i, r;
     for (i = 0; i < L; i++)
-    { // This fills the lattice
+    { // This fills the lattice with +1 or -1 spins
         r = rand() % 2;
-        // cout << r;
         if (r == 0)
         {
             lattice[i].spin = -1;
@@ -135,7 +144,7 @@ double drandom()
     return (double)rand()/RAND_MAX;
 }
 
-int GetNeighbor(int index, int pos)
+int GetNeighbor(int index, int pos) // Create neighbor table
 { // 0 -> left2, 1 -> left, 2 -> right, 3 -> right2
     int l;
     if (pos == 2 || pos == 3)

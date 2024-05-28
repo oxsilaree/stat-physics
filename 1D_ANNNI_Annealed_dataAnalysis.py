@@ -1,3 +1,14 @@
+"""
+    This replaced 1d_ANNNI_plotter. This code accompanies 1D_ANNNI_Cluster_simAnnealing.cpp, which outputs 1 data 
+    file.
+
+    This file plots energy, magnetzn, spec. heat and suscepty after extracting that information from 1 data file.
+
+    I leave some notes at the end for selecting a better 'order' parameter, but this is better saved for the 2D 
+    ANNNI simulations.
+"""
+
+
 import glob
 import matplotlib.pyplot as plt
 import numpy as np

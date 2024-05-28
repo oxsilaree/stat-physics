@@ -1,3 +1,16 @@
+/*
+    This program runs a simulation for the ANNNI model in 2 dimensions, on a square lattice.
+    It uses a modified Wolff algorithm (to account for anti-FM interactions along 1 axis),
+    and only collects data for a single run with one Temperature (T) value and one coupling
+    ratio (kappa).
+
+    The next steps for this code is to implement some form of annealing (simulated/population)
+    to get more data, and to quantitatively measure an order parameter
+
+
+
+*/
+
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
@@ -15,13 +28,14 @@ using namespace std;
 const int L = 64; // This is the only number we need to change
 const int N = L*L;
 int dim = 2;
-const int nn_max = 6; // This means that we have both nearest neighbours and next-nearest neighbours in 1D
+const int nn_max = 6; // This means that we have both nearest neighbours and next-nearest neighbours along one axis
 
+// Choose output
 bool getlattice = true;
 bool getdata = false;
 
 const int blocks = 8;
-const int sweeps = 128; //
+const int sweeps = 128;
 const int steps = 16; // Average cluster size 
 
 list<double> E;
@@ -29,8 +43,8 @@ list<double> M;
 list<double> C;
 list<double> X;
 
-float J = 1;       // This is J1
-double kappa;
+float J = 1;  // This is equivalent of J1 in typical Hamiltonians
+double kappa; // kappa = -J2/J1
 double T;
 
 string kappastr;

@@ -1,3 +1,14 @@
+"""   
+    This file was used to remotely run an early 1D simulation, before I figured out
+    you could very easily (and more efficiently) implement Temperature and kappa
+    iteration directly in the C++ file.
+
+    But this was a good practice in using subprocess and os.
+
+    I leave notes at the bottom which indicate the next steps for this idea.
+"""
+
+
 import numpy as np
 import subprocess
 import os

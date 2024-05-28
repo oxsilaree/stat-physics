@@ -1,2 +1,2 @@
 # stat-physics
-My work for an independent study which started with the Metropolis-Hastings Algorithm
+An independent study in statistical physics around the ANNNI model, finding ways to simulate it and get qualitative and quantitative data.

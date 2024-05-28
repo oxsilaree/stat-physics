@@ -1,6 +1,21 @@
+"""
+    This is a pretty poorly written script, where we can visualize snapshots of the ANNNI chain at
+    certain points in the simulation. The function visualize(f) is used in the second part of the 
+    code, for data7 onwards. However, this can be greatly streamlined. 
+    
+    For 2D ANNNI, any visualization script will be written more eloquently.
+
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 
+def visualize(f):
+    data = np.loadtxt(f, delimiter = ',', dtype = str)
+    data = data.astype(int)
+    data = data.reshape(17,100)
+    return data
+    
 data1 = np.loadtxt("/Users/shanekeiser/Documents/Spring 2024/Machta Spring/1d_data/lattices/1d_ANNNI_k4.000_T0.010visual.csv", delimiter = ',', dtype = str)
 data1 = data1[:-1]
 print(len(data1))
@@ -83,11 +98,6 @@ f1 = "/Users/shanekeiser/Documents/Spring 2024/Machta Spring/1d_data/lattices/1d
 f2 = "/Users/shanekeiser/Documents/Spring 2024/Machta Spring/1d_data/lattices/1d_ANNNI_k0.500_T3.000visual.csv"
 f3 = "/Users/shanekeiser/Documents/Spring 2024/Machta Spring/1d_data/lattices/1d_ANNNI_k2.000_T3.000visual.csv"
 
-def visualize(f):
-    data = np.loadtxt(f, delimiter = ',', dtype = str)
-    data = data.astype(int)
-    data = data.reshape(17,100)
-    return data
 
 data7 = visualize(f1)
 data8 = visualize(f2)

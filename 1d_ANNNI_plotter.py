@@ -1,3 +1,11 @@
+"""
+    This file reads the data from several data files (output from an older 1D_ANNNI_Cluster variant).
+
+    Now, this doesn't really serve much purpose, since 1D_ANNNI_Annealed.py replaces it. This is because
+    I changed the code such that all data is stored in 1 larger file. But this was a good exercise in using
+    glob to read files from a directory.
+"""
+
 import glob
 import matplotlib.pyplot as plt
 import numpy as np

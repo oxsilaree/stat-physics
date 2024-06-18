@@ -4,17 +4,42 @@
 LOCAL_DIR="/Users/shanekeiser/Documents/Summer 2024/Research/PopulationAnnealing"
 REPO_DIR="/Users/shanekeiser/Documents/Summer 2024/Research/stat-physics" # Update this path to where you cloned the repository
 
-# Navigate to the local repository
-cd "$REPO_DIR"
+# Function to handle errors
+handle_error() {
+    echo "Error on line $1"
+    exit 1
+}
 
-# Copy the changes from the local directory to the repository subfolder
+# Trap errors and pass the line number to the error handler
+trap 'handle_error $LINENO' ERR
+
+echo "Starting synchronization protocol..."
+
+# Check if local directory exists
+if [ ! -d "$LOCAL_DIR" ]; then
+    echo "Local directory $LOCAL_DIR does not exist."
+    exit 1
+fi
+
+# Check if repository directory exists
+if [ ! -d "$REPO_DIR" ]; then
+    echo "Repository directory $REPO_DIR does not exist."
+    exit 1
+fi
+
+echo "Navigating to the repository directory..."
+cd "$REPO_DIR" || exit 1
+
+echo "Copying changes from local directory to the repository subfolder..."
 cp -R "$LOCAL_DIR"/* population_annealing/
 
-# Add changes to git
+echo "Adding changes to git..."
 git add population_annealing/*
 
-# Commit the changes with a message
+echo "Committing the changes..."
 git commit -m "Update population annealing files"
 
-# Push the changes to the remote repository
+echo "Pushing the changes to the remote repository..."
 git push origin main
+
+echo "Synchronization complete!"

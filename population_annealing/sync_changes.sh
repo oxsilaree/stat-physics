@@ -36,7 +36,7 @@ cp -R "$LOCAL_DIR"/* population_annealing/
 echo "Adding changes to git..."
 git add population_annealing/*
 
-echo "Committing the changes..."
+echo "Committing changes..."
 git commit -m "Update population annealing files"
 
 echo "Pushing the changes to the remote repository..."

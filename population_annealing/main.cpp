@@ -64,7 +64,7 @@ int main()
     {
         for (int j = 0; j < L; j++)
         {
-            cout << test_lattice.lattice_object[i][j].getSpin() + 3 << ", ";
+            cout << test_lattice.lattice_object[i][j].getSpin() + 4 << ", ";
         }
         cout << endl;
     }

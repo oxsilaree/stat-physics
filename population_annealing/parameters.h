@@ -1,4 +1,4 @@
-#define kappa 2        // -J2/J1, ratio of coupling constants. kappa = 0 --> regular Ising
+#define kappa 0      // -J2/J1, ratio of coupling constants. kappa = 0 --> regular Ising
 #define J 1
 #define nn_max 6        // No. of neighbors
 #define dim 2           // Dimensions

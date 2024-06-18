@@ -23,6 +23,7 @@ int main()
 // -------- Constants
     static int neighbor_table[L][L][nn_max][dim]; // 6 neighbors (2D ANNNI), 2 coordinates
     int* p;
+    srandom(3); // Use consistent random seed to make sure behavior is consistent
 
 // -------- Lists for data
     list<double> E;     //-| v
@@ -39,7 +40,7 @@ int main()
 
 // -------- Actual code
 
-
+    cout << "kappa = " << kappa << endl;
 // Make neighbor table (this works CAA 17/6/24)
     for (int i = 0; i < L; i++)
     {
@@ -59,14 +60,14 @@ int main()
 
     Lattice test_lattice;
     test_lattice.initializeSites();
-    test_lattice.doWolffAlgo(neighbor_table, 10);
+    test_lattice.doWolffAlgo(neighbor_table, 0.5);
     for (int i = 0; i < L; i++)
     {
         for (int j = 0; j < L; j++)
         {
             cout << test_lattice.lattice_object[i][j].getSpin() << ", ";
         }
-        cout << endl;
+        cout << "\n";
     }
     return 0;
 }

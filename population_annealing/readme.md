@@ -1,3 +1,5 @@
+**Population Annealing**
+
 The contents of this folder are used to make an executable that runs a population annealing simulation. 
 
 At this time, I am working on having my code written and linked properly in several .h and .cpp files. The minimal working example right now can run a simulation of a single lattice, but there seem to be a couple of bugs that make it run imperfectly.

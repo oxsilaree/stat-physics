@@ -1,18 +1,12 @@
 #include "parameters.h"
 #include "spin_class.h"
-
+/*
 void spinSite::AssignValues()
 {
-    int r;
-    r = rand() % 2;
-    if (r == 0) {
-        spin = -1;
-    } else {
-        spin = 1;
-    }
+    spin = rand() % 2 == 0 ? 1 : -1; //: Assign a random value to spin (1 or -1)
     in_cluster = false; // Start off "not in cluster"
 }
-
+*/
 void spinSite::Flip()
 {
     spin *= -1;

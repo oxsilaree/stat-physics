@@ -1,56 +1,67 @@
-#include "parameters.h"
 #include "functions.h"
 
 int* getNeighbor(int i, int j, int pos)
 { // 0 -> left, 1 -> right, 2 -> up, 3 -> down, 4 -> up(NNN), 5 -> down(NNN)
-    static int r[2] = {0,0};
+    static int coords[2] = {0,0};
     if (pos == 0) { // left
-        r[1] = j;
+        coords[1] = j;
         if (i == 0){
-            r[0] = i + (L-1);
+            coords[0] = i + (LEN-1);
         } else {
-            r[0] = i - 1;  
+            coords[0] = i - 1;  
         }
     }
     if (pos == 1) { // right
-        r[1] = j;
-        if (i == L - 1){
-            r[0] = i - (L-1);
+        coords[1] = j;
+        if (i == LEN - 1){
+            coords[0] = i - (LEN-1);
         } else {
-            r[0] = i + 1;  
+            coords[0] = i + 1;  
         }
     }
     if (pos == 2) { // up
-        r[0] = i;
+        coords[0] = i;
         if (j == 0){
-            r[1] = j + (L-1);
+            coords[1] = j + (LEN-1);
         } else {
-            r[1] = j - 1;  
+            coords[1] = j - 1;  
         }
     }
     if (pos == 3) { // down
-        r[0] = i;
-        if (j == L - 1){
-            r[1] = j - (L-1);
+        coords[0] = i;
+        if (j == LEN - 1){
+            coords[1] = j - (LEN-1);
         } else {
-            r[1] = j + 1;  
+            coords[1] = j + 1;  
         }
     }
     if (pos == 4) { // up NNN
-        r[0] = i;
+        coords[0] = i;
         if (j <= 1){
-            r[1] = j + (L-2);
+            coords[1] = j + (LEN-2);
         } else {
-            r[1] = j - 2;  
+            coords[1] = j - 2;  
         }
     }
     if (pos == 5) { // down NNN
-        r[0] = i;
-        if (L-2 <= j){
-            r[1] = j - (L-2);
+        coords[0] = i;
+        if (LEN-2 <= j){
+            coords[1] = j - (LEN-2);
         } else {
-            r[1] = j + 2;  
+            coords[1] = j + 2;  
         }
     }
-    return r;
+    return coords;
+}
+
+void initialize_rng(gsl_rng **r, int seed) 
+{
+	gsl_rng_env_setup();
+	const gsl_rng_type *T;
+	T = gsl_rng_mt19937;
+	*r = gsl_rng_alloc(T);
+	gsl_rng_set(*r, seed);
+
+	for (int i = 0; i < 10000; i++)
+		gsl_rng_uniform(*r);
 }

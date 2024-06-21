@@ -39,7 +39,7 @@ git add population_annealing/*
 echo "Committing changes..."
 git commit -m "Update population annealing files"
 
-echo "Pushing the changes to the remote repository..."
+echo "Pushing changes to the remote repository..."
 git push origin main
 
 echo "Synchronization complete!"

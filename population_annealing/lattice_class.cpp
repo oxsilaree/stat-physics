@@ -1,32 +1,43 @@
 #include "lattice_class.h"
 
-spinSite Lattice::lattice_object[L][L];
-
+/*
 void Lattice::initializeSites()
 {
     int i, j;
-    for (i = 0; i < L; i++) 
+    for (i = 0; i < LEN; i++) 
     {
-        for (j = 0; j < L; j++) 
+        for (j = 0; j < LEN; j++) 
         {
             lattice_object[i][j].AssignValues();
         }
     }
 }
+*/
 
-void Lattice::doBurnIn(int neighbor_table[L][L][6][2])
+void Lattice::initializeSites()
+{
+    for (int i = 0; i < LEN; i++) 
+    {
+        for (int j = 0; j < LEN; j++) 
+        {
+            lattice_object[i][j] = spinSite(); // This will call the constructor(?)
+        }
+    }
+}
+
+void Lattice::doBurnIn(int neighbor_table[LEN][LEN][nn_max][dim], double T)
 {
     double Beta, padd1, padd2;
-    Beta = 1/T_init;
+    Beta = 1/T;
     padd1 = 1 - exp(-2 * Beta * J);
     padd2 = 1 - exp(-2 * Beta * J * kappa);
-    for (int i = 0; i < sweeps*steps*4; i++)
+    for (int i = 0; i < SWEEPS*STEPS*4; i++)
     {
         doBurnInStep(neighbor_table, padd1, padd2);
     }
 }
 
-void Lattice::doBurnInStep(int neighbor_table[L][L][6][2], double padd1, double padd2)
+void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double padd1, double padd2)
 { // Basically doStep without the wrapping checks
     int i, j,   lx, ly,     oldspin, newspin,   current_x, current_y,   nn_i, nn_j; // Lattice indices
     int root_x, root_y,     coord_x, coord_y,   pos_update_x, pos_update_y; // Coordinates for wrapping criteria
@@ -39,8 +50,8 @@ void Lattice::doBurnInStep(int neighbor_table[L][L][6][2], double padd1, double 
     stack<int> cluster_y;
 
     // Pick a random spin (x then y coord) and make it the origin (i.e. "root/seed/(0,0)")
-    i = rand() % L;
-    j = rand() % L;
+    i = rand() % LEN;
+    j = rand() % LEN;
     lattice_object[i][j].AddToCluster();
     lattice_object[i][j].Triangulate(0,0);
     cluster_x.push(i);
@@ -134,7 +145,7 @@ void Lattice::doBurnInStep(int neighbor_table[L][L][6][2], double padd1, double 
 
 
 
-void Lattice::doStep(int neighbor_table[L][L][6][2], double padd1, double padd2)
+void Lattice::doStep(int neighbor_table[LEN][LEN][nn_max][dim], double padd1, double padd2)
 {
     int i, j,   lx, ly,     oldspin, newspin,   current_x, current_y,   nn_i, nn_j; // Lattice indices
     int root_x, root_y,     coord_x, coord_y,   pos_update_x, pos_update_y; // Coordinates for wrapping criteria
@@ -147,8 +158,8 @@ void Lattice::doStep(int neighbor_table[L][L][6][2], double padd1, double padd2)
     stack<int> cluster_y;
 
     // Pick a random spin (x then y coord) and make it the origin (i.e. "root/seed/(0,0)")
-    i = rand() % L;
-    j = rand() % L;
+    i = rand() % LEN;
+    j = rand() % LEN;
     lattice_object[i][j].AddToCluster();
     lattice_object[i][j].Triangulate(0,0);
     cluster_x.push(i);
@@ -207,7 +218,7 @@ void Lattice::doStep(int neighbor_table[L][L][6][2], double padd1, double padd2)
                 if (old_x != new_x || old_y != new_y) { // Check if either of the new-coordinates (rel. to root spin) is different from previous inclusion.
                     wrapping_crit = true; // If it is different, then we have 'wrapped' around the lattice.    
                     wrapcounter++;
-                    // cout << "Wrapping has occurred " << wrapcounter << " times.\n";
+                    // cout << "Wrapping has occurred.\n";
                     // wrapcounts.push(wrapcounter);                   
                 }
             }
@@ -284,7 +295,7 @@ void Lattice::doStep(int neighbor_table[L][L][6][2], double padd1, double padd2)
     }
 }
 
-void Lattice::doSweep(int neighbor_table[L][L][6][2], double T)
+void Lattice::doSweep(int neighbor_table[LEN][LEN][nn_max][dim], double T)
 {
     int Ene, E1, E2,    Mag, M1, M2, M1_abs, Mag_abs, Mag_sq;
     double Beta, padd1, padd2;
@@ -293,7 +304,7 @@ void Lattice::doSweep(int neighbor_table[L][L][6][2], double T)
     padd2 = 1 - exp(-2 * Beta * J * kappa);
     
     E1 = E2 = M1 = M2 = M1_abs = 0;
-        for (int j = 0; j < steps; j++) {
+        for (int j = 0; j < STEPS; j++) {
             doStep(neighbor_table, padd1, padd2); // Consider making one 'sweep' as a number of steps, where we choose it as after each spin has had one opportunity on average to flip
         }
         updateTotalEnergy(neighbor_table); // Take data after each sweep
@@ -307,34 +318,30 @@ void Lattice::doSweep(int neighbor_table[L][L][6][2], double T)
         E1 = E1 + Ene;
         M2 = M2 + Mag_sq;
         E2 = E2 + (Ene * Ene);
-
 }
 
-void Lattice::doWolffAlgo(int neighbor_table[L][L][nn_max][dim], double T)
+void Lattice::doWolffAlgo(int neighbor_table[LEN][LEN][nn_max][dim], double T, int num_sweeps)
 {
-    
     // Burn-in
-    doBurnIn(neighbor_table);
-
-    for (int m = 0; m < blocks; m++)
+    doBurnIn(neighbor_table, T);
+    for (int m = 0; m < BLOCKS; m++)
     {
-        // measurements
-        for (int i = 0; i < sweeps; i++)
+        for (int i = 0; i < num_sweeps; i++)
         {
             doSweep(neighbor_table, T);
         }
     }
 }
 
-void Lattice::updateTotalEnergy(int neighbor_table[L][L][nn_max][dim])
+void Lattice::updateTotalEnergy(int neighbor_table[LEN][LEN][nn_max][dim])
 {
     int left_x, right_x, up_x, down_x;   // nearest neighbours
     int left_y, right_y, up_y, down_y;
     int up2_x, down2_x;
     int up2_y, down2_y; // next-nearest neighbours
-    for (int i = 0; i < L; i++)
+    for (int i = 0; i < LEN; i++)
     {
-        for (int j = 0; j < L; j++)
+        for (int j = 0; j < LEN; j++)
         {
             left_x = neighbor_table[i][j][0][0];
             left_y = neighbor_table[i][j][0][1];
@@ -365,8 +372,8 @@ void Lattice::updateTotalMag()
 {
     int i, j;
     int mag = 0;
-    for (i = 0; i < L; i++){
-        for (j = 0; j < L; j++){
+    for (i = 0; i < LEN; i++){
+        for (j = 0; j < LEN; j++){
             mag += lattice_object[i][j].getSpin();
         }
     }

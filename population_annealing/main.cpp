@@ -18,8 +18,8 @@
 #include <stdexcept>
 
 // #include "spin_class.h"
-#include "lattice_class.h"
-// #include "population_class.h"
+// #include "lattice_class.h"
+#include "population_class.h"
 #include "functions.h"
 
 using namespace std;
@@ -28,9 +28,11 @@ int main(int argc, char** argv)
 {
 // -------- Constants
     static int neighbor_table[LEN][LEN][nn_max][dim]; // 6 neighbors (2D ANNNI), 2 coordinates
+    gsl_rng *r;
     int* p;
     double T;
-    srandom(time(NULL)); // Use consistent random seed to make sure behavior is consistent
+    int seed = 1; // We can make this an input later
+
     // double kappa = stod(argv[1]);
 
 // -------- Lists for data
@@ -47,8 +49,9 @@ int main(int argc, char** argv)
 
 
 // -------- Actual code
-
-    cout << "kappa = " << kappa << endl;
+    initialize_rng(&r, seed);
+    cout << "kappa = " << kappa << "\n";
+    
 // Make neighbor table (this works CAA 17/6/24)
     for (int i = 0; i < LEN; i++)
     {
@@ -63,9 +66,25 @@ int main(int argc, char** argv)
             }
         }
     }
+    cout << "so far so good!";
+    
+    /* TEST STUFF OUT (population-annealing)*/
 
-    /* TEST STUFF OUT */
+    int init_pop_size = 5;
+    Population test_pop(init_pop_size, r, neighbor_table);
+    test_pop.run();
+    
 
+
+
+
+
+
+
+
+
+    /* TEST STUFF OUT (not population-annealing)*/
+    /*
     Lattice test_lattice;
     test_lattice.initializeSites();
     for (int i = 0; i < LEN; i++)
@@ -80,6 +99,7 @@ int main(int argc, char** argv)
     
     // ofstream test_data;
     // test_data.open("/Users/shanekeiser/Documents/Summer 2024/Research/PopulationAnnealing/data/test_data");
+
 
     T = T_init;
     for (int l = 0; l < T_iter; l++) {
@@ -102,4 +122,5 @@ int main(int argc, char** argv)
     // test_data.close();
     cout << "Simulation complete." << endl;
     return 0;
+    */
 }

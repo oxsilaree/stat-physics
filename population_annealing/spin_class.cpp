@@ -14,10 +14,7 @@ void spinSite::Flip()
 
 void spinSite::AddToCluster()
 {
-    if (in_cluster == false)
-    {
-        in_cluster = true;
-    }
+    in_cluster = true;
 }
 
 void spinSite::Reset()
@@ -46,7 +43,7 @@ int spinSite::getSpin()
     return spin;
 }
 
-int spinSite::checkStatus()
+bool spinSite::checkStatus()
 {
     return in_cluster;
 }

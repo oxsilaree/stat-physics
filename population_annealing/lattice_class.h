@@ -27,13 +27,20 @@ private:
 
 public:
     // Public member attribute (so we can change/check it easily)
-    spinSite lattice_object[LEN][LEN]; // 2 Dimensional now
+    // spinSite lattice_object[LEN][LEN]; // 2 Dimensional now
+    unique_ptr<unique_ptr<spinSite[]>[]> lattice_object;
     int lattice_number; // Relevant for population annealing
     
 
     // Constructor
 
-    Lattice() {}
+    Lattice()
+    {
+        lattice_object = std::make_unique<std::unique_ptr<spinSite[]>[]>(LEN);
+        for (int i = 0; i < LEN; ++i) {
+            lattice_object[i] = std::make_unique<spinSite[]>(LEN);
+        }
+    }
 
     // Methods
     void initializeSites();

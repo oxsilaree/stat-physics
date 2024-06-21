@@ -43,5 +43,5 @@ public: // Member functions
     int getX();
     int getY();
     int getSpin();
-    int checkStatus();
+    bool checkStatus();
 };

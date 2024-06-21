@@ -13,7 +13,7 @@ Population::Population(void)
 	throw invalid_argument("Invalid PA simulation initialization parameters.");
 }
 
-Population::Population(int nom_pop, int neighbor_table[LEN][LEN][nn_max][dim])
+Population::Population(int nom_pop, gsl_rng *r, int neighbor_table[LEN][LEN][nn_max][dim])
 {
     // Initialize population
     Population::nom_pop = nom_pop;
@@ -21,7 +21,9 @@ Population::Population(int nom_pop, int neighbor_table[LEN][LEN][nn_max][dim])
     Population::pop_size = nom_pop;
     Population::pop_array = unique_ptr<Lattice[]>(new Lattice[Population::max_pop]); // Not sure how this works but this makes
                                                                                      // the population
-    // Population::neighbor_table[LEN][LEN][nn_max][dim] = neighbor_table[LEN][LEN][nn_max][dim];     // Not sure we need this                    
+    // Population::neighbor_table[LEN][LEN][nn_max][dim] = neighbor_table[LEN][LEN][nn_max][dim];     // Not sure we need this
+
+    Population::r = r;	                    
 }
 
 void Population::reSample(double T, gsl_rng *r)
@@ -56,9 +58,10 @@ void Population::reSample(double T, gsl_rng *r)
             num_replicas[j] = ceiling;
         new_pop_size += num_replicas[j];
     }
-    
+    /*
     if (new_pop_size > max_pop)
 		throw "Maximum population size exceeded."; // Must 'catch' errors like this later on
+    */
 
     /*
         Fill empty gaps in population array so un-erased members are contiguous
@@ -73,7 +76,7 @@ void Population::reSample(double T, gsl_rng *r)
 		while (num_replicas[copy_from] <= 0)
 			copy_from--;
 		if (copy_to < copy_from) {
-			pop_array[copy_to] = pop_array[copy_from];
+			pop_array[copy_to] = move(pop_array[copy_from]);
 			num_replicas[copy_to] = num_replicas[copy_from];
 			num_replicas[copy_from] = 0;
 		}
@@ -92,7 +95,7 @@ void Population::reSample(double T, gsl_rng *r)
 	copy_from = 0;
 	while (copy_from < copy_end) {
 		for (j = 0; j < num_replicas[copy_from] - 1; j++) {
-			pop_array[copy_to] = pop_array[copy_from];
+			pop_array[copy_to] = move(pop_array[copy_from]);
 			copy_to++;
 		}
 		copy_from++;
@@ -103,16 +106,20 @@ void Population::run(void)
 {
     gsl_rng *r_thread[NUM_THREADS];
     FILE *fp = fopen("run.dat", "w");
-
+    
 	for (int i = 0; i < NUM_THREADS; i++) 
     {
+        
 		int tmp_rnd = gsl_rng_uniform_int(r, 10000000) + 1000000;
 		initialize_rng(&r_thread[i], tmp_rnd);
 	}
+    
 	double Beta = 0.0;
     double T = T_init;
 	int num_sweeps;
 
+    
+    
     while (T != T_final) // Where the actual annealing happens
     { 
 		fprintf(fp, "%5.5f\n", Beta);
@@ -127,6 +134,7 @@ void Population::run(void)
 				int thread = omp_get_thread_num(); // BIG ISSUE HERE I THINK
 				pop_array[m].doWolffAlgo(/*r_thread[thread], */neighbor_table, T, num_sweeps);
 				pop_array[m].getTotalEnergy();
+                cout << "Lattice " << m << " done running: Thread no. " << thread << "!";
             }   
-    }
+    }   cout << "Done for T = " << T << "!";
 }

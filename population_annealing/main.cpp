@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     
     // ofstream test_data;
     // test_data.open("/Users/shanekeiser/Documents/Summer 2024/Research/PopulationAnnealing/data/test_data");
-    cout << "Hello world!" << endl;
+
     T = T_init;
     for (int l = 0; l < T_iter; l++) {
         test_lattice.doWolffAlgo(neighbor_table, T, SWEEPS);
@@ -88,15 +88,15 @@ int main(int argc, char** argv)
         T -= double(T_init/T_iter); // "Cooling" the system
         T = floor((100.*T)+.5)/100;
     }
-    
+    cout << "[";
     for (int i = 0; i < LEN; i++)
-    {
+    {   cout << "[";
         for (int j = 0; j < LEN; j++)
         {
             cout << test_lattice.lattice_object[i][j].getSpin() + 2 << ", ";
             // test_data << test_lattice.lattice_object[i][j].getSpin() + 2 << ", ";
         }
-        cout << "\n";
+        cout << "], \n";
         // test_data << "\n";
     }
     // test_data.close();

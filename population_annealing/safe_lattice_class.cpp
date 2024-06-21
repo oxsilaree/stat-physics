@@ -57,11 +57,8 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double pad
     // Pick a random spin (x then y coord) and make it the origin (i.e. "root/seed/(0,0)")
     i = rand() % LEN;
     j = rand() % LEN;
-    spinSite root_spin, current_spin, neighbor_spin;
-    root_spin = getSpinSite(i,j);
-    root_spin.AddToCluster();
-    root_spin.Triangulate(0,0);
-
+    lattice_object[i][j].AddToCluster();
+    lattice_object[i][j].Triangulate(0,0);
     cluster_x.push(i);
     cluster_y.push(j);
     stacker.push_back(make_pair(i, j));
@@ -75,22 +72,21 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double pad
         current_x = stacker.back().first;
         current_y = stacker.back().second;
         stacker.pop_back();
-        current_spin = getSpinSite(current_x, current_y);
-        oldspin = current_spin.getSpin();
+        oldspin = lattice_object[current_x][current_y].getSpin();
         newspin = -oldspin;
-        coord_x = current_spin.getX();
-        coord_y = current_spin.getY();
+        coord_x = lattice_object[current_x][current_y].getX();
+        coord_y = lattice_object[current_x][current_y].getY();
 
         /* Check the neighbours using neighbour table */
         for (int k = 0; k < nn_max; k++)
         { 
             nn_i = neighbor_table[current_x][current_y][k][0];
             nn_j = neighbor_table[current_x][current_y][k][1];
-            neighbor_spin = getSpinSite(nn_i, nn_j);
-            if (neighbor_spin.checkStatus() == false) // Nearest neighbours
+  
+            if (lattice_object[nn_i][nn_j].checkStatus() == false) // Nearest neighbours
             {
                 randnum = (double)rand()/RAND_MAX;   
-                if (neighbor_spin.getSpin() == oldspin) 
+                if (lattice_object[nn_i][nn_j].getSpin() == oldspin) 
                 {
                                                                                                  
                     if (randnum <= padd1)
@@ -110,15 +106,15 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double pad
                         }
                         sp += 1;
                         stacker.push_back(make_pair(nn_i, nn_j));
-                        neighbor_spin.AddToCluster();
-                        neighbor_spin.Triangulate(pos_update_x, pos_update_y); 
+                        lattice_object[nn_i][nn_j].AddToCluster();
+                        lattice_object[nn_i][nn_j].Triangulate(pos_update_x, pos_update_y); 
                         cluster_x.push(nn_i);
                         cluster_y.push(nn_j);
                         cluster_size += 1;
                     }
                 }
                 // Next nearest neighbours
-                if (neighbor_spin.getSpin() == newspin)
+                if (lattice_object[nn_i][nn_j].getSpin() == newspin)
                 {
                     if (randnum <= padd2)
                     {
@@ -131,8 +127,8 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double pad
                         }
                         sp += 1;
                         stacker.push_back(make_pair(nn_i, nn_j));
-                        neighbor_spin.AddToCluster();
-                        neighbor_spin.Triangulate(pos_update_x, pos_update_y); 
+                        lattice_object[nn_i][nn_j].AddToCluster();
+                        lattice_object[nn_i][nn_j].Triangulate(pos_update_x, pos_update_y); 
                         cluster_x.push(nn_i);
                         cluster_y.push(nn_j);
                         cluster_size += 1;
@@ -145,9 +141,8 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double pad
     while (!cluster_x.empty()) {
         lx = cluster_x.top();
         ly = cluster_y.top();
-        spinSite flipper = getSpinSite(lx,ly);
-        flipper.Flip();
-        flipper.Reset();
+        lattice_object[lx][ly].Flip();
+        lattice_object[lx][ly].Reset();
         cluster_x.pop();
         cluster_y.pop();
     }

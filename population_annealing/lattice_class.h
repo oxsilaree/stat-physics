@@ -22,24 +22,20 @@ class Lattice
 private:
     int energy, mag, abs_mag, avg_cluster_size; // Relevant for data collection
     double spec_heat, suscep; //--^
-    
+    vector<vector<spinSite>> lattice_object;
     
 
 public:
     // Public member attribute (so we can change/check it easily)
     // spinSite lattice_object[LEN][LEN]; // 2 Dimensional now
-    unique_ptr<unique_ptr<spinSite[]>[]> lattice_object;
+    
     int lattice_number; // Relevant for population annealing
     
 
     // Constructor
 
-    Lattice()
-    {
-        lattice_object = std::make_unique<std::unique_ptr<spinSite[]>[]>(LEN);
-        for (int i = 0; i < LEN; ++i) {
-            lattice_object[i] = std::make_unique<spinSite[]>(LEN);
-        }
+    Lattice() : lattice_object(LEN, vector<spinSite>(LEN)) {
+        // Initialize the 2D vector with spinSite objects
     }
 
     // Methods
@@ -57,6 +53,7 @@ public:
     // Get data members
     int getTotalEnergy();
     int getTotalMag();
+    spinSite& getSpinSite(int row, int col);
 
     // spinSite(&getLattice())[LEN][LEN] { return lattice_object; };
 };

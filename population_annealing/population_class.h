@@ -32,7 +32,7 @@ private:
 
 public:
     Population(void);
-    Population(int nom_pop, gsl_rng *r, int neighbor_table[LEN][LEN][nn_max][dim]);
+    Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][nn_max][dim]);
     void reSample(double T, gsl_rng *r);
     void run(void);
 

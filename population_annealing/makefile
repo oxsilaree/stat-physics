@@ -5,7 +5,7 @@ LLVM_DIR=$(shell brew --prefix llvm)
 CC=clang++
 
 #Use these flags if you don't want to use optimization profiles
-CFLAGS = -Wall -I$(IDIR) -I/usr/local/include -I$(LLVM_DIR)  -fopenmp -O3 
+CFLAGS = -I$(IDIR) -I/usr/local/include -I$(LLVM_DIR)  -fopenmp -O3 
 LFLAGS = -I$(IDIR) -L/usr/local/lib -I$(LLVM_DIR)  -fopenmp -O3 
 
 # Compile with -fprofile-generate and run with small pop size (R~100).\
@@ -28,7 +28,7 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
 $(ODIR)/%.o: %.cpp $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -g -c -o $@ $< $(CFLAGS)
 
 
 main: $(OBJ)

@@ -22,7 +22,7 @@ class Lattice
 private:
     int energy, mag, abs_mag, avg_cluster_size; // Relevant for data collection
     double spec_heat, suscep; //--^
-    vector<vector<spinSite>> lattice_object;
+    vector<vector<spinSite> > lattice_object;
     
 
 public:

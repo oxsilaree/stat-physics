@@ -1,5 +1,7 @@
 #include "population_class.h"
 
+using namespace std;
+
 /*
     This population annealing routine has been adapted with much gratitude 
     from the work of C. Amey, a previous student of my professor.
@@ -13,7 +15,7 @@ Population::Population(void)
 	throw invalid_argument("Invalid PA simulation initialization parameters.");
 }
 
-Population::Population(int nom_pop, gsl_rng *r, int neighbor_table[LEN][LEN][nn_max][dim])
+Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][nn_max][dim])
 {
     // Initialize population
     Population::nom_pop = nom_pop;
@@ -21,7 +23,15 @@ Population::Population(int nom_pop, gsl_rng *r, int neighbor_table[LEN][LEN][nn_
     Population::pop_size = nom_pop;
     Population::pop_array = unique_ptr<Lattice[]>(new Lattice[Population::max_pop]); // Not sure how this works but this makes
                                                                                      // the population
-    // Population::neighbor_table[LEN][LEN][nn_max][dim] = neighbor_table[LEN][LEN][nn_max][dim];     // Not sure we need this
+    for (int i = 0; i < LEN; ++i) {
+        for (int j = 0; j < LEN; ++j) {
+            for (int pos = 0; pos < nn_max; ++pos) {
+                for (int d = 0; d < dim; ++d) {
+                    Population::neighbor_table[i][j][pos][d] = nn_table[i][j][pos][d];
+                }
+            }
+        }
+    }
 
     Population::r = r;	                    
 }
@@ -131,7 +141,7 @@ void Population::run(void)
         #pragma omp parallel for shared(pop_array, neighbor_table, Beta, r_thread, num_sweeps)
 			for (int m = 0; m < pop_size; m++) 
             {
-				int thread = omp_get_thread_num(); // BIG ISSUE HERE I THINK
+				int thread = omp_get_thread_num(); // BIG ISSUE HERE I THINK ... i think its ok now
 				pop_array[m].doWolffAlgo(/*r_thread[thread], */neighbor_table, T, num_sweeps);
 				pop_array[m].getTotalEnergy();
                 cout << "Lattice " << m << " done running: Thread no. " << thread << "!";

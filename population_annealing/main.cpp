@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     int* p;
     double T;
     int seed = 1; // We can make this an input later
-
+    srand(time(NULL));
     // double kappa = stod(argv[1]);
 
 // -------- Lists for data
@@ -66,7 +66,9 @@ int main(int argc, char** argv)
             }
         }
     }
-    cout << "so far so good!";
+    cout << "so far so good!\n";
+
+
     
     /* TEST STUFF OUT (population-annealing)*/
 

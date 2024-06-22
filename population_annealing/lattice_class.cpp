@@ -50,6 +50,7 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double pad
     int wrapcounter, sp, cluster_size; // Counters
     double randnum; // For checking whether to add to cluster
     bool wrapping_crit = false;
+    spinSite root_spin, current_spin, neighbor_spin;
     vector<pair<int, int> > stacker;
     stack<int> cluster_x;
     stack<int> cluster_y;
@@ -57,7 +58,7 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double pad
     // Pick a random spin (x then y coord) and make it the origin (i.e. "root/seed/(0,0)")
     i = rand() % LEN;
     j = rand() % LEN;
-    spinSite root_spin, current_spin, neighbor_spin;
+    cout << "--- i = " << i << ", j = " << j << " ---\n";
     root_spin = getSpinSite(i,j);
     root_spin.AddToCluster();
     root_spin.Triangulate(0,0);

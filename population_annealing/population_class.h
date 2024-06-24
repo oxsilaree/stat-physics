@@ -23,17 +23,19 @@ using namespace std;
 class Population
 {
 private:
-    unique_ptr<Lattice[]> pop_array;
-    int nom_pop, max_pop, pop_size ;
+    // unique_ptr<Lattice[]> pop_array;
+    vector<Lattice> pop_array;
+    int nom_pop, max_pop, pop_size;
     double padd1, padd2;
     double rho_t;
     int neighbor_table[LEN][LEN][nn_max][dim];
     gsl_rng *r;
+    void reSample(double T, gsl_rng *r);
 
 public:
     Population(void);
     Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][nn_max][dim]);
-    void reSample(double T, gsl_rng *r);
+    
     void run(void);
 
 };

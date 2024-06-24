@@ -66,13 +66,13 @@ int main(int argc, char** argv)
             }
         }
     }
-    cout << "so far so good!\n";
+    cout << "Neighbor table OK. \n";
 
 
     
     /* TEST STUFF OUT (population-annealing)*/
 
-    int init_pop_size = 5;
+    int init_pop_size = 10;
     Population test_pop(init_pop_size, r, neighbor_table);
     test_pop.run();
     
@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 
 
 
-    /* TEST STUFF OUT (not population-annealing)*/
+    /* TEST STUFF OUT (not population-annealing) */
     /*
     Lattice test_lattice;
     test_lattice.initializeSites();
@@ -93,7 +93,8 @@ int main(int argc, char** argv)
     {
         for (int j = 0; j < LEN; j++)
         {
-            cout << test_lattice.lattice_object[i][j].getSpin() + 2 << ", ";
+            spinSite* test_obj = test_lattice.getSpinSite(i,j);
+            cout << test_obj->getSpin() + 2 << ", ";
         }
         cout << "\n";
     }
@@ -115,7 +116,8 @@ int main(int argc, char** argv)
     {   cout << "[";
         for (int j = 0; j < LEN; j++)
         {
-            cout << test_lattice.lattice_object[i][j].getSpin() + 2 << ", ";
+            spinSite* checker = test_lattice.getSpinSite(i,j);
+            cout << checker->getSpin() + 2 << ", ";
             // test_data << test_lattice.lattice_object[i][j].getSpin() + 2 << ", ";
         }
         cout << "], \n";
@@ -123,6 +125,7 @@ int main(int argc, char** argv)
     }
     // test_data.close();
     cout << "Simulation complete." << endl;
-    return 0;
     */
+    return 0;
+    
 }

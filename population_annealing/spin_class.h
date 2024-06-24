@@ -26,14 +26,9 @@ private: // Data members
 public: // Member functions
     
     // Constructor
-    spinSite() 
-    {
-        spin = rand() % 2 == 0 ? 1 : -1; //: Assign a random value to spin (1 or -1)
-        in_cluster = false; // Start off "not in cluster"
-    }
     
     // Change data members
-    // void AssignValues();
+    void AssignValues();
     void Flip(); // changes spin
     void AddToCluster(); // changes in_cluster
     void Reset(); // changes in_cluster

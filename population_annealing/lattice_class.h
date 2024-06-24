@@ -14,6 +14,7 @@
 #include "parameters.h"
 #include "functions.h"
 #include "spin_class.h"
+#include <mutex>
 
 using namespace std;
 
@@ -23,20 +24,18 @@ private:
     int energy, mag, abs_mag, avg_cluster_size; // Relevant for data collection
     double spec_heat, suscep; //--^
     vector<vector<spinSite> > lattice_object;
+    // mutex lattice_mutex;
     
 
 public:
     // Public member attribute (so we can change/check it easily)
     // spinSite lattice_object[LEN][LEN]; // 2 Dimensional now
     
+
     int lattice_number; // Relevant for population annealing
     
-
-    // Constructor
-
-    Lattice() : lattice_object(LEN, vector<spinSite>(LEN)) {
-        // Initialize the 2D vector with spinSite objects
-    }
+    // Constructor Declaration
+    Lattice();
 
     // Methods
     void initializeSites();
@@ -53,7 +52,7 @@ public:
     // Get data members
     int getTotalEnergy();
     int getTotalMag();
-    spinSite& getSpinSite(int row, int col);
+    spinSite* getSpinSite(int row, int col);
 
     // spinSite(&getLattice())[LEN][LEN] { return lattice_object; };
 };

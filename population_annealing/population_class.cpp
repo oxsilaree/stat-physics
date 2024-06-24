@@ -183,21 +183,22 @@ void Population::run(void)
         num_sweeps = Beta <= 0.5 ? (SWEEPS / 4) : SWEEPS; // Do less sweeps for higher temperatures
 
         reSample(T, r);
+        /*
         for (int m = 0; m < pop_size; m++)
         {
-        pop_array[m].doWolffAlgo(/*r_thread[thread], */neighbor_table, T, num_sweeps);
+        pop_array[m].doWolffAlgo(neighbor_table, T, num_sweeps);
         cout << "Pretty alright for lattice " << m << ". Energy = " << pop_array[m].getTotalEnergy() << "\n";
         }
-        /*
+        */
+        
         #pragma omp parallel for shared(pop_array, neighbor_table, Beta, r_thread, num_sweeps)
         for (int m = 0; m < pop_size; m++) 
         {
             int thread = omp_get_thread_num(); // BIG ISSUE HERE I THINK ... i think its ok now
             pop_array[m].doWolffAlgo(neighbor_table, T, num_sweeps);
             pop_array[m].getTotalEnergy();
-            cout << "Lattice " << m << " done running: Thread no. " << thread << "!";
+            cout << "Lattice " << m << " done running: Thread no. " << thread << "!\n";
         }   
-        */
        
         cout << "Done for T = " << T << "!\n";
         T -= double(T_init/T_iter); // "Cooling" the system

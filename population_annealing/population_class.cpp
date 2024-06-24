@@ -43,7 +43,8 @@ Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][nn_max][d
 
 void Population::reSample(double T, gsl_rng *r)
 {
-    int j = 0, new_pop_size = 0,    floor = 0, ceiling = 0;
+    int j = 0,     floor = 0, ceiling = 0;
+    int new_pop_size = 0;
     double energy_j, weight_j, tau_j, expected_copies_j; // used for reweighting
     double Beta = 1/T;
     double T_prime = T - (T_init-T_final)/T_iter;
@@ -54,8 +55,8 @@ void Population::reSample(double T, gsl_rng *r)
     cout << "T_prime = " << T_prime << ".\n";
     double Beta_prime = 1/(T_prime);
     double d_Beta = Beta_prime - Beta; // Get the difference in previous and new inverse temperature
-	double config_weight[pop_size];
-	double Q = 0;
+	long double config_weight[pop_size];
+	long double Q = 0.0;
 	int num_replicas[pop_size];
 
     for (j = 0; j < pop_size; j++) // Get Q(beta, beta') for each lattice in population

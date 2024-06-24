@@ -73,6 +73,7 @@ int main(int argc, char** argv)
     /* TEST STUFF OUT (population-annealing)*/
 
     int init_pop_size = 10;
+    omp_set_num_threads(NUM_THREADS);
     Population test_pop(init_pop_size, r, neighbor_table);
     test_pop.run();
     

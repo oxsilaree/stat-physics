@@ -30,7 +30,8 @@ private:
     double rho_t;
     int neighbor_table[LEN][LEN][nn_max][dim];
     gsl_rng *r;
-    void reSample(double T, gsl_rng *r);
+    void reSample(double T, gsl_rng *r, double avg_e, double var_e);
+    void energy_calcs(double *avg_e, double *var_e);
 
 public:
     Population(void);

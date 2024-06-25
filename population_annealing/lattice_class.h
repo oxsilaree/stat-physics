@@ -21,8 +21,8 @@ using namespace std;
 class Lattice
 {
 private:
-    int energy, mag, abs_mag, avg_cluster_size; // Relevant for data collection
-    double spec_heat, suscep; //--^
+    int mag, abs_mag, avg_cluster_size; // Relevant for data collection
+    double energy, spec_heat, suscep; //--^
     vector<vector<spinSite> > lattice_object;
     // mutex lattice_mutex;
     

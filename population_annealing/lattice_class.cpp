@@ -426,7 +426,7 @@ void Lattice::updateTotalEnergy(int neighbor_table[LEN][LEN][nn_max][dim])
         */
         }  
     }   
-    energy *= 0.5;
+    energy /= 2.0;
 }
 
 void Lattice::updateTotalMag()

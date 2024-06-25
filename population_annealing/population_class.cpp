@@ -41,7 +41,7 @@ Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][nn_max][d
     Population::r = r;	                    
 }
 
-void Population::reSample(double T, gsl_rng *r)
+void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
 {
     int j = 0,     floor = 0, ceiling = 0;
     int new_pop_size = 0;
@@ -55,6 +55,7 @@ void Population::reSample(double T, gsl_rng *r)
     cout << "T_prime = " << T_prime << ".\n";
     double Beta_prime = 1/(T_prime);
     double d_Beta = Beta_prime - Beta; // Get the difference in previous and new inverse temperature
+    //double d_Beta = CULLING_FRAC *sqrt(2 *PI /var_e); // This is a slightly more optimized way to run Pop.Annealing
 	long double config_weight[pop_size];
 	long double Q = 0.0;
 	int num_replicas[pop_size];
@@ -64,10 +65,10 @@ void Population::reSample(double T, gsl_rng *r)
         Lattice lattice_j = pop_array[j];
         lattice_j.updateTotalEnergy(neighbor_table);
         energy_j = lattice_j.getTotalEnergy();
-        weight_j = -d_Beta * energy_j;
+        weight_j = -d_Beta * (energy_j - avg_e); //////// USE AVG_E FROM C.AMEY PAPER (6/24/24 NOTE)
         config_weight[j] = exp(weight_j); // Storing these values is good to get tau later on
         Q += config_weight[j];
-        cout << "Intermediate Q value: "<< Q << ". We just had energy " << energy_j << " and weight " << config_weight[j] << ".\n";
+        // cout << "Intermediate Q value: "<< Q << ". We just had energy " << energy_j << " and weight " << config_weight[j] << ".\n";
     }
     Q /= (double)pop_size;
     cout << "Q = " << Q << ". \n";
@@ -157,11 +158,11 @@ void Population::reSample(double T, gsl_rng *r)
 void Population::run(void)
 {
     gsl_rng *r_thread[NUM_THREADS];
+    double avg_e = 0.0, var_e = 0.0;
     FILE *fp = fopen("run.dat", "w");
     
 	for (int i = 0; i < NUM_THREADS; i++) 
     {
-        
 		int tmp_rnd = gsl_rng_uniform_int(r, 10000000) + 1000000;
 		initialize_rng(&r_thread[i], tmp_rnd);
 	}
@@ -182,8 +183,8 @@ void Population::run(void)
 		fprintf(fp, "%5.5f\n", Beta);
 		fflush(fp);
         num_sweeps = Beta <= 0.5 ? (SWEEPS / 4) : SWEEPS; // Do less sweeps for higher temperatures
-
-        reSample(T, r);
+        energy_calcs(&avg_e, &var_e);
+        reSample(T, r, avg_e, var_e);
         /*
         for (int m = 0; m < pop_size; m++)
         {
@@ -198,12 +199,35 @@ void Population::run(void)
             int thread = omp_get_thread_num(); // BIG ISSUE HERE I THINK ... i think its ok now
             pop_array[m].doWolffAlgo(neighbor_table, T, num_sweeps);
             pop_array[m].getTotalEnergy();
-            cout << "Lattice " << m << " done running: Thread no. " << thread << "!\n";
+            // cout << "Lattice " << m << " done running: Thread no. " << thread << "!\n";
         }   
        
-        cout << "Done for T = " << T << "!\n";
+        cout << "Done for T = " << T << "!\n=-=-=-=-=-=-=-=-=-=-=\n";
         T -= double(T_init/T_iter); // "Cooling" the system
         T = floor((100.*T)+.5)/100;
     }   
     
+}
+
+void Population::energy_calcs(double *avg_e, double *var_e) {
+	int min_index = 0;
+	double temp_min = 0.0;
+	double avg_e2 = 0.0;
+	double temp_avg_e = 0.0;
+	for (int m = 0; m < pop_size; m++) {
+        Lattice* lattice_m = &pop_array[m];
+        double temp_e = lattice_m->getTotalEnergy();
+		temp_avg_e += temp_e;
+		avg_e2 += temp_e *temp_e;
+		if (temp_e < temp_min) {
+			temp_min = temp_e;
+			min_index = m;
+		}
+	}
+	avg_e2 /= pop_size;
+	temp_avg_e /= pop_size;
+	*avg_e = temp_avg_e;
+	*var_e = (avg_e2 - temp_avg_e *temp_avg_e);
+	// gs = pop_array[min_index];
+	// gs_e = gs.get_energy();
 }

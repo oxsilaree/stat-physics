@@ -1,4 +1,4 @@
-IDIR =.#/include
+IDIR =./include
 GSL_DIR = $(shell brew --prefix gsl) # should be "/usr/local/opt/gsl"
 GSL_LINK = "/usr/local/lib"
 LLVM_DIR=$(shell brew --prefix llvm)

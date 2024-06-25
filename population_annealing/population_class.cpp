@@ -19,7 +19,7 @@ Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][nn_max][d
 {
     // Initialize population
     Population::nom_pop = nom_pop;
-    Population::max_pop = int(sqrt(nom_pop) * 10);
+    Population::max_pop = nom_pop + int(sqrt(nom_pop) * 10);
     Population::pop_size = nom_pop;
     Population::pop_array.reserve((int)sqrt(nom_pop)*10); // Reserve initial memory for the vector
     for (int i = 0; i < nom_pop; ++i) {
@@ -52,7 +52,7 @@ void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
     {
         T_prime = 0.001;
     }
-    cout << "T_prime = " << T_prime << ".\n";
+    // cout << "T_prime = " << T_prime << ".\n";
     double Beta_prime = 1/(T_prime);
     double d_Beta = Beta_prime - Beta; // Get the difference in previous and new inverse temperature
     //double d_Beta = CULLING_FRAC *sqrt(2 *PI /var_e); // This is a slightly more optimized way to run Pop.Annealing
@@ -109,7 +109,7 @@ void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
     }
     pop_array = new_lattices;
     pop_size = new_pop_size;
-    cout << "Pop size = " << pop_size << ".\n";
+    cout << "Population size = " << pop_size << ".\n";
 
     /*
         //Fill empty gaps in population array so un-erased members are contiguous
@@ -202,7 +202,7 @@ void Population::run(void)
             // cout << "Lattice " << m << " done running: Thread no. " << thread << "!\n";
         }   
        
-        cout << "Done for T = " << T << "!\n=-=-=-=-=-=-=-=-=-=-=\n";
+        cout << "Done for T = " << T << "!\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         T -= double(T_init/T_iter); // "Cooling" the system
         T = floor((100.*T)+.5)/100;
     }   

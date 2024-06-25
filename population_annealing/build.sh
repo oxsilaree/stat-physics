@@ -12,3 +12,6 @@ export MACOSX_DEPLOYMENT_TARGET=12.7.5
 
 # Run make command
 make
+
+# Remove .o files
+make clean

@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
 // -------- Actual code
     initialize_rng(&r, seed);
-    cout << "kappa = " << kappa << "\n";
+    
     
 // Make neighbor table (this works CAA 17/6/24)
     for (int i = 0; i < LEN; i++)
@@ -67,22 +67,22 @@ int main(int argc, char** argv)
         }
     }
     cout << "Neighbor table OK. \n";
-
+    
 
     
     /* TEST STUFF OUT (population-annealing)*/
 
-    int init_pop_size = 10;
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+    cout << "Starting simulation...\n";
+    cout << "kappa = " << kappa << ".\n";
+    cout << "Starting population size = " << INIT_POP_SIZE << ".\n";
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+
     omp_set_num_threads(NUM_THREADS);
-    Population test_pop(init_pop_size, r, neighbor_table);
+    Population test_pop(INIT_POP_SIZE, r, neighbor_table);
     test_pop.run();
     
-
-
-
-
-
-
+    
 
 
 
@@ -125,8 +125,9 @@ int main(int argc, char** argv)
         // test_data << "\n";
     }
     // test_data.close();
-    cout << "Simulation complete." << endl;
+    
     */
+    cout << "Simulation complete." << endl;
     return 0;
     
 }

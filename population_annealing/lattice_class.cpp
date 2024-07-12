@@ -15,9 +15,10 @@ void Lattice::initializeSites()
 */
 
 // Constructor definition
-Lattice::Lattice()
+Lattice::Lattice(double kappa)
     {
     // Initialize other members if needed
+    Lattice::kappa = kappa;
     energy = 0;
     mag = 0;
     abs_mag = 0;
@@ -51,7 +52,7 @@ spinSite* Lattice::getSpinSite(int row, int col)
     return &lattice_object[(int)row][(int)col];
 }
 
-void Lattice::doBurnIn(int neighbor_table[LEN][LEN][nn_max][dim], double T)
+void Lattice::doBurnIn(int neighbor_table[LEN][LEN][NN_MAX][DIM], double T)
 {
     double Beta, padd1, padd2;
     Beta = 1/T;
@@ -63,7 +64,7 @@ void Lattice::doBurnIn(int neighbor_table[LEN][LEN][nn_max][dim], double T)
     }
 }
 
-void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double padd1, double padd2)
+void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double padd1, double padd2)
 { // Basically doStep without the wrapping checks
     int i, j,   lx, ly,     oldspin, newspin,   current_x, current_y,   nn_i, nn_j; // Lattice indices
     int root_x, root_y,     coord_x, coord_y,   pos_update_x, pos_update_y; // Coordinates for wrapping criteria
@@ -105,7 +106,7 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double pad
         coord_y = current_spin->getY();
 
         /* Check the neighbours using neighbour table */
-        for (int k = 0; k < nn_max; k++)
+        for (int k = 0; k < NN_MAX; k++)
         { 
             nn_i = neighbor_table[current_x][current_y][k][0];
             nn_j = neighbor_table[current_x][current_y][k][1];
@@ -181,7 +182,7 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double pad
 
 
 
-void Lattice::doStep(int neighbor_table[LEN][LEN][nn_max][dim], double padd1, double padd2)
+void Lattice::doStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double padd1, double padd2)
 {
     int i, j,   lx, ly,     oldspin, newspin,   current_x, current_y,   nn_i, nn_j; // Lattice indices
     int root_x, root_y,     coord_x, coord_y,   pos_update_x, pos_update_y; // Coordinates for wrapping criteria
@@ -220,14 +221,10 @@ void Lattice::doStep(int neighbor_table[LEN][LEN][nn_max][dim], double padd1, do
         newspin = -oldspin;
         coord_x = current_spin->getX();
         coord_y = current_spin->getY();
-        //oldspin = lattice_object[current_x][current_y].getSpin();
-        //newspin = -oldspin;
-        //coord_x = lattice_object[current_x][current_y].getX();
-        //coord_y = lattice_object[current_x][current_y].getY();
 
         /* Check the neighbours using neighbour table */
 
-        for (int k = 0; k < nn_max; k++)
+        for (int k = 0; k < NN_MAX; k++)
         {   
             nn_i = neighbor_table[current_x][current_y][k][0];
             nn_j = neighbor_table[current_x][current_y][k][1];
@@ -325,7 +322,7 @@ void Lattice::doStep(int neighbor_table[LEN][LEN][nn_max][dim], double padd1, do
             }
         }
     }
-    /* FIGURE THIS OUT LATER
+    /* Do this for percolation data
     if (wrapping_crit == true){
         cluster_sizes.push_back(-1*cluster_size); // We use negative cluster size to indicate clusters that have wrapped,
     } else {                                 // As a slick way to keep everything in one array(stack)
@@ -343,7 +340,7 @@ void Lattice::doStep(int neighbor_table[LEN][LEN][nn_max][dim], double padd1, do
     }
 }
 
-void Lattice::doSweep(int neighbor_table[LEN][LEN][nn_max][dim], double T)
+void Lattice::doSweep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double T)
 {
     int Ene, E1, E2,    Mag, M1, M2, M1_abs, Mag_abs, Mag_sq;
     double Beta, padd1, padd2;
@@ -368,7 +365,7 @@ void Lattice::doSweep(int neighbor_table[LEN][LEN][nn_max][dim], double T)
         E2 = E2 + (Ene * Ene);
 }
 
-void Lattice::doWolffAlgo(int neighbor_table[LEN][LEN][nn_max][dim], double T, int num_sweeps)
+void Lattice::doWolffAlgo(int neighbor_table[LEN][LEN][NN_MAX][DIM], double T, int num_sweeps)
 {
     // Initialize and Burn-in
     doBurnIn(neighbor_table, T);
@@ -381,19 +378,19 @@ void Lattice::doWolffAlgo(int neighbor_table[LEN][LEN][nn_max][dim], double T, i
     }
 }
 
-void Lattice::updateTotalEnergy(int neighbor_table[LEN][LEN][nn_max][dim])
+void Lattice::updateTotalEnergy(int neighbor_table[LEN][LEN][NN_MAX][DIM])
 {
     int left_x, right_x, up_x, down_x;   // nearest neighbours
     int left_y, right_y, up_y, down_y;
     int up2_x, down2_x; // next-nearest neighbours
     int up2_y, down2_y;
 
-    
+    energy = 0;
     for (int i = 0; i < LEN; i++)
     {
         for (int j = 0; j < LEN; j++)
         {
-            left_x = neighbor_table[i][j][0][0];
+            left_x = neighbor_table[i][j][0][0]; // I feel like I don't need to do all this...
             left_y = neighbor_table[i][j][0][1];
             right_x = neighbor_table[i][j][1][0];
             right_y = neighbor_table[i][j][1][1];
@@ -415,15 +412,9 @@ void Lattice::updateTotalEnergy(int neighbor_table[LEN][LEN][nn_max][dim])
             spinSite* down2_s = getSpinSite(down2_x, down2_y);            
 
 
-        energy += (mid_s->getSpin())*(-1*J) * (((left_s->getSpin())+(right_s->getSpin()) \
+        energy += (mid_s->getSpin())*(-1*J) * (((left_s->getSpin()) + (right_s->getSpin()) \
                                             + (up_s->getSpin()) + (down_s->getSpin())) \
                                             - (kappa * ((up2_s->getSpin()) + (down2_s->getSpin()))));
-        /*
-        energy += lattice_object[i][j].getSpin() * (-1*J) \
-                * ((lattice_object[left_x][left_y].getSpin() + lattice_object[right_x][right_y].getSpin() \
-                + lattice_object[up_x][up_y].getSpin() + lattice_object[down_x][down_y].getSpin()) \
-                - (kappa * (lattice_object[up2_x][up2_y].getSpin() + lattice_object[down2_x][down2_y].getSpin())));
-        */
         }  
     }   
     energy /= 2.0;
@@ -435,7 +426,8 @@ void Lattice::updateTotalMag()
     mag = 0;
     for (i = 0; i < LEN; i++){
         for (j = 0; j < LEN; j++){
-            mag += lattice_object[i][j].getSpin();
+            spinSite* site = getSpinSite(i,j);
+            mag += (site->getSpin());
         }
     }
 }

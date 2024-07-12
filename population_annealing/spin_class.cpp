@@ -45,7 +45,7 @@ int spinSite::getSpin()
     return spin;
 }
 
-bool spinSite::checkStatus()
+bool spinSite::checkStatus() // change to getStatus();
 {
     return in_cluster;
 }

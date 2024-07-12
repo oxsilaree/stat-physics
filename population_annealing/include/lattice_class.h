@@ -23,6 +23,7 @@ class Lattice
 private:
     int mag, abs_mag, avg_cluster_size; // Relevant for data collection
     double energy, spec_heat, suscep; //--^
+    double kappa;
     vector<vector<spinSite> > lattice_object;
     // mutex lattice_mutex;
     
@@ -35,18 +36,18 @@ public:
     int lattice_number; // Relevant for population annealing
     
     // Constructor Declaration
-    Lattice();
+    Lattice(double kappa);
 
     // Methods
     void initializeSites();
-    void doBurnIn(int neighbor_table[LEN][LEN][nn_max][dim], double T);
-    void doBurnInStep(int neighbor_table[LEN][LEN][nn_max][dim], double padd1, double padd2);
-    void doStep(int neighbor_table[LEN][LEN][nn_max][dim], double padd1, double padd2);
-    void doSweep(int neighbor_table[LEN][LEN][nn_max][dim], double T);
-    void doWolffAlgo(int neighbor_table[LEN][LEN][nn_max][dim], double T, int num_sweeps);
+    void doBurnIn(int neighbor_table[LEN][LEN][NN_MAX][DIM], double T);
+    void doBurnInStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double padd1, double padd2);
+    void doStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double padd1, double padd2);
+    void doSweep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double T);
+    void doWolffAlgo(int neighbor_table[LEN][LEN][NN_MAX][DIM], double T, int num_sweeps);
 
     // Update data members
-    void updateTotalEnergy(int neighbor_table[LEN][LEN][nn_max][dim]);
+    void updateTotalEnergy(int neighbor_table[LEN][LEN][NN_MAX][DIM]);
     void updateTotalMag();
 
     // Get data members

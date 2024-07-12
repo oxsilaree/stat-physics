@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <bitset>
 #include <math.h>
@@ -18,6 +19,7 @@
 using namespace std;
 
 int* getNeighbor(int, int, int);
-void initialize_rng(gsl_rng **r, int seed);
+void initializeRNG(gsl_rng **r, int seed);
+
 
 

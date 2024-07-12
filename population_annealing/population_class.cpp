@@ -15,30 +15,40 @@ Population::Population(void)
 	throw invalid_argument("Invalid PA simulation initialization parameters.");
 }
 
-Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][nn_max][dim])
+Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][NN_MAX][DIM], double kappa)
 {
     // Initialize population
+    Population::kappa = kappa;
     Population::nom_pop = nom_pop;
     Population::max_pop = nom_pop + int(sqrt(nom_pop) * 10);
     Population::pop_size = nom_pop;
     Population::pop_array.reserve((int)sqrt(nom_pop)*10); // Reserve initial memory for the vector
+    
+    Population::energy_data.reserve((int)T_ITER);
+    Population::magnetization_data.reserve((int)T_ITER);
+    Population::spec_heat_data.reserve((int)T_ITER);
+    Population::susceptibility_data.reserve((int)T_ITER);
+    Population::temperature_values.reserve((int)T_ITER);
+
     for (int i = 0; i < nom_pop; ++i) {
-        pop_array.push_back(Lattice());
+        pop_array.push_back(Lattice(kappa));
     }
     // Population::pop_array = std::make_unique<Lattice[]>(Population::max_pop);
     // Population::pop_array = unique_ptr<Lattice[]>(new Lattice[Population::max_pop]); // Not sure how this works but this makes
                                                                                      // the population
     for (int i = 0; i < LEN; ++i) {
         for (int j = 0; j < LEN; ++j) {
-            for (int pos = 0; pos < nn_max; ++pos) {
-                for (int d = 0; d < dim; ++d) {
+            for (int pos = 0; pos < NN_MAX; ++pos) {
+                for (int d = 0; d < DIM; ++d) {
                     Population::neighbor_table[i][j][pos][d] = nn_table[i][j][pos][d];
                 }
             }
         }
     }
 
-    Population::r = r;	                    
+    Population::r = r;	    
+    double dummy_1, dummy_2;
+	energy_calcs(&dummy_1, &dummy_2);                
 }
 
 void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
@@ -47,8 +57,8 @@ void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
     int new_pop_size = 0;
     double energy_j, weight_j, tau_j, expected_copies_j; // used for reweighting
     double Beta = 1/T;
-    double T_prime = T - (T_init-T_final)/T_iter;
-    if (T_prime < (T_init-T_final)/T_iter)
+    double T_prime = T - (T_INIT-T_FINAL)/T_ITER;
+    if (T_prime < (T_INIT-T_FINAL)/T_ITER)
     {
         T_prime = 0.001;
     }
@@ -62,13 +72,13 @@ void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
 
     for (j = 0; j < pop_size; j++) // Get Q(beta, beta') for each lattice in population
     {
-        Lattice lattice_j = pop_array[j];
-        lattice_j.updateTotalEnergy(neighbor_table);
-        energy_j = lattice_j.getTotalEnergy();
-        weight_j = -d_Beta * (energy_j - avg_e); //////// USE AVG_E FROM C.AMEY PAPER (6/24/24 NOTE)
+        Lattice* lattice_j = &pop_array[j];
+        lattice_j->updateTotalEnergy(neighbor_table);
+        energy_j = lattice_j->getTotalEnergy();
+        weight_j = -d_Beta * (energy_j - avg_e); // These get massive
         config_weight[j] = exp(weight_j); // Storing these values is good to get tau later on
         Q += config_weight[j];
-        // cout << "Intermediate Q value: "<< Q << ". We just had energy " << energy_j << " and weight " << config_weight[j] << ".\n";
+        cout << "Intermediate Q value: "<< Q << ". We just had energy " << energy_j << " and weight " << config_weight[j] << ".\n";
     }
     Q /= (double)pop_size;
     cout << "Q = " << Q << ". \n";
@@ -98,9 +108,9 @@ void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
     }
     // Vector routine for making a new population
     std::vector<Lattice> new_lattices;
-    new_lattices.reserve((int)sqrt(nom_pop)*10);
+    new_lattices.reserve(max_pop); // CHECK THIS LATER
 
-    for (int i = 0; i < pop_size; i++)
+    for (int i = 0; i < pop_size; i++) // Over set of replicas
     {
         for (int j = 0; j < num_replicas[i]; j++)
         {
@@ -110,52 +120,9 @@ void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
     pop_array = new_lattices;
     pop_size = new_pop_size;
     cout << "Population size = " << pop_size << ".\n";
-
-    /*
-        //Fill empty gaps in population array so un-erased members are contiguous
-        //(e.g. this string corresponds to the population and the numbers correspond to the number of
-        //copies of each replica, then this routine changes 12002004013 into 12312400000)
-    
-
-	int copy_to = 0, copy_from = pop_size - 1;
-	while (copy_to < copy_from) {
-		while (num_replicas[copy_to] > 0)
-        	copy_to++;
-		while (num_replicas[copy_from] <= 0)
-			copy_from--;
-		if (copy_to < copy_from) {
-            Lattice copier = std::move(pop_array[copy_from]);
-            pop_array[copy_to] = std::move(copier);
-			//pop_array[copy_to] = std::move(pop_array[copy_from]);
-			num_replicas[copy_to] = num_replicas[copy_from];
-			num_replicas[copy_from] = 0;
-		}
-	}
-    pop_size = new_pop_size;
-    cout << "Population size = " << pop_size << ". \n";
-
-        //Make copies of config's from the beginning to the end of contiguous data block
-        //(12312400000 and ABCDEFGHIJK -> ABCDEFBCCEFFF)
-    
-
-	copy_to = 0;
-	while (num_replicas[copy_to] > 0)
-		copy_to++;
-	int copy_end = copy_to;
-	copy_from = 0;
-	while (copy_from < copy_end) {
-		for (j = 0; j < num_replicas[copy_from] - 1; j++) {
-            Lattice mover = pop_array[copy_from];
-			pop_array[copy_to] = std::move(mover);
-            //pop_array[copy_to] = std::move(pop_array[copy_from]);
-			copy_to++;
-		}
-		copy_from++;
-	}
-    */
 }
 
-void Population::run(void)
+void Population::run(string kappastr)
 {
     gsl_rng *r_thread[NUM_THREADS];
     double avg_e = 0.0, var_e = 0.0;
@@ -164,11 +131,11 @@ void Population::run(void)
 	for (int i = 0; i < NUM_THREADS; i++) 
     {
 		int tmp_rnd = gsl_rng_uniform_int(r, 10000000) + 1000000;
-		initialize_rng(&r_thread[i], tmp_rnd);
+		initializeRNG(&r_thread[i], tmp_rnd);
 	}
     
 	double Beta = 0.0;
-    double T = T_init;
+    double T = T_INIT;
 	int num_sweeps;
 
     // Initialization
@@ -178,35 +145,33 @@ void Population::run(void)
         lattice_j->initializeSites();
     }
     
-    while (T != T_final) // Where the actual annealing happens
+    while (T > T_FINAL) // Where the actual annealing happens
     { 
-		fprintf(fp, "%5.5f\n", Beta);
-		fflush(fp);
+        Beta = 1/T;
         num_sweeps = Beta <= 0.5 ? (SWEEPS / 4) : SWEEPS; // Do less sweeps for higher temperatures
+
+        collectData(T);
         energy_calcs(&avg_e, &var_e);
         reSample(T, r, avg_e, var_e);
-        /*
-        for (int m = 0; m < pop_size; m++)
-        {
-        pop_array[m].doWolffAlgo(neighbor_table, T, num_sweeps);
-        cout << "Pretty alright for lattice " << m << ". Energy = " << pop_array[m].getTotalEnergy() << "\n";
-        }
-        */
         
+        // Parallel version
         #pragma omp parallel for shared(pop_array, neighbor_table, Beta, r_thread, num_sweeps)
         for (int m = 0; m < pop_size; m++) 
         {
-            int thread = omp_get_thread_num(); // BIG ISSUE HERE I THINK ... i think its ok now
+            int thread = omp_get_thread_num(); // check things regarding threads
             pop_array[m].doWolffAlgo(neighbor_table, T, num_sweeps);
-            pop_array[m].getTotalEnergy();
+            // pop_array[m].getTotalEnergy();
             // cout << "Lattice " << m << " done running: Thread no. " << thread << "!\n";
         }   
+
+        
        
         cout << "Done for T = " << T << "!\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-        T -= double(T_init/T_iter); // "Cooling" the system
+        T -= double(T_INIT/T_ITER); // "Cooling" the system
         T = floor((100.*T)+.5)/100;
-    }   
-    
+    } 
+    // Load up the data into readable files  
+    loadData(kappastr);
 }
 
 void Population::energy_calcs(double *avg_e, double *var_e) {
@@ -216,6 +181,7 @@ void Population::energy_calcs(double *avg_e, double *var_e) {
 	double temp_avg_e = 0.0;
 	for (int m = 0; m < pop_size; m++) {
         Lattice* lattice_m = &pop_array[m];
+        lattice_m->updateTotalEnergy(neighbor_table);
         double temp_e = lattice_m->getTotalEnergy();
 		temp_avg_e += temp_e;
 		avg_e2 += temp_e *temp_e;
@@ -230,4 +196,81 @@ void Population::energy_calcs(double *avg_e, double *var_e) {
 	*var_e = (avg_e2 - temp_avg_e *temp_avg_e);
 	// gs = pop_array[min_index];
 	// gs_e = gs.get_energy();
+}
+
+void Population::collectData(double T)
+{
+    int m;
+    double Beta = 1/T;
+    double E,M,E_sq,M_sq,M_abs, C,X; // Placeholders
+    double energy = 0, energy_sq = 0, mag = 0, mag_sq = 0, mag_abs = 0, spec_heat = 0, susc = 0;
+    for (m = 0; m < pop_size; m++)
+    {
+        Lattice* lattice_m = &pop_array[m];
+        lattice_m->updateTotalEnergy(neighbor_table);
+        lattice_m->updateTotalMag();
+        E = lattice_m->getTotalEnergy();
+        M = lattice_m->getTotalMag();
+        // E_sq = E*E;
+        // M_sq = M*M;
+        M_abs = abs(M);
+
+        energy += E;
+        energy_sq += E*E;
+        mag += M;
+        mag_sq += M*M;
+        mag_abs += M_abs;
+    }
+    spec_heat = (energy_sq/pop_size - (energy/pop_size)*(energy/pop_size)) * (Beta*Beta);
+    susc      = (mag_sq/pop_size - (mag_abs/pop_size)*(mag_abs/pop_size)) * Beta;
+    temperature_values.push_back(T);
+    energy_data.push_back(energy/pop_size);
+    magnetization_data.push_back(mag_abs/pop_size); // Mag abs should give something nicer
+    spec_heat_data.push_back(spec_heat);
+    susceptibility_data.push_back(susc);
+    // spec_heat_data.push_back(((energy_sq/pop_size) - pow((energy/pop_size),2)) * (Beta*Beta));
+    // susceptibility_data.push_back(((mag_sq/pop_size) - pow((mag_abs/pop_size),2)) * Beta);
+}
+
+void Population::loadData(string kappastr)
+{
+    
+    vector<double> T = temperature_values;
+    vector<double> E = energy_data;
+    vector<double> M = magnetization_data;
+    vector<double> C = spec_heat_data;
+    vector<double> X = susceptibility_data;
+
+    ofstream emcx_data;
+    emcx_data.open("data/emcx_data_" + kappastr + "_kappa.csv");
+    emcx_data << "T,";
+    for (vector<double>::iterator it=T.begin(); it != T.end(); ++it)
+        {
+            emcx_data << *it << ",";
+        }
+    emcx_data << "\n";
+    emcx_data << "E,";
+    for (vector<double>::iterator it=E.begin(); it != E.end(); ++it)
+        {
+            emcx_data << *it << ",";
+        }        
+    emcx_data << "\n";
+    emcx_data << "M,";
+    for (vector<double>::iterator it=M.begin(); it != M.end(); ++it)
+        {
+            emcx_data << *it << ",";
+        }     
+    emcx_data << "\n";
+    emcx_data << "C,";
+    for (vector<double>::iterator it=C.begin(); it != C.end(); ++it)
+        {
+            emcx_data << *it << ",";
+        }       
+    emcx_data << "\n";
+    emcx_data << "X,";
+    for (vector<double>::iterator it=X.begin(); it != X.end(); ++it)
+        {
+            emcx_data << *it << ",";
+        }    
+    emcx_data.close();
 }

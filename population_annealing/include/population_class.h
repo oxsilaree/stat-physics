@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <bitset>
 #include <memory>
@@ -28,15 +29,33 @@ private:
     int nom_pop, max_pop, pop_size;
     double padd1, padd2;
     double rho_t;
-    int neighbor_table[LEN][LEN][nn_max][dim];
+    double kappa;
+    int neighbor_table[LEN][LEN][NN_MAX][DIM];
     gsl_rng *r;
     void reSample(double T, gsl_rng *r, double avg_e, double var_e);
     void energy_calcs(double *avg_e, double *var_e);
 
+
+
 public:
     Population(void);
-    Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][nn_max][dim]);
+    Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][NN_MAX][DIM], double kappa);
     
-    void run(void);
+    
+    void run(string);
+    void collectData(double);
+    void loadData(string);
+
+    // double energy_data[(int)T_ITER];
+    // double spec_heat_data[(int)T_ITER];
+    // double magnetization_data[(int)T_ITER];
+    // double susceptibility_data[(int)T_ITER];
+
+    vector<double> energy_data;
+    vector<double> spec_heat_data;
+    vector<double> magnetization_data;
+    vector<double> susceptibility_data;
+    vector<double> temperature_values;
+    
 
 };

@@ -26,14 +26,32 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-// -------- Constants
-    static int neighbor_table[LEN][LEN][nn_max][dim]; // 6 neighbors (2D ANNNI), 2 coordinates
+// -------- Catch errors in input arguments
+
+try 
+{
+    if (argc <= 1) 
+    {
+        throw std::runtime_error("Kappa not provided. Please type argument in command line.\n(Typical values: 0 < kappa < 2)\n");
+    }
+}   catch (const std::runtime_error& e) 
+    {
+    std::cerr << "Error: " << e.what() << std::endl;
+    return 1; 
+    }
+
+
+
+// -------- Define some constants
+    static int neighbor_table[LEN][LEN][NN_MAX][DIM]; // 6 neighbors (2D ANNNI), 2 coordinates
     gsl_rng *r;
     int* p;
     double T;
     int seed = 1; // We can make this an input later
     srand(time(NULL));
-    // double kappa = stod(argv[1]);
+    string kappastr = argv[1];
+    double kappa = stod(argv[1]);
+    
 
 // -------- Lists for data
     list<double> E;     //-| v
@@ -44,20 +62,15 @@ int main(int argc, char** argv)
     list<double> Mz; // For order parameter (modulated waveform)
     list<int> cluster_sizes; // For percolation
 
-// -------- Catch errors in input arguments
-
-
-
 // -------- Actual code
-    initialize_rng(&r, seed);
+    initializeRNG(&r, seed);
+    auto start = chrono::high_resolution_clock::now(); // for checking time of run
     
-    
-// Make neighbor table (this works CAA 17/6/24)
-    for (int i = 0; i < LEN; i++)
+    for (int i = 0; i < LEN; i++) // Make neighbor table
     {
         for (int j = 0; j < LEN; j++)
         {
-            for (int pos = 0; pos < nn_max; pos++)
+            for (int pos = 0; pos < NN_MAX; pos++)
             {
                 p = getNeighbor(i, j, pos); 
                 neighbor_table[i][j][pos][0] = p[0];
@@ -66,67 +79,25 @@ int main(int argc, char** argv)
             }
         }
     }
-    cout << "Neighbor table OK. \n";
     
-
-    
-    /* TEST STUFF OUT (population-annealing)*/
+    // Population Annealing
 
     cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+    cout << "Neighbor table created. \n";
     cout << "Starting simulation...\n";
     cout << "kappa = " << kappa << ".\n";
     cout << "Starting population size = " << INIT_POP_SIZE << ".\n";
     cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
 
     omp_set_num_threads(NUM_THREADS);
-    Population test_pop(INIT_POP_SIZE, r, neighbor_table);
-    test_pop.run();
+    Population test_pop(INIT_POP_SIZE, r, neighbor_table, kappa);
+    test_pop.run(kappastr);
     
-    
 
+    auto end = chrono::high_resolution_clock::now(); // For checking duration of program
+    chrono::duration<double> elapsed = end - start;
 
-
-    /* TEST STUFF OUT (not population-annealing) */
-    /*
-    Lattice test_lattice;
-    test_lattice.initializeSites();
-    for (int i = 0; i < LEN; i++)
-    {
-        for (int j = 0; j < LEN; j++)
-        {
-            spinSite* test_obj = test_lattice.getSpinSite(i,j);
-            cout << test_obj->getSpin() + 2 << ", ";
-        }
-        cout << "\n";
-    }
-    cout << ".\n.\n.\n";
-    
-    // ofstream test_data;
-    // test_data.open("/Users/shanekeiser/Documents/Summer 2024/Research/PopulationAnnealing/data/test_data");
-
-
-    T = T_init;
-    for (int l = 0; l < T_iter; l++) {
-        test_lattice.doWolffAlgo(neighbor_table, T, SWEEPS);
-        cout << "Finished run for T = " << T << "." << endl;
-        T -= double(T_init/T_iter); // "Cooling" the system
-        T = floor((100.*T)+.5)/100;
-    }
-    cout << "[";
-    for (int i = 0; i < LEN; i++)
-    {   cout << "[";
-        for (int j = 0; j < LEN; j++)
-        {
-            spinSite* checker = test_lattice.getSpinSite(i,j);
-            cout << checker->getSpin() + 2 << ", ";
-            // test_data << test_lattice.lattice_object[i][j].getSpin() + 2 << ", ";
-        }
-        cout << "], \n";
-        // test_data << "\n";
-    }
-    // test_data.close();
-    
-    */
+    std::cout << "Time taken: " << elapsed.count() << " seconds." << std::endl;
     cout << "Simulation complete." << endl;
     return 0;
     

@@ -54,7 +54,7 @@ int* getNeighbor(int i, int j, int pos)
     return coords;
 }
 
-void initialize_rng(gsl_rng **r, int seed) 
+void initializeRNG(gsl_rng **r, int seed) 
 {
 	gsl_rng_env_setup();
 	const gsl_rng_type *T;
@@ -65,3 +65,5 @@ void initialize_rng(gsl_rng **r, int seed)
 	for (int i = 0; i < 10000; i++)
 		gsl_rng_uniform(*r);
 }
+
+

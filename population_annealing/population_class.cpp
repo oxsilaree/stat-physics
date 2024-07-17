@@ -28,7 +28,7 @@ Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][NN_MAX][D
     Population::magnetization_data.reserve((int)T_ITER);
     Population::spec_heat_data.reserve((int)T_ITER);
     Population::susceptibility_data.reserve((int)T_ITER);
-    Population::temperature_values.reserve((int)T_ITER);
+    Population::beta_values.reserve((int)T_ITER);
 
     for (int i = 0; i < nom_pop; ++i) {
         pop_array.push_back(Lattice(kappa));
@@ -51,24 +51,34 @@ Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][NN_MAX][D
 	energy_calcs(&dummy_1, &dummy_2);                
 }
 
-void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
+void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
 {
     int j = 0,     floor = 0, ceiling = 0;
     int new_pop_size = 0;
     double energy_j, weight_j, tau_j, expected_copies_j; // used for reweighting
-    double Beta = 1/T;
+    // double Beta = 1/T;
+
+    /*
     double T_prime = T - (T_INIT-T_FINAL)/T_ITER;
     if (T_prime < (T_INIT-T_FINAL)/T_ITER)
     {
         T_prime = 0.001;
     }
-    // cout << "T_prime = " << T_prime << ".\n";
     double Beta_prime = 1/(T_prime);
     double d_Beta = Beta_prime - Beta; // Get the difference in previous and new inverse temperature
-    //double d_Beta = CULLING_FRAC *sqrt(2 *PI /var_e); // This is a slightly more optimized way to run Pop.Annealing
+    */ 
+    double d_Beta = CULLING_FRAC * sqrt(2 *PI /var_e); // This is a slightly more optimized way to run Pop.Annealing
+    if (*Beta + d_Beta < 5)
+		*Beta += d_Beta;
+	else
+		*Beta = 5.0;
+
+    ////////// PLACEHOLDER    
+
 	long double config_weight[pop_size];
 	long double Q = 0.0;
 	int num_replicas[pop_size];
+    stack<int> deleters;
 
     for (j = 0; j < pop_size; j++) // Get Q(beta, beta') for each lattice in population
     {
@@ -78,7 +88,7 @@ void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
         weight_j = -d_Beta * (energy_j - avg_e); // These get massive
         config_weight[j] = exp(weight_j); // Storing these values is good to get tau later on
         Q += config_weight[j];
-        cout << "Intermediate Q value: "<< Q << ". We just had energy " << energy_j << " and weight " << config_weight[j] << ".\n";
+        // cout << "Intermediate Q value: "<< Q << ". We just had energy " << energy_j << " and weight " << weight_j << ".\n";
     }
     Q /= (double)pop_size;
     cout << "Q = " << Q << ". \n";
@@ -93,20 +103,18 @@ void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
             num_replicas[j] = floor;
         else
             num_replicas[j] = ceiling;
-        new_pop_size += num_replicas[j];
+            
+        if (num_replicas[j] == 0)
+        {
+            deleters.push(j);
+        }
+        // new_pop_size += num_replicas[j]; // AND THISSSSSSSSS
         // cout << "Number of replicas for " << j << "'th lattice: " << num_replicas[j] << ".\n";
     }
-    try {
-    if (new_pop_size > max_pop)
-		throw "Maximum population size exceeded."; // Must 'catch' errors like this later on
-    else if (new_pop_size <= 0)
-        throw "Population size went to 0.";
-    }
-    catch (const char* errorMessage) {
-        std::cerr << "Error: " << errorMessage << std::endl;
-        exit(1);// Exit the program with an error status
-    }
-    // Vector routine for making a new population
+    new_pop_size = pop_size; ////////// MAKE SURE TO CHANGE THIS BACK
+    
+/*
+    // Vector routine for making a new population: just make a copy
     std::vector<Lattice> new_lattices;
     new_lattices.reserve(max_pop); // CHECK THIS LATER
 
@@ -119,6 +127,58 @@ void Population::reSample(double T, gsl_rng *r, double avg_e, double var_e)
     }
     pop_array = new_lattices;
     pop_size = new_pop_size;
+*/
+  // Vector routine for changing population: do some reassignments and erases (saves memory)
+  /*
+    Say we have population [A,B,C,D,E] with deleters = [B,D] and num_replicas = [2,0,3,0,1].
+
+    This code block will cause the following progression:
+    [A,B,C,D,E] --> [A,B,C,A,E] --> [A,C,C,A,E] --> [A,C,C,A,E,C] (population grows)
+
+    Another demonstrative case is population [A,B,C,D,E] with deleters = [A,D] and num_replicas = [0,1,2,0,1].
+
+    This will result in:
+    [A,B,C,D,E] --> [A,B,C,C,E] --> [B,C,C,E] (population shrinks)
+
+    The replacements and deletions occur from right to left due to deleters being a stack. 
+    The addition of a lattice is from left to right because of the use of push_back.
+    This can lead to a pretty mixed population.
+  */
+
+    for (int i = 0; i < pop_size; i++) // Iterate over current set of replicas
+    {   
+        for (int j = 0; j < num_replicas[i] - 1; j++)   // Iterate over a single replica's number of new copies
+        {                                               // minus 1 to ensure we don't redundantly add in the original replica
+            if (deleters.empty() == false) 
+            {                                           // deleters is a stack of indices for replicas to be deleted
+                pop_array[deleters.top()] = pop_array[i];
+                deleters.pop();                         
+            } else {
+                pop_array.push_back(pop_array[i]);
+                new_pop_size += 1;
+            }
+        }
+    }
+    while (deleters.empty() == false)
+    {
+        pop_array.erase(pop_array.begin() + deleters.top());
+        deleters.pop();
+        new_pop_size -= 1;
+    }
+
+    pop_size = new_pop_size;
+
+    try {
+        if (new_pop_size > max_pop)
+            throw "Maximum population size exceeded."; // Must 'catch' errors like this later on
+        else if (new_pop_size <= 0)
+            throw "Population size went to 0.";
+    }
+    catch (const char* errorMessage) {
+        std::cerr << "Error: " << errorMessage << std::endl;
+        exit(1);// Exit the program with an error status
+    }
+
     cout << "Population size = " << pop_size << ".\n";
 }
 
@@ -126,7 +186,7 @@ void Population::run(string kappastr)
 {
     gsl_rng *r_thread[NUM_THREADS];
     double avg_e = 0.0, var_e = 0.0;
-    FILE *fp = fopen("run.dat", "w");
+    // FILE *fp = fopen("run.dat", "w");
     
 	for (int i = 0; i < NUM_THREADS; i++) 
     {
@@ -134,41 +194,62 @@ void Population::run(string kappastr)
 		initializeRNG(&r_thread[i], tmp_rnd);
 	}
     
-	double Beta = 0.0;
-    double T = T_INIT;
+	
+    // double T = T_INIT;
+    double Beta = 0.0; // INITIAL BETA --> 'Infinite temperature'
+
 	int num_sweeps;
 
     // Initialization
     for (int j = 0; j < nom_pop; j++)
     {
         Lattice* lattice_j = &pop_array[j];
-        lattice_j->initializeSites();
+        lattice_j->initializeSites(neighbor_table, &Beta);
     }
     
-    while (T > T_FINAL) // Where the actual annealing happens
+    while (Beta < 5) // Where the actual annealing happens (T > T_FINAL), BETA_MAX = 5
     { 
-        Beta = 1/T;
-        num_sweeps = Beta <= 0.5 ? (SWEEPS / 4) : SWEEPS; // Do less sweeps for higher temperatures
+        // Beta = 1/T;
+        //num_sweeps = Beta <= 0.4 ? (int)(SWEEPS / 6) : SWEEPS; // Do less sweeps for higher temperatures
+        num_sweeps = SWEEPS;
+        
 
-        collectData(T);
-        energy_calcs(&avg_e, &var_e);
-        reSample(T, r, avg_e, var_e);
+        
         
         // Parallel version
         #pragma omp parallel for shared(pop_array, neighbor_table, Beta, r_thread, num_sweeps)
         for (int m = 0; m < pop_size; m++) 
         {
             int thread = omp_get_thread_num(); // check things regarding threads
-            pop_array[m].doWolffAlgo(neighbor_table, T, num_sweeps);
+            pop_array[m].doWolffAlgo(neighbor_table, &Beta, num_sweeps);
             // pop_array[m].getTotalEnergy();
             // cout << "Lattice " << m << " done running: Thread no. " << thread << "!\n";
         }   
-
         
-       
-        cout << "Done for T = " << T << "!\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-        T -= double(T_INIT/T_ITER); // "Cooling" the system
-        T = floor((100.*T)+.5)/100;
+        energy_calcs(&avg_e, &var_e);
+                
+        cout << "Avg E = " << avg_e << ", Var E = " << var_e << ".\n";
+        
+        if (var_e == 0)
+        {
+            cout << "Variance went to 0. Sufficient data gathered. Beta = " << Beta << ".";
+            cout << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+            break;
+        }
+        collectData(&Beta, avg_e, var_e);
+        reSample(&Beta, r, avg_e, var_e);
+        
+
+        double d_Beta = CULLING_FRAC * sqrt(2 *PI /var_e);
+        
+        cout << "Done for beta = " << Beta << "!\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+
+        if (Beta + d_Beta < 5)
+		    Beta += d_Beta;
+	    else
+		    Beta = 5.0;
+        // T -= double((T_INIT - T_FINAL)/T_ITER); // "Cooling" the system
+        // T = floor((100.*T)+.5)/100;
     } 
     // Load up the data into readable files  
     loadData(kappastr);
@@ -198,12 +279,12 @@ void Population::energy_calcs(double *avg_e, double *var_e) {
 	// gs_e = gs.get_energy();
 }
 
-void Population::collectData(double T)
+void Population::collectData(double *Beta, double avg_e, double var_e)
 {
     int m;
-    double Beta = 1/T;
-    double E,M,E_sq,M_sq,M_abs, C,X; // Placeholders
-    double energy = 0, energy_sq = 0, mag = 0, mag_sq = 0, mag_abs = 0, spec_heat = 0, susc = 0;
+    // double Beta = 1/T;
+    double E,M, M_abs,C,X; // Placeholders
+    double ene = 0, ene_sq = 0, mag = 0, mag_sq = 0, mag_abs = 0, spec_heat = 0, susc = 0;
     for (m = 0; m < pop_size; m++)
     {
         Lattice* lattice_m = &pop_array[m];
@@ -215,17 +296,18 @@ void Population::collectData(double T)
         // M_sq = M*M;
         M_abs = abs(M);
 
-        energy += E;
-        energy_sq += E*E;
+        ene = ene + E;
+        ene_sq = ene_sq + (E*E);
         mag += M;
         mag_sq += M*M;
         mag_abs += M_abs;
     }
-    spec_heat = (energy_sq/pop_size - (energy/pop_size)*(energy/pop_size)) * (Beta*Beta);
-    susc      = (mag_sq/pop_size - (mag_abs/pop_size)*(mag_abs/pop_size)) * Beta;
-    temperature_values.push_back(T);
-    energy_data.push_back(energy/pop_size);
-    magnetization_data.push_back(mag_abs/pop_size); // Mag abs should give something nicer
+
+    spec_heat = ((ene_sq/(pop_size*LEN*LEN)) - pow(ene/(pop_size*LEN),2)) * (*Beta * *Beta);
+    susc      = ((mag_sq/(pop_size*LEN*LEN)) - pow(mag_abs/(pop_size*LEN),2)) * *Beta;
+    beta_values.push_back(*Beta);
+    energy_data.push_back(ene/(pop_size*LEN*LEN));
+    magnetization_data.push_back(mag_abs/(pop_size*LEN*LEN)); // Mag abs should give something nicer
     spec_heat_data.push_back(spec_heat);
     susceptibility_data.push_back(susc);
     // spec_heat_data.push_back(((energy_sq/pop_size) - pow((energy/pop_size),2)) * (Beta*Beta));
@@ -234,8 +316,7 @@ void Population::collectData(double T)
 
 void Population::loadData(string kappastr)
 {
-    
-    vector<double> T = temperature_values;
+    vector<double> B = beta_values;
     vector<double> E = energy_data;
     vector<double> M = magnetization_data;
     vector<double> C = spec_heat_data;
@@ -243,8 +324,8 @@ void Population::loadData(string kappastr)
 
     ofstream emcx_data;
     emcx_data.open("data/emcx_data_" + kappastr + "_kappa.csv");
-    emcx_data << "T,";
-    for (vector<double>::iterator it=T.begin(); it != T.end(); ++it)
+    emcx_data << "B,";
+    for (vector<double>::iterator it=B.begin(); it != B.end(); ++it)
         {
             emcx_data << *it << ",";
         }

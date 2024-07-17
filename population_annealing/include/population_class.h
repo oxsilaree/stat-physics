@@ -32,7 +32,7 @@ private:
     double kappa;
     int neighbor_table[LEN][LEN][NN_MAX][DIM];
     gsl_rng *r;
-    void reSample(double T, gsl_rng *r, double avg_e, double var_e);
+    void reSample(double *Beta, gsl_rng *r, double avg_e, double var_e);
     void energy_calcs(double *avg_e, double *var_e);
 
 
@@ -43,7 +43,7 @@ public:
     
     
     void run(string);
-    void collectData(double);
+    void collectData(double *Beta, double, double);
     void loadData(string);
 
     // double energy_data[(int)T_ITER];
@@ -55,7 +55,7 @@ public:
     vector<double> spec_heat_data;
     vector<double> magnetization_data;
     vector<double> susceptibility_data;
-    vector<double> temperature_values;
+    vector<double> beta_values;
     
 
 };

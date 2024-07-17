@@ -46,12 +46,12 @@ try
     static int neighbor_table[LEN][LEN][NN_MAX][DIM]; // 6 neighbors (2D ANNNI), 2 coordinates
     gsl_rng *r;
     int* p;
-    double T;
+    // double T;
     int seed = 1; // We can make this an input later
     srand(time(NULL));
     string kappastr = argv[1];
     double kappa = stod(argv[1]);
-    
+
 
 // -------- Lists for data
     list<double> E;     //-| v

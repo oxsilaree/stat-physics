@@ -22,7 +22,7 @@ class Lattice
 {
 private:
     int mag, abs_mag, avg_cluster_size; // Relevant for data collection
-    double energy, spec_heat, suscep; //--^
+    double energy, spec_heat, suscep;  //---^
     double kappa;
     vector<vector<spinSite> > lattice_object;
     // mutex lattice_mutex;
@@ -39,12 +39,12 @@ public:
     Lattice(double kappa);
 
     // Methods
-    void initializeSites();
-    void doBurnIn(int neighbor_table[LEN][LEN][NN_MAX][DIM], double T);
-    void doBurnInStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double padd1, double padd2);
-    void doStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double padd1, double padd2);
-    void doSweep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double T);
-    void doWolffAlgo(int neighbor_table[LEN][LEN][NN_MAX][DIM], double T, int num_sweeps);
+    void initializeSites(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta);
+    void doBurnIn(int neighbor_table[LEN][LEN][NN_MAX][DIM], double Beta);
+    void doBurnInStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *padd1, double *padd2);
+    void doStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *padd1, double *padd2);
+    void doSweep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta);
+    void doWolffAlgo(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta, int num_sweeps);
 
     // Update data members
     void updateTotalEnergy(int neighbor_table[LEN][LEN][NN_MAX][DIM]);

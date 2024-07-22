@@ -9,7 +9,7 @@
 #define T_ITER 100.0
 #define PI 3.14159265358979323846
 #define NUM_THREADS 1000
-#define INIT_POP_SIZE 2000
+#define INIT_POP_SIZE 1000
 #define CULLING_FRAC 0.15
 
 #define BLOCKS 1 // This number is redundant now.

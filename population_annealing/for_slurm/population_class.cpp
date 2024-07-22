@@ -22,7 +22,7 @@ Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][NN_MAX][D
     Population::nom_pop = nom_pop;
     Population::max_pop = nom_pop + int(sqrt(nom_pop) * 10);
     Population::pop_size = nom_pop;
-    Population::pop_array.reserve((int)sqrt(nom_pop)*10); // Reserve initial memory for the vector
+    Population::pop_array.reserve(max_pop); // Reserve initial memory for the vector
     
     Population::energy_data.reserve((int)T_ITER);
     Population::magnetization_data.reserve((int)T_ITER);
@@ -183,13 +183,13 @@ void Population::run(string kappastr)
     gsl_rng *r_thread[NUM_THREADS];
     double avg_e = 0.0, var_e = 0.0;
     // FILE *fp = fopen("run.dat", "w");
-    
+    /*
 	for (int i = 0; i < NUM_THREADS; i++) 
     {
 		int tmp_rnd = gsl_rng_uniform_int(r, 10000000) + 1000000;
 		initializeRNG(&r_thread[i], tmp_rnd);
 	}
-    
+    */
 	
     // double T = T_INIT;
     double Beta = 0.0; // INITIAL BETA --> 'Infinite temperature'
@@ -209,14 +209,11 @@ void Population::run(string kappastr)
         //num_sweeps = Beta <= 0.4 ? (int)(SWEEPS / 6) : SWEEPS; // Do less sweeps for higher temperatures
         num_sweeps = SWEEPS;
         
-
-        
-        
         // Parallel version
         #pragma omp parallel for shared(pop_array, neighbor_table, Beta, r_thread, num_sweeps)
         for (int m = 0; m < pop_size; m++) 
         {
-            int thread = omp_get_thread_num(); // check things regarding threads
+            // int thread = omp_get_thread_num(); // check things regarding threads
             pop_array[m].doWolffAlgo(neighbor_table, &Beta, num_sweeps);
             // pop_array[m].getTotalEnergy();
             // cout << "Lattice " << m << " done running: Thread no. " << thread << "!\n";

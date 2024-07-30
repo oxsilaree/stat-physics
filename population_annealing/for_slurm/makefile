@@ -17,11 +17,11 @@ LFLAGS = -L$(GSL_DIR)/lib -L$(LLVM_DIR)/llvm/lib -L$(LLVM_DIR)/clang/lib -L$(LLV
 LIBS = -lm -lgsl -lgslcblas -lstdc++
 
 # Dependencies
-_DEPS = population_class.h lattice_class.h spin_class.h functions.h parameters.h
+_DEPS = population_class.h lattice_class.h spin_class.h functions.h parameters.h nadeau.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 # Object files
-_OBJ = main.o population_class.o lattice_class.o spin_class.o functions.o
+_OBJ = main.o population_class.o lattice_class.o spin_class.o functions.o nadeau.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 # Compile object files

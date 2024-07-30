@@ -15,11 +15,13 @@
 #include <list>
 #include <vector>
 #include <stdexcept>
+#include <string>
 
 // #include "spin_class.h"
 // #include "lattice_class.h"
 #include "population_class.h"
 #include "functions.h"
+#include "nadeau.h"
 
 using namespace std;
 
@@ -48,20 +50,13 @@ try
     // double T;
     int seed = 1; // We can make this an input later
     srand(time(NULL));
-    string kappastr = argv[1];
-    double kappa = stod(argv[1]);
+    string prekappastr = argv[1];
+    double prekappa = stod(argv[1]);
+    double kappa = prekappa/4;          // For N kappa values, we divide by N-1
+    string kappastr = to_string(kappa);
+    kappastr = kappastr.substr(0,4)     // Precision to 2 decimal places
 
-
-// -------- Lists for data
-    list<double> E;     //-| v
-    list<double> M;     //-| v
-    list<double> Mabs;  //-| For typical data
-    list<double> C;     //-| ^
-    list<double> X;     //-| ^
-    list<double> Mz; // For order parameter (modulated waveform)
-    list<int> cluster_sizes; // For percolation
-
-// -------- Actual code
+// -------- Actual program
     initializeRNG(&r, seed);
     auto start = chrono::high_resolution_clock::now(); // for checking time of run
     
@@ -81,12 +76,12 @@ try
     
     // Population Annealing
 
-    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-    cout << "Neighbor table created. \n";
-    cout << "Starting simulation...\n";
-    cout << "kappa = " << kappa << ".\n";
-    cout << "Starting population size = " << INIT_POP_SIZE << ".\n";
-    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n \
+            Neighbor table created. \n \
+            Starting simulation...\n \
+            kappa = " << kappa << ".\n \
+            Starting population size = " << INIT_POP_SIZE << ".\n \
+            =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
 
     omp_set_num_threads(NUM_THREADS);
     Population test_pop(INIT_POP_SIZE, r, neighbor_table, kappa);
@@ -98,6 +93,8 @@ try
 
     std::cout << "Time taken: " << elapsed.count() << " seconds." << std::endl;
     cout << "Simulation complete." << endl;
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+    print_pages();
     return 0;
     
 }

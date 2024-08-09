@@ -3,202 +3,220 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
-
-# data = np.loadtxt("./data/emcx_data_0_kappa.csv", delimiter = ',', dtype = str)
-data = np.loadtxt("/Users/shanekeiser/Downloads/emcx_data_0_kappa-16.csv", delimiter = ',', dtype = str) # L = 16, pop_size = 200
-data = np.loadtxt("/Users/shanekeiser/Downloads/emcx_data_0_kappa-17.csv", delimiter = ',', dtype = str) # L = 16, pop_size = 1000
-data = np.loadtxt("/Users/shanekeiser/Downloads/emcx_data_0_kappa-18.csv", delimiter = ',', dtype = str) # L = 64, pop_size = 1000
-data = np.loadtxt("/Users/shanekeiser/Downloads/emcx_data_0_kappa-27.csv", delimiter = ',', dtype = str) # L = 16, pop_size = 500
-data = np.loadtxt("/Users/shanekeiser/Downloads/emcx_data_2_kappa-2.csv", delimiter = ',', dtype = str)
-data = np.loadtxt("/Users/shanekeiser/Downloads/emcx_data_0.5_kappa.csv", delimiter = ',', dtype = str)
-data = np.loadtxt("/Users/shanekeiser/Downloads/emcx_data_1_kappa.csv", delimiter = ',', dtype = str)
-data = np.loadtxt("/Users/shanekeiser/Downloads/emcx_data_1.5_kappa.csv", delimiter = ',', dtype = str)
-trimmed_data = data[:,1:-1].astype(float)
-print(data[:,0])
-# print(trimmed_data[0])
-B_vals = trimmed_data[0]
-E_vals = trimmed_data[1]
-E2_vals = trimmed_data[2]
-M_vals = trimmed_data[3]
-M2_vals = trimmed_data[4]
-MA_vals = trimmed_data[5]
-C_vals = trimmed_data[6]
-X_vals = trimmed_data[7]
-CS_vals = trimmed_data[8]
-NWCS_vals = trimmed_data[9]
-W_vals = trimmed_data[10]
-print(B_vals)
-
-def plotter(arr, header, opacity = 1, marker = '.', x = B_vals, linewidth = 0):
-    data = arr
-    temps = x
-    plt.plot(temps, data, marker = marker, label = header, alpha = opacity, linewidth = linewidth)
-    plt.xlabel(r"$\beta$")
-    plt.axvline(1/2.2691853, color = 'black', alpha = 0.4)
-    plt.xticks([0.3,1/2.2691853,0.6,0.9,1.2])
-    plt.legend()
-
-L=16
-N=L**2
-CULLING_FRAC=0.02
-INIT_POP_SIZE=500
-kappa = 1.5
-titlestr = f"kappa = {kappa}, L = {L}, INIT_POP_SIZE = {INIT_POP_SIZE}, CULLING_FRAC = {CULLING_FRAC}"
-
-### ENERGY
-plotter(E_vals, "Energy")
-plt.title(f"Energy per spin\n{titlestr}")
-plt.show()
-
-### ENERGY SQUARED
-plotter(E2_vals, "Energy squared")
-plt.title(f"Energy squared\n{titlestr}")
-plt.show()
-
-### SPECIFIC HEAT per spin
-C = (E2_vals - 64*np.square(E_vals))*B_vals*B_vals
-print(len(C_vals))
-# C = C.astype(str)
-# plotter(C, "Calculated in Python spec. heat", opacity = 0.5, marker = '*')
-plotter(C_vals, "Calculated in C++", opacity = 0.5)
-plt.show()
-
-### MAGNETIZATION
-plotter(M_vals, "Magnetization")
-plotter(MA_vals, "Absolute magnetization")
-plt.show()
-
-### SQUARE MAGNETIZATION and CLUSTER SIZE
-plotter(M2_vals, "Magnetization squared", marker = '.', linewidth = 1)
-plotter(CS_vals, "Cluster size", marker = 'o', opacity = 0.5)
-plt.title(f"Magnetization Squared vs. Cluster size\n{titlestr}")
-plt.show()
-
-### SUSCEPTIBILITY and NON-WRAPPING CLUSTER SIZE
-X1 = (M2_vals - N*np.square(MA_vals))*B_vals
-# plotter(X1, "Susceptibility (calculated in Python)", linewidth = 0.4)
-plotter(X_vals, "Susceptibility (calculated in C++)", opacity = 0.5)
-plotter(NWCS_vals * B_vals, r"Non-wrapping cluster size $\times \beta$")
-# plt.plot(B_vals + 0.05, NWCS_vals * B_vals)
-plt.title(f"Susceptibility plots \n{titlestr}")
-plt.show()
-
-### WRAPPING PERCENTAGE
-plotter(E2_vals/(4*N), "Square energies / 4N")
-plotter(M2_vals/N, "Square magnetizations / N")
-# plotter(MA_vals, "Absolute magnetizations")
-plotter(W_vals, "Fraction of clusters that wrap")
-# plotter(CS_vals/N, "Cluster sizes / N")
-plt.title(f'Wrapping probabilities comparison with other quantities\n{titlestr}')
-plt.show()
-
-### CLUSTER QUANTITIES
-
-plotter(CS_vals, "Cluster sizes")
-plotter(NWCS_vals, "Non-wrapping cluster sizes")
-# plotter(W_vals, "Wrapping percentage")
-plt.title(f"Comparison of wrapping vs. non-wrapping cluster sizes\n{titlestr}")
-parent_axes = plt.gca()
-axins = zoomed_inset_axes(parent_axes, 6, loc=5)
-axins.plot(B_vals, CS_vals, '.')
-axins.plot(B_vals, NWCS_vals, '.')
-axins.set_xlim(0.28,0.41)
-axins.set_ylim(0.02*N, 0.095*N)
-for axis in ['top','bottom','left','right']:
-    axins.spines[axis].set_linewidth(1)
-    axins.spines[axis].set_color('k')
-mark_inset(parent_axes, axins, loc1=2, loc2=4, fc="none", lw=1, ec='k')
-# plt.draw()
-plt.show()
+import glob
 
 
+### Single Kappa/size measure
+kappa = 0
+def Analyze(kappa = None, size = None, quantities = [], normalize = False, marker = '.'):
+    while kappa == None or size == None:
+        print("Kappa or size missing. Please input both. ")
+        kappa = float(input("Kappa: "))
+        size = input("Length (16,32,64,128,256): ")
+    kappastr = f'{kappa:.2f}'
+    df = f"/Users/shanekeiser/Downloads/data/emcx_data_{kappastr}_kappa_{size}_L.csv"
+    param_info = f"/Users/shanekeiser/Downloads/data/parameter_info_{kappastr}_kappa_{size}_L.csv"
+    makePlots(df, param_info, quantities, normalize = normalize, marker = marker)
+    return 0
 
-fig, ax = plt.subplots(3,2)
+# Quantities (in order):
+# 0: Beta    1: Energy   2: Energy Squared   3: Mag   4: Mag Squared   5: Absolute Mag  6: Specific Heat
+# 7: Susceptibility    8: Cluster Size   9: Non-Wrapping Cluster Size   10: Wrapping Probability
 
-fig.suptitle(f'Quantities (per spin)\n{titlestr}')
-ax[0,0].plot(B_vals, E_vals, 'r.')
-ax[0,0].set_xlabel(r'$\beta$')
-ax[0,0].set_ylabel('Energy')
-ax[0,0].set_xlim(left = np.min(B_vals))
-
-ax[1,0].plot(B_vals, np.abs(MA_vals), 'r')
-ax[1,0].set_xlabel(r'$\beta$')
-ax[1,0].set_ylabel('(Absolute)\naverage Magnetization')
-ax[1,0].set_xlim(left = np.min(B_vals))
-
-ax[0,1].plot(B_vals, C_vals, 'r')
-ax[0,1].set_xlabel(r'$\beta$')
-ax[0,1].set_ylabel('Specific heat')
-ax[0,1].set_xlim(left = np.min(B_vals))
-ax[0,1].axvline(1/2.269, color = 'black')
-# ax[0,1].text(2.3, 0.0, "T = 2.269", rotation = 270)
-
-ax[1,1].plot(B_vals, X_vals/B_vals, 'r')
-ax[1,1].set_xlabel(r'$\beta$')
-ax[1,1].set_ylabel('Susceptibility')
-ax[1,1].set_xlim(left = np.min(B_vals))
-ax[1,1].axvline(1/2.269, color = 'black')
-# ax[1,1].text(2.3, 0.0, "T = 2.269", rotation = 270)
-
-ax[2,0].plot(B_vals, CS_vals, 'r')
-ax[2,0].set_xlabel(r'$\beta$')
-ax[2,0].set_ylabel('Average\ncluster size')
-ax[2,0].set_xlim(left = np.min(B_vals))
-ax[2,0].axvline(1/2.269, color = 'black')
-# ax[2,0].text(2.3, 0.0, "T = 2.269", rotation = 270)
-
-ax[2,1].plot(B_vals, NWCS_vals, 'r')
-ax[2,1].set_xlabel(r'$\beta$')
-ax[2,1].set_ylabel('Average non-wrapping\ncluster size')
-ax[2,1].set_xlim(left = np.min(B_vals))
-ax[2,1].axvline(1/2.269, color = 'black')
-# ax[2,1].text(2.3, 0.0, "T = 2.269", rotation = 270)
-
-plt.tight_layout()
-plt.show()
-
-print(len(B_vals))
+quantities = { 0 : "Beta",
+               1 : "Energy",
+               2 : "Energy Squared",
+               3 : "Magnetization",
+               4 : "Magnetization Squared",
+               5 : "Absolute Magnetization",
+               6 : "Specific Heat",
+               7 : "Susceptibility",
+               8 : "Cluster Size",
+               9 : "Non-Wrapping Cluster Size",
+               10: "Wrapping Probability",
+               11: "Dominant Frequency",
+               12: "Dominant Amplitude"
+               }
 
 
-multiplier = np.max(X_vals)/np.max(NWCS_vals)
-plt.plot(B_vals,  X_vals, 'r', label = 'Susceptibility')
-# plt.plot(B_vals, NWCS_vals, 'k', label = f'Non-wrap Cluster Size')
-plt.plot(B_vals, NWCS_vals*B_vals, 'g', label = r'Non-wrap Cluster Size * $\beta$')
-plt.plot(B_vals, NWCS_vals*multiplier, color = 'b', label = f'Non-wrap Cluster Size * max(susc)/max(NWCS)\n = {multiplier:.4f}')
-plt.axvline(1/2.269, color = 'black', linestyle = 'dashed', alpha = 0.4)
-plt.legend(loc = 'upper right')
-plt.title("Susc. and Non-Wrapping Cluster Size Comparison\nL=32, init_pop_size = 250, CULLING_FRAC = 0.1")
-plt.xlabel(r'$\beta$')
-plt.tight_layout()
-plt.xticks(np.array([0.3,1/2.2691853,0.6,0.9]))
-plt.show()
-
-N = 64
-plt.plot(B_vals,M_vals, 'r', label = 'magnetization per spin')
-plt.plot(B_vals,(CS_vals/N), 'b.', label = 'cluster size (normalized to M)')
-plt.plot(B_vals,(CS_vals/N)**0.6, 'b.', label = 'cluster size (normalized to M, ^0.6)', alpha = 0.3)
-plt.title('Magnetization and cluster size comparison\nL=32, init_pop_size = 250, CULLING_FRAC = 0.1')
-plt.xlabel(r"$\beta$")
-plt.legend(loc = 'lower right')
-plt.show()
-
-M2_vals = (X_vals/B_vals) + M_vals**2
-
-plt.plot(B_vals,M2_vals*B_vals, 'r', label = 'magnetization per spin')
-plt.plot(B_vals, X_vals, 'g', label = 'Susceptibility')
-plt.plot(B_vals,(NWCS_vals*0.7), 'b.', label = 'non-wrapping cluster size (normalized to M)')
-# plt.plot(B_vals,(CS_vals/N)**0.5, 'b.', label = 'cluster size (normalized to M, ^0.6)', alpha = 0.2)
-plt.title('Magnetization and cluster size comparison\nL=32, init_pop_size = 250, CULLING_FRAC = 0.1')
-plt.xlabel(r"$\beta$")
-plt.legend(loc = 'lower right')
-plt.show()
-
-def multiplotter(fname = "nil"):
-    if fname == "nil":
-        print("No filename included. Exiting...")
+def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = False, marker = '.'):
+    if fname == "nil" or info_name == "nil":
+        print("Please include both the data and parameter files. Exiting...")
         return (1)
+    info = np.loadtxt(info_name, delimiter = ',', dtype = str)
     df = pd.read_csv(fname)
-    df.head()
+    
+    NN = float(info[1])**2
+    if normalize == True:
+        df["Cluster Size"] = df["Cluster Size"].div(NN)
+        df["Energy Squared"] = df["Energy Squared"].div(NN)
+        df["Magnetization Squared"] = df["Magnetization Squared"].div(NN)
+        df["Non-Wrapping Cluster Size"] = df["Non-Wrapping Cluster Size"].div(NN)
+        df["Susceptibility"] = df["Susceptibility"].div(NN)
+        
+    if sum(np.square(quantities)) == 130:
+        NWCS = np.array(df["Non-Wrapping Cluster Size"])
+        B = np.array(df["Beta"])
+        new_NWCS = NWCS*B
+        df["Non-Wrapping Cluster Size"]=new_NWCS
+    
 
+    titlestr = f"kappa = {info[0]}, L = {info[1]}, INIT_POP_SIZE = {info[2]}, CULLING_FRAC = {info[3]}"
+    if quantities == []:
+
+        title = f"Quantities of interest for\n{titlestr}"
+        axes = df.plot(x='Beta', subplots = True, layout = [6,2], figsize = [10,8], title = title, legend = False, marker = marker)
+        ax_x, ax_y = 0,0
+        for i in range(1,len(list(df))):
+            axes[ax_x, ax_y].set_ylabel(list(df)[i], fontsize = 'small')
+            ax_y += 1
+            if ax_y == 2:
+                ax_x += 1
+                ax_y = 0
+        plt.tight_layout()
+        plt.show()
+    else:
+        headers = []
+        for i in quantities:
+            headers.append(list(df)[i])
+        title = f"Comparison plot for\n{titlestr}"
+        df.plot(x = 'Beta', y = headers, title = title, marker = marker)
+        plt.show()
+    
+    print(df.head(5))
+
+
+
+
+# To compare across several kappa or lengths
+def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '.'):
+    dfs = []
+    infos = []
+
+    while quantity == 0:
+        print("No quantity provided. Please use keyword argument 'quantity', as such:\n \
+               1 : Energy, \n2 : Energy Squared, \n3 : Magnetization, \n \
+               4 : Magnetization Squared, \n5 : Absolute Magnetization, \n \
+               6 : Specific Heat, \n7 : Susceptibility, \n \
+               8 : Cluster Size, \n9 : Non-Wrapping Cluster Size, \n \
+               10: Wrapping Probability")
+        quantity = int(input("Desired quantity: "))
+
+    kappastrs = []
+    for kappa in kappas:
+        kappastrs.append(f'{kappa:.2f}')
+
+    #### COLOR MAPPING
+    colors = plt.cm.turbo(np.linspace(0,1,np.max(a = (len(kappas), len(sizes)))))
+
+    if len(sizes) == 0 and len(kappas) == 0:
+        print("Please provide kappa or size value to begin analysis.")
+        return 2
+    elif len(sizes) == 1:
+        for i in range(len(kappas)):
+            fname = f"/Users/shanekeiser/Downloads/data/emcx_data_{kappastrs[i]}_kappa_{sizes[0]}_L.csv"
+            info_name = f"/Users/shanekeiser/Downloads/data/parameter_info_{kappastrs[i]}_kappa_{sizes[0]}_L.csv"
+            infos.append(np.loadtxt(info_name, delimiter = ',', dtype = str))
+            dfs.append(pd.read_csv(fname))
+        header = list(dfs[0])[quantity]
+        print(header)
+        for i in range(len(kappas)):
+            df = dfs[i]
+            info = infos[i]
+            if normalize == True:
+                NN = float(info[1])**2
+                df["Cluster Size"] = df["Cluster Size"].div(NN)
+                df["Energy Squared"] = df["Energy Squared"].div(NN)
+                df["Magnetization Squared"] = df["Magnetization Squared"].div(NN)
+                df["Non-Wrapping Cluster Size"] = df["Non-Wrapping Cluster Size"].div(NN)
+                df["Susceptibility"] = df["Susceptibility"].div(NN)
+
+            
+            # Make plots
+            if i == 0:
+                titlestr = f'{header} comparison over varying $\kappa$ for $L$ = {info[1]}\nINIT_POP_SIZE = {info[2]}, CULLING_FRAC = {info[3]}'
+                if normalize == True:
+                    titlestr = titlestr + '\n(values normalized: divided by no. of spins)'
+                ax = df.plot(x="Beta", y = header, label = f'$\kappa$ = {info[0]}', title = titlestr, color = colors[0], marker = marker)
+            else:
+                df.plot(ax = ax, x = "Beta", y = header, label = f'$\kappa$ = {info[0]}', color = colors[i], marker = marker)
+        
+        plt.show()
+    elif len(kappas) == 1:
+        for i in range(len(sizes)):
+            fname = f"/Users/shanekeiser/Downloads/data/emcx_data_{kappastrs[0]}_kappa_{sizes[i]}_L.csv"
+            info_name = f"/Users/shanekeiser/Downloads/data/parameter_info_{kappastrs[0]}_kappa_{sizes[i]}_L.csv"
+            infos.append(np.loadtxt(info_name, delimiter = ',', dtype = str))
+            dfs.append(pd.read_csv(fname))
+        header = list(dfs[0])[quantity]
+        # print(header)
+        for i in range(len(sizes)):
+            df = dfs[i]
+            info = infos[i]
+            if normalize == True:
+                NN = float(info[1])**2
+                df["Cluster Size"] = df["Cluster Size"].div(NN)
+                df["Energy Squared"] = df["Energy Squared"].div(NN)
+                df["Magnetization Squared"] = df["Magnetization Squared"].div(NN)
+                df["Non-Wrapping Cluster Size"] = df["Non-Wrapping Cluster Size"].div(NN)
+                df["Susceptibility"] = df["Susceptibility"].div(NN)
+            # Make plots    
+            if i == 0:
+                titlestr = f'{header} comparison over varying $L$ for $\kappa$ = {info[0]}\nINIT_POP_SIZE = {info[2]}, CULLING_FRAC = {info[3]}'
+                if normalize == True:
+                    titlestr = titlestr + '\n(values normalized: divided by no. of spins)'
+                ax = df.plot(x="Beta", y = header, label = f'$LEN$ = {info[1]}', title = titlestr, color=colors[0], marker = marker)
+            else:
+                df.plot(ax = ax, x = "Beta", y = header, label = f'$LEN$ = {info[1]}', color = colors[i], marker = marker)
+        plt.show()
+
+# Analyze(0.25,16, quantities = [8,9])
+# Analyze(0.25,32, quantities = [8,9])
+Analyze(0, 18, normalize = True)    
+
+Analyze(0.25,64, normalize = True, quantities = [7,10])
+
+
+# Compare(kappas = [0,0.25,0.5,0.75,1], sizes = [32], quantity = 7)
+Compare(kappas = [0,0.25,0.5,0.75,1], sizes = [32], quantity = 8)
+Compare(kappas = [0,0.25,0.5,0.75,1,1.25,1.5,1.75,2], sizes = [16], quantity = 9)
+Compare(kappas = [0,0.25,0.5,0.75,1,1.25,1.5,1.75,2], sizes = [16], quantity = 7, normalize = True)
+
+Compare(kappas = [0.5], sizes = [16,32,64], quantity = 9, normalize = True)
+Compare(kappas = [0,0.25,0.5,0.75,1,1.25,1.5], sizes = [32], quantity = 9, normalize = True)
+
+Compare(kappas = [0,0.25,0.5,0.75,1],sizes=[64],quantity=9, normalize = True)
+
+Compare(kappas = [0.25], sizes = [16,32], quantity = 1, normalize = True)
+
+
+
+
+
+
+
+
+
+
+def EnergyPlateau(kappas = [], sizes = []):
+    dfs, infos, kappastrs, energy_plateaus = [],[],[],[]
+
+    for kappa in kappas:
+        kappastrs.append(f'{kappa:.2f}')
+    if len(sizes) == 1:
+        for i in range(len(kappas)):
+            fname = f"/Users/shanekeiser/Downloads/data/emcx_data_{kappastrs[i]}_kappa_{sizes[0]}_L.csv"
+            info_name = f"/Users/shanekeiser/Downloads/data/parameter_info_{kappastrs[i]}_kappa_{sizes[0]}_L.csv"
+            infos.append(np.loadtxt(info_name, delimiter = ',', dtype = str))
+            dfs.append(pd.read_csv(fname))
+        header = list(dfs[0])[1]
+        for i in range(len(kappas)):
+            df = dfs[i]
+            info = infos[i]
+            energy_plateaus.append(np.min(df["Energy"]))
+    
+    plt.plot(kappas, energy_plateaus, '-')
+    plt.title(f"Energy minimas over several kappa, L = {infos[0][1]}")
+    plt.show()
 
 

@@ -15,6 +15,7 @@
 #include "functions.h"
 #include "spin_class.h"
 #include <mutex>
+#include <fftw3.h>
 
 using namespace std;
 
@@ -25,6 +26,7 @@ private:
     int wrap_counter, nowrap_counter; // Relevant for data collection
     double energy, spec_heat, suscep;  //---^
     double kappa;
+    double dom_freq, dom_amplitude; // Dominant frequency and corresponding amplitude
     vector<vector<spinSite> > lattice_object;
     // mutex lattice_mutex;
     
@@ -40,15 +42,16 @@ public:
     Lattice(double kappa);
 
     // Methods
-    void initializeSites(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta);
-    void doBurnIn(int neighbor_table[LEN][LEN][NN_MAX][DIM], double Beta);
-    void doBurnInStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *padd1, double *padd2);
-    void doStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *padd1, double *padd2);
-    void doSweep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta);
-    void doWolffAlgo(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta);
+    void initializeSites(double *Beta);
+    void doBurnIn(double Beta);
+    void doBurnInStep(double *padd1, double *padd2);
+    void doStep(double *padd1, double *padd2);
+    void doSweep(double *Beta);
+    void doWolffAlgo(double *Beta, fftw_plan p);
+    void doFFT(fftw_plan p);
 
     // Update data members
-    void updateTotalEnergy(int neighbor_table[LEN][LEN][NN_MAX][DIM]);
+    void updateTotalEnergy();
     void updateTotalMag();
 
     // Get data members
@@ -57,6 +60,8 @@ public:
     double getAvgClusterSize();
     double getAvgNowrapClusterSize();
     int getNoWrapCount();
+    double getDomFreq();
+    double getDomAmplitude();
     spinSite* getSpinSite(int row, int col);
 
     // spinSite(&getLattice())[LEN][LEN] { return lattice_object; };
@@ -92,4 +97,14 @@ inline spinSite* Lattice::getSpinSite(int row, int col)
 {
     // cout <<"---row = " << row << ", col = " << col << "---\n";
     return &lattice_object[(int)row][(int)col];
+}
+
+inline double Lattice::getDomFreq()
+{
+    return dom_freq;
+}
+
+inline double Lattice::getDomAmplitude()
+{
+    return dom_amplitude;
 }

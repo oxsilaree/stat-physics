@@ -1,19 +1,5 @@
 #include "lattice_class.h"
 
-/*
-void Lattice::initializeSites()
-{
-    int i, j;
-    for (i = 0; i < LEN; i++) 
-    {
-        for (j = 0; j < LEN; j++) 
-        {
-            lattice_object[i][j].AssignValues();
-        }
-    }
-}
-*/
-
 // Constructor definition
 Lattice::Lattice(double kappa)
     {
@@ -23,14 +9,17 @@ Lattice::Lattice(double kappa)
     Lattice::mag = 0;
     Lattice::abs_mag = 0;
     Lattice::avg_cluster_size = 0;
+    Lattice::avg_nowrap_cluster_size = 0;
+    Lattice::wrap_counter = 0;
+    Lattice::nowrap_counter = 0;
     Lattice::spec_heat = 0.0;
     Lattice::suscep = 0.0;
     Lattice::lattice_number = 0;
     Lattice::lattice_object = vector<vector<spinSite> >(LEN, vector<spinSite>(LEN));
-    }  
+    }
 
 
-void Lattice::initializeSites(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta)
+void Lattice::initializeSites(double *Beta)
 {
 
     for (int i = 0; i < LEN; i++)
@@ -44,55 +33,46 @@ void Lattice::initializeSites(int neighbor_table[LEN][LEN][NN_MAX][DIM], double 
         }
     }
     // Initialize and Burn-in
-    doBurnIn(neighbor_table, *Beta);
+    if (*Beta != 0) { // 23/7/24 if we start at inf temp, no need to burn in. Just resample
+        doBurnIn(*Beta);
+    }
+     
 }
 
-spinSite* Lattice::getSpinSite(int row, int col)
-{
-    // cout <<"---row = " << row << ", col = " << col << "---\n";
-    return &lattice_object[(int)row][(int)col];
-}
 
-void Lattice::doBurnIn(int neighbor_table[LEN][LEN][NN_MAX][DIM], double Beta)
+
+void Lattice::doBurnIn(double Beta)
 {
     double padd1, padd2;
     padd1 = 1 - exp(-2 * Beta * J);
     padd2 = 1 - exp(-2 * Beta * J * kappa);
     for (int i = 0; i < SWEEPS*STEPS*4; i++)
     {
-        doBurnInStep(neighbor_table, &padd1, &padd2);
+        doBurnInStep(&padd1, &padd2);
     }
 }
 
-void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *padd1, double *padd2)
+void Lattice::doBurnInStep(double *padd1, double *padd2)
 { // Basically doStep without the wrapping checks
     int i, j,   lx, ly,     oldspin, newspin,   current_x, current_y,   nn_i, nn_j; // Lattice indices
     int root_x, root_y,     coord_x, coord_y,   pos_update_x, pos_update_y; // Coordinates for wrapping criteria
-    int old_x, old_y,       new_x, new_y;       // More coordinates for wrapping criteria 
-    int wrapcounter, sp, cluster_size; // Counters
+    int sp; // Counters
     double randnum; // For checking whether to add to cluster
-    bool wrapping_crit = false;
     // spinSite root_spin, current_spin, neighbor_spin;
     vector<pair<int, int> > stacker;
-    // stack<int> cluster_x;
-    // stack<int> cluster_y;
-
-    // Pick a random spin (x then y coord) and make it the origin (i.e. "root/seed/(0,0)")
+    stacker.reserve(LEN*LEN);
+    stack<int> cluster_x;
+    stack<int> cluster_y;
     i = rand() % LEN;
     j = rand() % LEN;
-    // cout << "--- i = " << i << ", j = " << j << " ---\n";
     spinSite* root_spin = getSpinSite(i,j);
-    // cout << root_spin->getSpin(); ///////// DEBUGGING PRINTER
     root_spin->AddToCluster();
     root_spin->Triangulate(0,0);
-
-    // cluster_x.push(i);
-    // cluster_y.push(j);
+    cluster_x.push(i);
+    cluster_y.push(j);
     stacker.push_back(make_pair(i, j));
-    cluster_size = 1;
 
     sp = 1;
-    wrapcounter = 0;
     while (sp)
     {   /* Pull a site off the stack from the nearest neighbours*/
         --sp;
@@ -105,111 +85,76 @@ void Lattice::doBurnInStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *pa
         coord_x = current_spin->getX();
         coord_y = current_spin->getY();
 
+
         /* Check the neighbours using neighbour table */
         for (int k = 0; k < NN_MAX; k++)
         { 
             nn_i = neighbor_table[current_x][current_y][k][0];
             nn_j = neighbor_table[current_x][current_y][k][1];
             spinSite* neighbor_spin = getSpinSite(nn_i, nn_j);
-            if (neighbor_spin->checkStatus() == false) // Nearest neighbours
-            {
-                randnum = (double)rand()/RAND_MAX;   
-                if (neighbor_spin->getSpin() == oldspin && k <= 3) 
+            bool neighbor_checked = neighbor_spin->checkStatus();
+            if (neighbor_checked == false)  {
+                randnum = static_cast<double>(rand()) / RAND_MAX;
+                if ((neighbor_spin->getSpin() == oldspin && k <= 3 && randnum <= *padd1) ||
+                    (neighbor_spin->getSpin() == newspin && k >= 4 && randnum <= *padd2)) 
                 {
-                                                                                                 
-                    if (randnum <= *padd1)
-                    {
-                        if (k == 0){
-                            pos_update_x = coord_x - 1;
-                            pos_update_y = coord_y;
-                        } else if (k == 1) {
-                            pos_update_x = coord_x + 1;
-                            pos_update_y = coord_y;
-                        } else if (k == 2) {
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y + 1;
-                        } else if (k == 3) {
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y - 1;
-                        }
-                        sp += 1;
-                        stacker.push_back(make_pair(nn_i, nn_j));
-                        neighbor_spin->AddToCluster();
-                        neighbor_spin->Triangulate(pos_update_x, pos_update_y); 
-                        // cluster_x.push(nn_i);
-                        // cluster_y.push(nn_j);
-                        cluster_size += 1;
-                    }
-                }
-                // Next nearest neighbours
-                if (neighbor_spin->getSpin() == newspin && k >= 4)
-                {
-                    if (randnum <= *padd2)
-                    {
-                        if (k == 4) {
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y + 2;
-                        } else if (k == 5) {
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y - 2;
-                        }
-                        sp += 1;
-                        stacker.push_back(make_pair(nn_i, nn_j));
-                        neighbor_spin->AddToCluster();
-                        neighbor_spin->Triangulate(pos_update_x, pos_update_y); 
-                        // cluster_x.push(nn_i);
-                        // cluster_y.push(nn_j);
-                        cluster_size += 1;
-                    }
+                    
+                    int pos_update_x = coord_x, pos_update_y = coord_y;
+                    if (k == 0) pos_update_x -= 1;
+                    else if (k == 1) pos_update_x += 1;
+                    else if (k == 2) pos_update_y += 1;
+                    else if (k == 3) pos_update_y -= 1;
+                    else if (k == 4) pos_update_y += 2;
+                    else if (k == 5) pos_update_y -= 2;
+
+                    sp += 1;
+                    stacker.push_back(make_pair(nn_i, nn_j));
+                    neighbor_spin->AddToCluster();
+                    neighbor_spin->Triangulate(pos_update_x, pos_update_y);
+                    cluster_x.push(nn_i);
+                    cluster_y.push(nn_j);
                 }
             }
         }
     }
     /* Go over all the spins in the stack and flip if they are in the cluster */
-    while (!stacker.empty()) { //!cluster_x.empty()
-        //lx = cluster_x.top();
-        //ly = cluster_y.top();
-        lx = stacker.back().first;
-        ly = stacker.back().second;
-        spinSite* flipper = getSpinSite(lx,ly);
-        flipper->Flip();
-        flipper->Reset();
-        stacker.pop_back();
-        //cluster_x.pop();
-        //cluster_y.pop();
+    while (!cluster_x.empty()) {
+        lx = cluster_x.top();
+        ly = cluster_y.top();
+        lattice_object[lx][ly].Flip();
+        lattice_object[lx][ly].Reset();
+        cluster_x.pop();
+        cluster_y.pop();
     }
 }
 
 
 
-void Lattice::doStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *padd1, double *padd2)
+void Lattice::doStep(double *padd1, double *padd2)
 {
     int i, j,   lx, ly,     oldspin, newspin,   current_x, current_y,   nn_i, nn_j; // Lattice indices
     int root_x, root_y,     coord_x, coord_y,   pos_update_x, pos_update_y; // Coordinates for wrapping criteria
     int old_x, old_y,       new_x, new_y;       // More coordinates for wrapping criteria 
-    int wrapcounter, sp, cluster_size; // Counters
+    int sp, cluster_size; // Counters
     double randnum; // Number to decide if add to cluster
     bool wrapping_crit = false;
     vector<pair<int, int> > stacker;
+    stacker.reserve(LEN*LEN);
     stack<int> cluster_x;
     stack<int> cluster_y;
-
+    
     // Pick a random spin (x then y coord) and make it the origin (i.e. "root/seed/(0,0)")
     i = rand() % LEN;
     j = rand() % LEN;
     spinSite* root_spin = getSpinSite(i,j);
-    // cout << root_spin->getSpin(); ///////// DEBUGGING PRINTER
     root_spin->AddToCluster();
     root_spin->Triangulate(0,0);
-    // lattice_object[i][j].AddToCluster();
-    // lattice_object[i][j].Triangulate(0,0);
     cluster_x.push(i);
     cluster_y.push(j);
     stacker.push_back(make_pair(i, j));
     cluster_size = 1;
 
     sp = 1;
-    wrapcounter = 0;
     while (sp)
     {   /* Pull a site off the stack from the nearest neighbours*/
         --sp;
@@ -226,109 +171,66 @@ void Lattice::doStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *padd1, d
 
         for (int k = 0; k < NN_MAX; k++)
         {   
+            
             nn_i = neighbor_table[current_x][current_y][k][0];
             nn_j = neighbor_table[current_x][current_y][k][1];
-            if (nn_i < 0 || nn_j < 0 || nn_i >= LEN || nn_j >= LEN)
-            {
-                cout << "---nn_i = " << nn_i << ", nn_j = " << nn_j << "---\n";
-            }
+
             spinSite* neighbor_spin = getSpinSite(nn_i,nn_j);
-            if (neighbor_spin->checkStatus() == true && wrapping_crit == false) { // Check for wrapping once
+            bool neighbor_checked = neighbor_spin->checkStatus();
+            if (wrapping_crit == false && neighbor_checked == true) { // Check for wrapping once
 
                 old_x = neighbor_spin->getX();
                 old_y = neighbor_spin->getY();
-                if (k == 0){ // left bond
-                            pos_update_x = coord_x - 1;
-                            pos_update_y = coord_y;
-                        } else if (k == 1) { // right bond
-                            pos_update_x = coord_x + 1;
-                            pos_update_y = coord_y;
-                        } else if (k == 2) { // up bond
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y + 1;
-                        } else if (k == 3) { // down bond
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y - 1;
-                        } else if (k == 4) { // up2 bond
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y + 2;
-                        } else if (k == 5) { // down2 bond
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y - 2;
-                        }
+                int pos_update_x = coord_x, pos_update_y = coord_y;
+                if (k == 0) pos_update_x -= 1;
+                else if (k == 1) pos_update_x += 1;
+                else if (k == 2) pos_update_y += 1;
+                else if (k == 3) pos_update_y -= 1;
+                else if (k == 4) pos_update_y += 2;
+                else if (k == 5) pos_update_y -= 2;
+
                 neighbor_spin->Triangulate(pos_update_x, pos_update_y);
                 new_x = neighbor_spin->getX();
                 new_y = neighbor_spin->getY();
 
-                if (old_x != new_x || old_y != new_y) { // Check if either of the new-coordinates (rel. to root spin) is different from previous inclusion.
-                    wrapping_crit = true; // If it is different, then we have 'wrapped' around the lattice.    
-                    wrapcounter++;
-                    // cout << "Wrapping has occurred.\n";
-                    // wrapcounts.push(wrapcounter);                   
+                if (old_x != new_x || old_y != new_y) {
+                    wrapping_crit = true;
+                    wrap_counter++;
                 }
-            }
-            
-            else if (neighbor_spin->checkStatus() == false) // Nearest neighbours
-            {
-                randnum = (double)rand()/RAND_MAX;
-                if (neighbor_spin->getSpin() == oldspin && k <= 3) 
-                {                                                                                      
-                    if (randnum <= *padd1)
-                    {
-                        if (k == 0){
-                            pos_update_x = coord_x - 1;
-                            pos_update_y = coord_y;
-                        } else if (k == 1) {
-                            pos_update_x = coord_x + 1;
-                            pos_update_y = coord_y;  
-                        } else if (k == 2) {
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y + 1;
-                        } else if (k == 3) {
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y - 1;
-                        }
-                        sp += 1;
-                        stacker.push_back(make_pair(nn_i, nn_j));
-                        neighbor_spin->AddToCluster();
-                        neighbor_spin->Triangulate(pos_update_x, pos_update_y); 
-                        cluster_x.push(nn_i);
-                        cluster_y.push(nn_j);
-                        cluster_size += 1;
-                    }
-                }
-            
-                // Next nearest neighbours
-                if (neighbor_spin->getSpin() == newspin && k >= 4)
-                {   
-                    if (randnum <= *padd2)
-                    {
-                        if (k == 4) {
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y + 2;
-                        } else if (k == 5) {
-                            pos_update_x = coord_x;
-                            pos_update_y = coord_y - 2;
-                        }
-                        sp += 1;
-                        stacker.push_back(make_pair(nn_i, nn_j));
-                        neighbor_spin->AddToCluster();
-                        neighbor_spin->Triangulate(pos_update_x, pos_update_y); 
-                        cluster_x.push(nn_i);
-                        cluster_y.push(nn_j);
-                        cluster_size += 1;
-                    }
+            }   else if (neighbor_checked == false)  {
+                randnum = static_cast<double>(rand()) / RAND_MAX;
+                if ((neighbor_spin->getSpin() == oldspin && k <= 3 && randnum <= *padd1) ||
+                    (neighbor_spin->getSpin() == newspin && k >= 4 && randnum <= *padd2)) 
+                {
+                    
+                    int pos_update_x = coord_x, pos_update_y = coord_y;
+                    if (k == 0) pos_update_x -= 1;
+                    else if (k == 1) pos_update_x += 1;
+                    else if (k == 2) pos_update_y += 1;
+                    else if (k == 3) pos_update_y -= 1;
+                    else if (k == 4) pos_update_y += 2;
+                    else if (k == 5) pos_update_y -= 2;
+
+                    sp += 1;
+                    stacker.push_back(make_pair(nn_i, nn_j));
+                    neighbor_spin->AddToCluster();
+                    neighbor_spin->Triangulate(pos_update_x, pos_update_y);
+                    cluster_x.push(nn_i);
+                    cluster_y.push(nn_j);
+                    cluster_size += 1;
                 }
             }
         }
     }
-    /* Do this for percolation data
-    if (wrapping_crit == true){
-        cluster_sizes.push_back(-1*cluster_size); // We use negative cluster size to indicate clusters that have wrapped,
-    } else {                                 // As a slick way to keep everything in one array(stack)
-        cluster_sizes.push_back(cluster_size);
+
+    // For simpler percolation data, we are just interested in the non-wrapping cluster size.
+    if (wrapping_crit == false)
+    {
+        avg_nowrap_cluster_size += cluster_size;
+        nowrap_counter++;
     }
-    */
+    avg_cluster_size += cluster_size;
+
     /* Go over all the spins in the stack and flip if they are in the cluster */
     while (!cluster_x.empty()) {
         lx = cluster_x.top();
@@ -340,17 +242,17 @@ void Lattice::doStep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *padd1, d
     }
 }
 
-void Lattice::doSweep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta)
+void Lattice::doSweep(double *Beta)
 {
-    int Ene, E1, E2,    Mag, M1, M2, M1_abs, Mag_abs, Mag_sq;
+    // int Ene, E1, E2,    Mag, M1, M2, M1_abs, Mag_abs, Mag_sq;
     double padd1, padd2;
     padd1 = 1 - exp(-2 * *Beta * J);
     padd2 = 1 - exp(-2 * *Beta * J * kappa);
     
-    E1 = E2 = M1 = M2 = M1_abs = 0;
+    // E1 = E2 = M1 = M2 = M1_abs = 0;
     for (int j = 0; j < STEPS; j++) 
     {
-        doStep(neighbor_table, &padd1, &padd2); // Consider making one 'sweep' as a number of steps, where we choose it as after each spin has had one opportunity on average to flip
+        doStep(&padd1, &padd2); // Consider making one 'sweep' as a number of steps, where we choose it as after each spin has had one opportunity on average to flip
     }
         /*
         updateTotalEnergy(neighbor_table); // Take data after each sweep
@@ -367,16 +269,26 @@ void Lattice::doSweep(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta)
         */
 }
 
-void Lattice::doWolffAlgo(int neighbor_table[LEN][LEN][NN_MAX][DIM], double *Beta, int num_sweeps)
+void Lattice::doWolffAlgo(double *Beta, fftw_plan p)
 {
     // Only do the MC steps. Burn In is completed during initialization.
+    wrap_counter = 0, nowrap_counter = 0;
+    avg_cluster_size = 0, avg_nowrap_cluster_size = 0;
+    // int num_sweeps = (*Beta <= 0.46) ? SWEEPS : SWEEPS / 4;
+    int num_sweeps = (*Beta < .25) ? SWEEPS*10 : (*Beta < .46) ? SWEEPS : SWEEPS/4;
+    double padd1 = 1 - exp(-2 * *Beta * J);
+    double padd2 = 1 - exp(-2 * *Beta * J * kappa);
     for (int i = 0; i < num_sweeps; i++)
     {
-        doSweep(neighbor_table, Beta);
+        for (int j = 0; j < STEPS; j++)
+        {
+            doStep(&padd1, &padd2);
+        }
     }
+    doFFT(p);
 }
 
-void Lattice::updateTotalEnergy(int neighbor_table[LEN][LEN][NN_MAX][DIM])
+void Lattice::updateTotalEnergy()
 {
     int left_x, right_x, up_x, down_x;   // nearest neighbours
     int left_y, right_y, up_y, down_y;
@@ -441,12 +353,56 @@ void Lattice::updateTotalMag()
     mag = mag_ph;
 }
 
-int Lattice::getTotalEnergy()
+void Lattice::doFFT(fftw_plan p)
 {
-    return energy;
+    // Prepare the FFT (typical FFTW implementation)
+    double *in, *out;
+    in = (double*) fftw_alloc_real(LEN);
+    out = (double*) fftw_alloc_real(LEN);
+    // fftw_plan p;
+    // p = fftw_plan_r2r_1d(LEN, in, out, FFTW_R2HC, FFTW_MEASURE);
+    
+    // Prepare input array (slices of lattice)
+    for (int i = 0; i < LEN; i++)
+    {
+        double slice_mag = 0;
+        for (int j = 0; j < LEN; j++)
+        {
+            spinSite* site = getSpinSite(j,i); // Correct order of ij axes to see modulation
+            slice_mag += (site->getSpin());
+        }
+        slice_mag /= (double)LEN;
+        in[i] = slice_mag;
+    }
+
+    // Do FFT
+    fftw_execute_r2r(p, in, out);
+
+    // Get array of frequencies and corresponding weights
+    int halfLEN = LEN/2;
+    double data[halfLEN];
+    double freqs[halfLEN];
+    for (int i = 0; i < halfLEN; i++)
+    {
+        freqs[i] = (double)i/LEN; // I think this makes the right frequency values (equiv. to np.linspace)
+        if (i == 0 || i == halfLEN-1){
+            data[i] = sqrt(out[i]*out[i]);
+        } else {
+            data[i] = sqrt(out[i]*out[i] + out[LEN-i]*out[LEN-i]); // Weird indexing because of halfcomplex array
+        }
+    }
+
+    // Get frequency with max. weight (store both the freq. and its weight as separate observables)
+    double max = 0;
+    int argmax = 0;
+    for (int j = 0; j < halfLEN; j++)
+    {
+        if (data[j] > max){
+            max = data[j];
+            argmax = j;
+        }
+    }
+    dom_freq = freqs[argmax];
+    dom_amplitude = max;
 }
 
-int Lattice::getTotalMag()
-{
-    return mag;
-}

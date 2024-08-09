@@ -43,29 +43,24 @@ try
 
 
 // -------- Define some constants
-    static int neighbor_table[LEN][LEN][NN_MAX][DIM]; // 6 neighbors (2D ANNNI), 2 coordinates
+    // static int neighbor_table[LEN][LEN][NN_MAX][DIM]; // 6 neighbors (2D ANNNI), 2 coordinates
     gsl_rng *r;
-    int* p;
+    // int* p;
     // double T;
     int seed = 1; // We can make this an input later
     srand(time(NULL));
-    string kappastr = argv[1];
-    double kappa = stod(argv[1]);
-
-
-// -------- Lists for data
-    list<double> E;     //-| v
-    list<double> M;     //-| v
-    list<double> Mabs;  //-| For typical data
-    list<double> C;     //-| ^
-    list<double> X;     //-| ^
-    list<double> Mz; // For order parameter (modulated waveform)
-    list<int> cluster_sizes; // For percolation
+    string prekappastr = argv[1];
+    double prekappa = stod(argv[1]);
+    double kappa = prekappa;                // FOR TESTING
+    // double kappa = prekappa/4;          // For N kappa values, we divide by N-1 (FOR BATCH ARRAY JOB)
+    string kappastr = to_string(kappa);
+    kappastr = kappastr.substr(0,4);    // Precision to 2 decimal places
 
 // -------- Actual code
     initializeRNG(&r, seed);
     auto start = chrono::high_resolution_clock::now(); // for checking time of run
     
+    /*
     for (int i = 0; i < LEN; i++) // Make neighbor table
     {
         for (int j = 0; j < LEN; j++)
@@ -79,18 +74,19 @@ try
             }
         }
     }
+    */
     
     // Population Annealing
-
+    makeNeighborTable();
     cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
     cout << "Neighbor table created. \n";
     cout << "Starting simulation...\n";
-    cout << "kappa = " << kappa << ".\n";
+    cout << "kappa = " << kappa << ", L = " << LEN << ".\n";
     cout << "Starting population size = " << INIT_POP_SIZE << ".\n";
     cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
 
     omp_set_num_threads(NUM_THREADS);
-    Population test_pop(INIT_POP_SIZE, r, neighbor_table, kappa);
+    Population test_pop(INIT_POP_SIZE, r, kappa);
     test_pop.run(kappastr);
     
 
@@ -99,6 +95,7 @@ try
 
     std::cout << "Time taken: " << elapsed.count() << " seconds." << std::endl;
     cout << "Simulation complete." << endl;
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
     return 0;
     
 }

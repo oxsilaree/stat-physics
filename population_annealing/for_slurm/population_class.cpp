@@ -15,7 +15,7 @@ Population::Population(void)
 	throw invalid_argument("Invalid PA simulation initialization parameters.");
 }
 
-Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][NN_MAX][DIM], double kappa)
+Population::Population(int nom_pop, gsl_rng *r, double kappa)
 {
     // Initialize population
     Population::kappa = kappa;
@@ -24,23 +24,23 @@ Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][NN_MAX][D
     Population::pop_size = nom_pop;
     Population::pop_array.reserve(max_pop); // Reserve initial memory for the vector
     
-    Population::energy_data.reserve((int)T_ITER);
-    Population::magnetization_data.reserve((int)T_ITER);
-    Population::spec_heat_data.reserve((int)T_ITER);
-    Population::susceptibility_data.reserve((int)T_ITER);
-    Population::clustersize_data.reserve((int)T_ITER);
-    Population::nowrapclustersize_data.reserve((int)T_ITER);
-    Population::beta_values.reserve((int)T_ITER);
-    Population::energy_sq_data.reserve((int)T_ITER);
-    Population::magnetization_sq_data.reserve((int)T_ITER);
-    Population::magnetization_abs_data.reserve((int)T_ITER);
-    Population::wrapping_data.reserve((int)T_ITER);
+    Population::energy_data.reserve((int)2*T_ITER);
+    Population::magnetization_data.reserve((int)2*T_ITER);
+    Population::spec_heat_data.reserve((int)2*T_ITER);
+    Population::susceptibility_data.reserve((int)2*T_ITER);
+    Population::clustersize_data.reserve((int)2*T_ITER);
+    Population::nowrapclustersize_data.reserve((int)2*T_ITER);
+    Population::beta_values.reserve((int)2*T_ITER);
+    Population::energy_sq_data.reserve((int)2*T_ITER);
+    Population::magnetization_sq_data.reserve((int)2*T_ITER);
+    Population::magnetization_abs_data.reserve((int)2*T_ITER);
+    Population::wrapping_data.reserve((int)2*T_ITER);
     
 
     for (int i = 0; i < nom_pop; ++i) {
         pop_array.push_back(Lattice(kappa));
     }
-
+    /*
     for (int i = 0; i < LEN; ++i) {
         for (int j = 0; j < LEN; ++j) {
             for (int pos = 0; pos < NN_MAX; ++pos) {
@@ -50,7 +50,7 @@ Population::Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][NN_MAX][D
             }
         }
     }
-
+    */
     Population::r = r;	    
     double dummy_1, dummy_2;
 	energy_calcs(&dummy_1, &dummy_2);                
@@ -63,13 +63,11 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
     double energy_j, weight_j, tau_j, expected_copies_j; // used for reweighting
 
 
-    double d_Beta = CULLING_FRAC * sqrt(2 *PI /var_e); // This is a slightly more optimized way to run Pop.Annealing
-    // double d_Beta = 0.004;
+    double d_Beta = CULLING_FRAC * LEN * sqrt(2 *PI /var_e); // This is a slightly more optimized way to run Pop.Annealing
     if (*Beta + d_Beta < MAX_BETA)
 		*Beta += d_Beta;
 	else
 		*Beta = MAX_BETA;
-
 
 	long double config_weight[pop_size];
 	long double Q = 0.0;
@@ -79,7 +77,7 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
     for (j = 0; j < pop_size; j++) // Get Q(beta, beta') for each lattice in population
     {
         Lattice* lattice_j = &pop_array[j];
-        lattice_j->updateTotalEnergy(neighbor_table);
+        lattice_j->updateTotalEnergy();
         energy_j = lattice_j->getTotalEnergy();
         weight_j = -d_Beta * (energy_j - avg_e); // These get massive
         config_weight[j] = exp(weight_j); // Storing these values is good to get tau later on
@@ -195,26 +193,41 @@ void Population::run(string kappastr)
     for (int j = 0; j < nom_pop; j++)
     {
         Lattice* lattice_j = &pop_array[j];
-        lattice_j->initializeSites(neighbor_table, &Beta);
+        lattice_j->initializeSites(&Beta);
     }
     
     while (Beta < MAX_BETA) // Where the actual annealing happens (T > T_FINAL), BETA_MAX = 5
     { 
         // Parallel version
         // int num_sweeps = (Beta < .46) ? SWEEPS : SWEEPS/4;
-        int num_sweeps = (Beta < .25) ? SWEEPS*10 : (Beta < .46) ? SWEEPS : SWEEPS/4;
-        #pragma omp parallel for shared(pop_array, neighbor_table, Beta, num_sweeps)// , r_thread)
+        // int num_sweeps = (Beta < .25) ? SWEEPS*10 : (Beta < .46) ? SWEEPS : SWEEPS/4;
+        int num_sweeps = 0;
+        if (Beta < 0.35) {
+            num_sweeps = SWEEPS;
+        } else if (Beta < 0.7) {
+            num_sweeps = SWEEPS * 3;
+        } else {
+            num_sweeps = SWEEPS / 4;
+        }
+
+        double *in, *out;
+        in = (double*) fftw_alloc_real(LEN);
+        out = (double*) fftw_alloc_real(LEN);
+        const fftw_plan p = fftw_plan_r2r_1d(LEN, in, out, FFTW_R2HC, FFTW_MEASURE);
+        #pragma omp parallel for shared(pop_array, Beta, num_sweeps, p)// , r_thread)
         for (int m = 0; m < pop_size; m++) 
         {
             // int thread = omp_get_thread_num(); // check things regarding threads
-            pop_array[m].doWolffAlgo(neighbor_table, &Beta);
+            pop_array[m].doWolffAlgo(&Beta, p);
             // pop_array[m].getTotalEnergy();
             // cout << "Lattice " << m << " done running: Thread no. " << thread << "!\n";
         }   
         
         energy_calcs(&avg_e, &var_e);
                 
-        
+        // Cleanup
+        fftw_destroy_plan(p);
+        fftw_cleanup();
         
         if (var_e != 0)
         {
@@ -246,7 +259,7 @@ void Population::energy_calcs(double *avg_e, double *var_e) {
 	double temp_avg_e = 0.0;
 	for (int m = 0; m < pop_size; m++) {
         Lattice* lattice_m = &pop_array[m];
-        lattice_m->updateTotalEnergy(neighbor_table);
+        lattice_m->updateTotalEnergy();
         double temp_e = lattice_m->getTotalEnergy();
 		temp_avg_e += temp_e;
 		avg_e2 += temp_e *temp_e;
@@ -271,24 +284,26 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
     double ene = 0, ene_sq = 0, mag = 0, mag_sq = 0, mag_abs = 0, spec_heat = 0, susc = 0;
     double CS, avg_clust_size = 0; // For wrapping
     double NWCS, avg_nowrap_clust_size = 0;
-    int NWC ,nowrap_counter = 0;
+    int NWC, nowrap_counter = 0;
+    double FR, AMP, freqs = 0, amps = 0;
     //int num_sweeps = (*Beta < 0.46) ? SWEEPS : SWEEPS/4;
     int num_sweeps = (*Beta < .25) ? SWEEPS*10 : (* Beta < .46) ? SWEEPS : SWEEPS/4;
     for (m = 0; m < pop_size; m++)
     {
         Lattice* lattice_m = &pop_array[m];
-        lattice_m->updateTotalEnergy(neighbor_table);
+        lattice_m->updateTotalEnergy();
         lattice_m->updateTotalMag();
         E = lattice_m->getTotalEnergy();
         M = lattice_m->getTotalMag();
         CS = lattice_m->getAvgClusterSize();
         NWCS = lattice_m->getAvgNowrapClusterSize();
         NWC = lattice_m->getNoWrapCount();
+        FR = lattice_m->getDomFreq();
+        AMP = lattice_m->getDomAmplitude();
     
         // E_sq = E*E;
         // M_sq = M*M;
         M_abs = abs(M);
-
         ene = ene + E;
         ene_sq = ene_sq + (E*E);
         mag += M;
@@ -297,6 +312,8 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
         avg_clust_size += CS;
         avg_nowrap_clust_size += NWCS;
         nowrap_counter += NWC;
+        freqs += FR;
+        amps += AMP;
     }
     
     double wrap_percent = (double)(pop_size*num_sweeps*STEPS - nowrap_counter)/(pop_size*num_sweeps*STEPS);
@@ -316,9 +333,13 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
     clustersize_data.push_back(avg_clust_size/(pop_size*num_sweeps*STEPS));
     nowrapclustersize_data.push_back(avg_nowrap_clust_size/(pop_size*num_sweeps*STEPS));
     wrapping_data.push_back(wrap_percent);
+    fft_freq_data.push_back(freqs/pop_size);
+    fft_amp_data.push_back(amps/pop_size);
+
     cout << "Average (non-wrapping) cluster size: " << avg_clust_size/(pop_size*num_sweeps*STEPS) << " (" << avg_nowrap_clust_size/(pop_size*num_sweeps*STEPS) << ").\n";
     cout << "E = " << ene/(pop_size*LEN*LEN) << ", C = " << spec_heat << ".\n";
     cout << "M = " << mag_abs/(pop_size*LEN*LEN) << ", X = " << susc << ".\n";
+    cout << "Dom. Freq. = " << freqs/pop_size << ", Dom. Amplitude. = " << amps/pop_size << "\n";
     cout << "Total number of steps (% w/ wrapping): " << pop_size*num_sweeps*STEPS << " (" << 100*wrap_percent <<"%).\n";
 }
 
@@ -335,6 +356,9 @@ void Population::loadData(string kappastr)
     vector<double> CS = clustersize_data;
     vector<double> NWCS = nowrapclustersize_data;
     vector<double> W = wrapping_data;
+    vector<double> FR = fft_freq_data;
+    vector<double> AM = fft_amp_data;
+
 
     ofstream run_info;
     ofstream emcx_data;
@@ -345,7 +369,8 @@ void Population::loadData(string kappastr)
 
     emcx_data.open("data/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv");
     emcx_data << "Beta,Energy,Energy Squared,Magnetization,Magnetization Squared,Absolute Magnetization,";
-    emcx_data << "Specific Heat,Susceptibility,Cluster Size,Non-Wrapping Cluster Size,Wrapping Probability\n";
+    emcx_data << "Specific Heat,Susceptibility,Cluster Size,Non-Wrapping Cluster Size,Wrapping Probability,";
+    emcx_data << "Dominant Frequency, Dominant Amplitude\n";
     
     vector<double>::iterator it1 = E.begin();
     vector<double>::iterator it2 = E2.begin();
@@ -357,6 +382,8 @@ void Population::loadData(string kappastr)
     vector<double>::iterator it8 = CS.begin();
     vector<double>::iterator it9 = NWCS.begin();
     vector<double>::iterator it10 = W.begin();
+    vector<double>::iterator it11 = FR.begin();
+    vector<double>::iterator it12 = AM.begin();
     for (vector<double>::iterator it=B.begin(); it != B.end(); ++it)      
     {
         emcx_data << *it << "," \
@@ -369,7 +396,9 @@ void Population::loadData(string kappastr)
                 << *it7 << "," \
                 << *it8 << "," \
                 << *it9 << "," \
-                << *it10 << "\n";
+                << *it10 << "," \
+                << *it11 << "," \
+                << *it12 << "\n";
         ++it1;
         ++it2;
         ++it3;
@@ -380,74 +409,8 @@ void Population::loadData(string kappastr)
         ++it8;
         ++it9;
         ++it10;
+        ++it11;
+        ++it12;
     }     
     emcx_data.close();  
-    /*
-    emcx_data << "Beta,";
-    for (vector<double>::iterator it=B.begin(); it != B.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }
-    emcx_data << "\n";
-    emcx_data << "Energy,";
-    for (vector<double>::iterator it=E.begin(); it != E.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }        
-    emcx_data << "\n";
-    emcx_data << "Energy Squared,";
-    for (vector<double>::iterator it=E2.begin(); it != E2.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }        
-    emcx_data << "\n";
-    emcx_data << "Magnetization,";
-    for (vector<double>::iterator it=M.begin(); it != M.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }     
-    emcx_data << "\n";
-    emcx_data << "Magnetization Squared,";
-    for (vector<double>::iterator it=M2.begin(); it != M2.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }
-    emcx_data << "\n";
-    emcx_data << "Absolute Magnetization,";
-    for (vector<double>::iterator it=MA.begin(); it != MA.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }                    
-    emcx_data << "\n";
-    emcx_data << "Specific Heat,";
-    for (vector<double>::iterator it=C.begin(); it != C.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }       
-    emcx_data << "\n";
-    emcx_data << "Susceptibility,";
-    for (vector<double>::iterator it=X.begin(); it != X.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }    
-    emcx_data << "\n";
-    emcx_data << "Cluster size,";
-    for (vector<double>::iterator it=CS.begin(); it != CS.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }    
-    emcx_data << "\n";
-    emcx_data << "Non-Wrapping Cluster size,";
-    for (vector<double>::iterator it=NWCS.begin(); it != NWCS.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }    
-    emcx_data << "\n";
-    emcx_data << "Wrapping fraction,";
-    for (vector<double>::iterator it=W.begin(); it != W.end(); ++it)
-        {
-            emcx_data << *it << ",";
-        }    
-    emcx_data.close();
-    */
 }

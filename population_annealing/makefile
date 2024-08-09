@@ -18,7 +18,7 @@ real production run. Speedup is approximately a factor of 2.
 ODIR=.
 LDIR =.
 
-LIBS=-lm  -lgsl -lgslcblas -lstdc++ 
+LIBS=-lm  -lgsl -lgslcblas -lstdc++ -lfftw3
 
 _DEPS = population_class.h lattice_class.h spin_class.h functions.h parameters.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
@@ -27,12 +27,13 @@ _OBJ = main.o population_class.o lattice_class.o spin_class.o functions.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
+# COMPILE
 $(ODIR)/%.o: %.cpp $(DEPS)
-	$(CC) -g -c -o $@ $< $(CFLAGS)
+	$(CC) -g -c -o  $@ $< $(CFLAGS) -fsanitize=address -fno-omit-frame-pointer -Wno-format-security
 
-
+# LINK
 main: $(OBJ)
-	$(CC) -o $@ $^ $(LFLAGS) $(LIBS)
+	$(CC) -g -o  $@ $^ $(LFLAGS) $(LIBS) -fsanitize=address
 
 
 .PHONY: clean

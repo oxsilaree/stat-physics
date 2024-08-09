@@ -29,7 +29,6 @@ private:
     double padd1, padd2;
     double rho_t;
     double kappa;
-    int neighbor_table[LEN][LEN][NN_MAX][DIM];
     gsl_rng *r;
     void reSample(double *Beta, gsl_rng *r, double avg_e, double var_e);
     void energy_calcs(double *avg_e, double *var_e);
@@ -38,7 +37,7 @@ private:
 
 public:
     Population(void);
-    Population(int nom_pop, gsl_rng *r, int nn_table[LEN][LEN][NN_MAX][DIM], double kappa);
+    Population(int nom_pop, gsl_rng *r, double kappa);
     
     
     void run(string);
@@ -61,5 +60,4 @@ public:
     vector<double> magnetization_sq_data;
     vector<double> magnetization_abs_data;
     vector<double> wrapping_data;
-
 };

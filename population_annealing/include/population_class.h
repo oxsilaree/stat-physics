@@ -7,12 +7,15 @@
 #include <gsl/gsl_randist.h>
 // #include <omp.h>
 #include <stdio.h>
-#include "/usr/local/opt/libomp/include/omp.h" // For parallelizing
+#include <algorithm>
+#include "/opt/homebrew/Cellar/libomp/18.1.8/include/omp.h" // For parallelizing
+// include "../lib/libomp/18.1.8/include/omp.h" // For parallelizing in SLURM
 #include <math.h>
 #include <time.h>
 #include <chrono>
 #include <stack>
 #include <random>
+#include <utility>
 #include <list>
 #include "parameters.h"
 #include "functions.h"
@@ -29,22 +32,40 @@ private:
     vector<Lattice> pop_array;
     int nom_pop, max_pop, pop_size;
     double padd1, padd2;
-    double rho_t;
     double kappa;
+    string mode;
     gsl_rng *r;
+    int unique_families;
+    double rho_t;
+    double gs_e;
+    int num_steps;
+    double overlap, var_overlap, abs_overlap;
+    double avg_cluster_size, avg_nowrap_cluster_size;
+    int wrap_counter, nowrap_count;
+    double free_energy;
+
+
     void reSample(double *Beta, gsl_rng *r, double avg_e, double var_e);
-    void energy_calcs(double *avg_e, double *var_e);
-
-
+    void calculateEnergies(double *avg_e, double *var_e);
+    void calculateFamilies(void);
 
 public:
+    // Constructors
     Population(void);
-    Population(int nom_pop, gsl_rng *r, double kappa);
+    Population(int nom_pop, gsl_rng *r, double kappa, string mode);
     
     
     void run(string);
+    void runSA(string kappastr);
+    void runTR(string kappastr);
+    void doTwoReplica(double padd1, double padd2, fftw_plan p, int num_steps, gsl_rng *r, int index1, int index2);
+    void doTwoRepStep(double padd1, double padd2, fftw_plan p, gsl_rng *r, int index1, int index2);
     void collectData(double *Beta, double, double);
+    void collectDataSA(double *Beta);
     void loadData(string);
+    void measureOverlap();
+
+	int countFamilies(void);
     
 
     vector<double> energy_data;
@@ -60,4 +81,10 @@ public:
     vector<double> wrapping_data;
     vector<double> fft_freq_data;
     vector<double> fft_amp_data;
+    vector<double> rho_t_data;
+    vector<double> unique_families_data;
+    vector<double> overlap_data;
+    vector<double> abs_overlap_data;
+    vector<double> var_overlap_data;
+    vector<double> free_energy_data;
 };

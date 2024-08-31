@@ -1,42 +1,34 @@
-IDIR =./include
-GSL_DIR = $(shell brew --prefix gsl) # should be "/usr/local/opt/gsl"
-GSL_LINK = "/usr/local/lib"
-LLVM_DIR=$(shell brew --prefix llvm)
-CC=clang++
+IDIR = ./include
+ODIR = .
+LLVM_DIR = $(shell brew --prefix llvm)
+OMP_DIR = $(shell brew --prefix libomp)
+CC = /opt/homebrew/opt/llvm/bin/clang++
 
-#Use these flags if you don't want to use optimization profiles
-CFLAGS = -I$(IDIR) -I/usr/local/include -I$(LLVM_DIR)  -fopenmp -O3 
-LFLAGS = -I$(IDIR) -L/usr/local/lib -I$(LLVM_DIR)  -fopenmp -O3 
+# Compiler and linker flags
+CPPFLAGS = -I$(IDIR) -I/usr/local/include -I$(LLVM_DIR)/include -I$(OMP_DIR)/include -fopenmp -O3
+LDFLAGS = -L/usr/local/lib -L$(LLVM_DIR)/lib -L$(OMP_DIR)/lib -fopenmp
 
-# Compile with -fprofile-generate and run with small pop size (R~100).\
-This creates optimization profiles. Use second line to use profiles in\
-real production run. Speedup is approximately a factor of 2.
+# Libraries
+LIBS = -lm -lgsl -lgslcblas -lstdc++ -lfftw3
 
-#CFLAGS=-I$(IDIR) -fopenmp -O3 -fprofile-generate=./profiles
-#CFLAGS=-I$(IDIR) -fopenmp -O3 -fprofile-use=./profiles
-
-ODIR=.
-LDIR =.
-
-LIBS=-lm  -lgsl -lgslcblas -lstdc++ -lfftw3
-
+# Dependencies
 _DEPS = population_class.h lattice_class.h spin_class.h functions.h parameters.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
+# Object files
 _OBJ = main.o population_class.o lattice_class.o spin_class.o functions.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-
-# COMPILE
+# Compile object files
 $(ODIR)/%.o: %.cpp $(DEPS)
-	$(CC) -g -c -o  $@ $< $(CFLAGS) -fsanitize=address -fno-omit-frame-pointer -Wno-format-security
+	$(CC) -g -c -o $@ $< $(CPPFLAGS) -fsanitize=address -fno-omit-frame-pointer -Wno-format-security
 
-# LINK
+# Link the final executable
 main: $(OBJ)
-	$(CC) -g -o  $@ $^ $(LFLAGS) $(LIBS) -fsanitize=address
-
+	$(CC) -g -o $@ $^ $(LDFLAGS) $(LIBS) -fsanitize=address
 
 .PHONY: clean
 
+# Clean object files and executable
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
+	rm -f $(ODIR)/*.o *~ core $(IDIR)/*~

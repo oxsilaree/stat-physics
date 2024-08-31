@@ -28,7 +28,7 @@ private:
     double kappa;
     double dom_freq, dom_amplitude; // Dominant frequency and corresponding amplitude
     vector<vector<spinSite> > lattice_object;
-    // mutex lattice_mutex;
+    int family; // For checking ancestors of replicas
     
 
 public:
@@ -39,7 +39,7 @@ public:
     int lattice_number; // Relevant for population annealing
     
     // Constructor Declaration
-    Lattice(double kappa);
+    Lattice(double kappa, int family);
 
     // Methods
     void initializeSites(double *Beta);
@@ -47,7 +47,7 @@ public:
     void doBurnInStep(double *padd1, double *padd2);
     void doStep(double *padd1, double *padd2);
     void doSweep(double *Beta);
-    void doWolffAlgo(double *Beta, fftw_plan p);
+    void doWolffAlgo(double *Beta, fftw_plan p, int num_steps);
     void doFFT(fftw_plan p);
 
     // Update data members
@@ -63,8 +63,9 @@ public:
     double getDomFreq();
     double getDomAmplitude();
     spinSite* getSpinSite(int row, int col);
+    int getFamily();
+    void printLattice();
 
-    // spinSite(&getLattice())[LEN][LEN] { return lattice_object; };
 };
 
 inline double Lattice::getAvgClusterSize()
@@ -107,4 +108,9 @@ inline double Lattice::getDomFreq()
 inline double Lattice::getDomAmplitude()
 {
     return dom_amplitude;
+}
+
+inline int Lattice::getFamily()
+{
+    return family;
 }

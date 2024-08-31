@@ -1,17 +1,26 @@
 #!/bin/bash
 
-## export LLVM_DIR=$(brew --prefix llvm)
-## export GSL_DIR=$(brew --prefix gsl)
+# Quick fix because if we don't do this, apparently libgsl.so.28 cannot be found.
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/skeiser_umass_edu/populationannealing/lib/gsl/lib
+export LD_LIBRARY_PATH
 
-# Set environment variables for LLVM and OpenMP
-export PATH="/usr/local/opt/llvm/bin:$PATH"
-export MACOSX_DEPLOYMENT_TARGET=12.7.5
-## export LDFLAGS="-L$LLVM_DIR/lib -L$GSL_DIR/lib"
-## export CPPFLAGS="-I$LLVM_DIR/include -I$GSL_DIR/include"
-## export CFLAGS="-I$LLVM_DIR/include -I$GSL_DIR/include"
+
+
 
 # Run make command
 make
 
+
+
 # Remove .o files
-# make clean
+make clean
+
+
+
+# Other SLURM Commands
+# salloc -p cpu -c 4 --mem=8GB
+
+# srun --output=./slurm_history/slurm_shanekeiser_%j.out --error=./slurm_history/slurm_shanekeiser_%j.err --nodes=1 --ntasks=1 --cpus-per-task=4 --mem=8GB ./main 0
+
+
+

@@ -1,0 +1,1934 @@
+Starting tasks...
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Neighbor table created. 
+Starting simulation...
+kappa = 0.75, L = 32.
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Population Annealing
+Starting population size = 10000.
+Average (non-wrapping) cluster size: 1 (1).
+E = -0.000413281, C = 0.
+M = 0.0249865, X = 0.
+Dom. Freq. = 0.219975, Dom. Amplitude. = 1.8127
+Rho_T = 1, No. of Families = 10000.
+Overlap = 0.0249355
+Total number of steps (% w/ wrapping): 10240000 (0%).
+Population size = 10024.
+Done for beta = 0.00468275!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.02642 (1.02642).
+E = -0.0121806, C = 5.57274e-05.
+M = 0.0247204, X = 0.00169676.
+Dom. Freq. = 0.216985, Dom. Amplitude. = 1.8213
+Rho_T = 1.18729, No. of Families = 9074.
+Overlap = 0.0249551
+Total number of steps (% w/ wrapping): 10264576 (0%).
+Population size = 10031.
+Done for beta = 0.00939989!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.05403 (1.05403).
+E = -0.0245336, C = 0.00021782.
+M = 0.025099, X = 0.00345626.
+Dom. Freq. = 0.216136, Dom. Amplitude. = 1.83551
+Rho_T = 1.38172, No. of Families = 8288.
+Overlap = 0.0249736
+Total number of steps (% w/ wrapping): 10010938 (0%).
+Population size = 10071.
+Done for beta = 0.0141893!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.08324 (1.08324).
+E = -0.0358741, C = 0.000514609.
+M = 0.0254975, X = 0.0053111.
+Dom. Freq. = 0.212395, Dom. Amplitude. = 1.84212
+Rho_T = 1.57703, No. of Families = 7651.
+Overlap = 0.0245014
+Total number of steps (% w/ wrapping): 9789012 (0%).
+Population size = 10053.
+Done for beta = 0.018893!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.1136 (1.1136).
+E = -0.0470056, C = 0.000885776.
+M = 0.0256752, X = 0.00726299.
+Dom. Freq. = 0.20902, Dom. Amplitude. = 1.85835
+Rho_T = 1.76316, No. of Families = 7101.
+Overlap = 0.0246341
+Total number of steps (% w/ wrapping): 9510138 (0%).
+Population size = 10044.
+Done for beta = 0.0236666!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.14611 (1.14611).
+E = -0.0598653, C = 0.0013948.
+M = 0.0256181, X = 0.008976.
+Dom. Freq. = 0.212207, Dom. Amplitude. = 1.8721
+Rho_T = 1.95159, No. of Families = 6609.
+Overlap = 0.0248601
+Total number of steps (% w/ wrapping): 9240480 (0%).
+Population size = 10023.
+Done for beta = 0.0284319!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.17941 (1.17941).
+E = -0.0714598, C = 0.00200027.
+M = 0.0260951, X = 0.0110442.
+Dom. Freq. = 0.207629, Dom. Amplitude. = 1.87779
+Rho_T = 2.13985, No. of Families = 6178.
+Overlap = 0.0251696
+Total number of steps (% w/ wrapping): 8960562 (0%).
+Population size = 9991.
+Done for beta = 0.0332124!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.21462 (1.21462).
+E = -0.0834022, C = 0.00264413.
+M = 0.0259595, X = 0.0130487.
+Dom. Freq. = 0.205973, Dom. Amplitude. = 1.88355
+Rho_T = 2.32568, No. of Families = 5802.
+Overlap = 0.0251478
+Total number of steps (% w/ wrapping): 8682179 (0%).
+Population size = 10005.
+Done for beta = 0.0380694!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.25251 (1.25251).
+E = -0.0938121, C = 0.00347697.
+M = 0.0263269, X = 0.0154182.
+Dom. Freq. = 0.202327, Dom. Amplitude. = 1.90748
+Rho_T = 2.52617, No. of Families = 5480.
+Overlap = 0.0248436
+Total number of steps (% w/ wrapping): 8444220 (0%).
+Population size = 9937.
+Done for beta = 0.0429244!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.29168 (1.29168).
+E = -0.106733, C = 0.00443172.
+M = 0.0261185, X = 0.0172.
+Dom. Freq. = 0.203564, Dom. Amplitude. = 1.91679
+Rho_T = 2.71055, No. of Families = 5185.
+Overlap = 0.0250258
+Total number of steps (% w/ wrapping): 8128466 (0%).
+Population size = 9999.
+Done for beta = 0.0477732!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.33331 (1.33331).
+E = -0.117564, C = 0.00555282.
+M = 0.0265247, X = 0.0196379.
+Dom. Freq. = 0.199907, Dom. Amplitude. = 1.92945
+Rho_T = 2.88268, No. of Families = 4957.
+Overlap = 0.0248955
+Total number of steps (% w/ wrapping): 7929207 (0%).
+Population size = 9964.
+Done for beta = 0.0525942!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.37675 (1.37675).
+E = -0.130008, C = 0.00659123.
+M = 0.026228, X = 0.0210808.
+Dom. Freq. = 0.199666, Dom. Amplitude. = 1.9332
+Rho_T = 3.08437, No. of Families = 4729.
+Overlap = 0.0252142
+Total number of steps (% w/ wrapping): 7662316 (0%).
+Population size = 9966.
+Done for beta = 0.0574657!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.4233 (1.4233).
+E = -0.141753, C = 0.00779604.
+M = 0.0266188, X = 0.0239746.
+Dom. Freq. = 0.198099, Dom. Amplitude. = 1.94689
+Rho_T = 3.26235, No. of Families = 4507.
+Overlap = 0.0253555
+Total number of steps (% w/ wrapping): 7414704 (0%).
+Population size = 10008.
+Done for beta = 0.0623599!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.47258 (1.47258).
+E = -0.153099, C = 0.0091458.
+M = 0.026921, X = 0.0257993.
+Dom. Freq. = 0.196646, Dom. Amplitude. = 1.95912
+Rho_T = 3.4337, No. of Families = 4339.
+Overlap = 0.0251432
+Total number of steps (% w/ wrapping): 7205760 (0%).
+Population size = 10016.
+Done for beta = 0.0672634!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.5242 (1.5242).
+E = -0.163663, C = 0.0107334.
+M = 0.0271889, X = 0.0292258.
+Dom. Freq. = 0.194161, Dom. Amplitude. = 1.97733
+Rho_T = 3.5913, No. of Families = 4178.
+Overlap = 0.0249722
+Total number of steps (% w/ wrapping): 6971136 (0%).
+Population size = 9966.
+Done for beta = 0.0721457!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.57911 (1.57911).
+E = -0.175947, C = 0.0121933.
+M = 0.02697, X = 0.0309381.
+Dom. Freq. = 0.193188, Dom. Amplitude. = 1.98407
+Rho_T = 3.76194, No. of Families = 4006.
+Overlap = 0.0251909
+Total number of steps (% w/ wrapping): 6697152 (0%).
+Population size = 9978.
+Done for beta = 0.0770588!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.63819 (1.63819).
+E = -0.186101, C = 0.0138149.
+M = 0.0273712, X = 0.0332547.
+Dom. Freq. = 0.19315, Dom. Amplitude. = 2.00195
+Rho_T = 3.9588, No. of Families = 3839.
+Overlap = 0.0251876
+Total number of steps (% w/ wrapping): 6475722 (0%).
+Population size = 9979.
+Done for beta = 0.081989!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.69893 (1.69893).
+E = -0.198262, C = 0.0157652.
+M = 0.0276097, X = 0.0364232.
+Dom. Freq. = 0.194358, Dom. Amplitude. = 2.00376
+Rho_T = 4.13706, No. of Families = 3695.
+Overlap = 0.0251426
+Total number of steps (% w/ wrapping): 6246854 (0%).
+Population size = 9955.
+Done for beta = 0.0868994!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.76479 (1.76479).
+E = -0.209909, C = 0.0173271.
+M = 0.0275445, X = 0.0391444.
+Dom. Freq. = 0.187054, Dom. Amplitude. = 2.02606
+Rho_T = 4.30899, No. of Families = 3561.
+Overlap = 0.0257244
+Total number of steps (% w/ wrapping): 6002865 (0%).
+Population size = 9948.
+Done for beta = 0.0918638!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.83464 (1.83464).
+E = -0.222228, C = 0.0191291.
+M = 0.027888, X = 0.0423799.
+Dom. Freq. = 0.187362, Dom. Amplitude. = 2.04253
+Rho_T = 4.52878, No. of Families = 3435.
+Overlap = 0.0260262
+Total number of steps (% w/ wrapping): 5779788 (0%).
+Population size = 9972.
+Done for beta = 0.0968585!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.91 (1.91).
+E = -0.232016, C = 0.0213338.
+M = 0.0279061, X = 0.0434406.
+Dom. Freq. = 0.185043, Dom. Amplitude. = 2.05147
+Rho_T = 4.6854, No. of Families = 3335.
+Overlap = 0.0253172
+Total number of steps (% w/ wrapping): 5574348 (0%).
+Population size = 10005.
+Done for beta = 0.101845!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1.99036 (1.99036).
+E = -0.244434, C = 0.0239092.
+M = 0.0280608, X = 0.0451644.
+Dom. Freq. = 0.184992, Dom. Amplitude. = 2.06965
+Rho_T = 4.86803, No. of Families = 3232.
+Overlap = 0.025981
+Total number of steps (% w/ wrapping): 5372685 (0%).
+Population size = 10041.
+Done for beta = 0.106798!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 2.07529 (2.07529).
+E = -0.25569, C = 0.0261187.
+M = 0.0284702, X = 0.0501962.
+Dom. Freq. = 0.184985, Dom. Amplitude. = 2.08451
+Rho_T = 5.04981, No. of Families = 3124.
+Overlap = 0.0257513
+Total number of steps (% w/ wrapping): 5171115 (0%).
+Population size = 10063.
+Done for beta = 0.111768!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 2.16518 (2.16518).
+E = -0.266154, C = 0.0281961.
+M = 0.0286692, X = 0.0523551.
+Dom. Freq. = 0.18191, Dom. Amplitude. = 2.09407
+Rho_T = 5.24066, No. of Families = 3032.
+Overlap = 0.0256796
+Total number of steps (% w/ wrapping): 4971122 (0%).
+Population size = 10078.
+Done for beta = 0.116773!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 2.26363 (2.26363).
+E = -0.277524, C = 0.0302666.
+M = 0.0285864, X = 0.0565767.
+Dom. Freq. = 0.181537, Dom. Amplitude. = 2.1145
+Rho_T = 5.43804, No. of Families = 2958.
+Overlap = 0.0257197
+Total number of steps (% w/ wrapping): 4766894 (0%).
+Population size = 10107.
+Done for beta = 0.12182!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 2.36987 (2.36987).
+E = -0.288819, C = 0.0325244.
+M = 0.0287604, X = 0.0587506.
+Dom. Freq. = 0.180537, Dom. Amplitude. = 2.12137
+Rho_T = 5.60413, No. of Families = 2876.
+Overlap = 0.0259224
+Total number of steps (% w/ wrapping): 4578471 (0%).
+Population size = 10108.
+Done for beta = 0.1269!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 2.48254 (2.48254).
+E = -0.299751, C = 0.0361369.
+M = 0.029041, X = 0.0624026.
+Dom. Freq. = 0.180337, Dom. Amplitude. = 2.14331
+Rho_T = 5.80396, No. of Families = 2798.
+Overlap = 0.0257651
+Total number of steps (% w/ wrapping): 4376764 (0%).
+Population size = 10037.
+Done for beta = 0.13192!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 2.6021 (2.6021).
+E = -0.311877, C = 0.0383297.
+M = 0.0282572, X = 0.0638549.
+Dom. Freq. = 0.179881, Dom. Amplitude. = 2.16226
+Rho_T = 6.02602, No. of Families = 2711.
+Overlap = 0.0258141
+Total number of steps (% w/ wrapping): 4145281 (0%).
+Population size = 10097.
+Done for beta = 0.136987!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 2.73887 (2.73887).
+E = -0.322021, C = 0.0424587.
+M = 0.0291166, X = 0.0682683.
+Dom. Freq. = 0.177027, Dom. Amplitude. = 2.17219
+Rho_T = 6.2273, No. of Families = 2634.
+Overlap = 0.0260686
+Total number of steps (% w/ wrapping): 3978218 (0%).
+Population size = 10059.
+Done for beta = 0.141986!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 2.87637 (2.87637).
+E = -0.333992, C = 0.0456334.
+M = 0.0287381, X = 0.068786.
+Dom. Freq. = 0.178127, Dom. Amplitude. = 2.18977
+Rho_T = 6.41834, No. of Families = 2581.
+Overlap = 0.0263653
+Total number of steps (% w/ wrapping): 3762066 (0%).
+Population size = 10153.
+Done for beta = 0.146984!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 3.02783 (3.02783).
+E = -0.345386, C = 0.0491696.
+M = 0.0295627, X = 0.074017.
+Dom. Freq. = 0.177186, Dom. Amplitude. = 2.21197
+Rho_T = 6.56294, No. of Families = 2529.
+Overlap = 0.0263736
+Total number of steps (% w/ wrapping): 3624621 (0%).
+Population size = 10111.
+Done for beta = 0.151969!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 3.1911 (3.1911).
+E = -0.356489, C = 0.0508816.
+M = 0.029311, X = 0.0776037.
+Dom. Freq. = 0.177152, Dom. Amplitude. = 2.23073
+Rho_T = 6.79032, No. of Families = 2466.
+Overlap = 0.0262108
+Total number of steps (% w/ wrapping): 3427629 (0%).
+Population size = 10075.
+Done for beta = 0.157035!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 3.37402 (3.37402).
+E = -0.367642, C = 0.0542798.
+M = 0.0293114, X = 0.0789868.
+Dom. Freq. = 0.176241, Dom. Amplitude. = 2.24762
+Rho_T = 7.08897, No. of Families = 2384.
+Overlap = 0.0263824
+Total number of steps (% w/ wrapping): 3234075 (0%).
+Population size = 10112.
+Done for beta = 0.162104!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 3.56736 (3.56736).
+E = -0.377933, C = 0.0568832.
+M = 0.0295549, X = 0.0825507.
+Dom. Freq. = 0.175052, Dom. Amplitude. = 2.26174
+Rho_T = 7.24911, No. of Families = 2325.
+Overlap = 0.0265457
+Total number of steps (% w/ wrapping): 3074048 (0%).
+Population size = 10151.
+Done for beta = 0.167215!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 3.78023 (3.78021).
+E = -0.3899, C = 0.060232.
+M = 0.0298489, X = 0.0884639.
+Dom. Freq. = 0.173847, Dom. Amplitude. = 2.28013
+Rho_T = 7.39101, No. of Families = 2270.
+Overlap = 0.0266913
+Total number of steps (% w/ wrapping): 2923488 (3.42057e-05%).
+Population size = 10094.
+Done for beta = 0.172338!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 4.01864 (4.01864).
+E = -0.401142, C = 0.0658345.
+M = 0.0303874, X = 0.0914536.
+Dom. Freq. = 0.174064, Dom. Amplitude. = 2.30154
+Rho_T = 7.55745, No. of Families = 2220.
+Overlap = 0.0271385
+Total number of steps (% w/ wrapping): 2735474 (0%).
+Population size = 10036.
+Done for beta = 0.177389!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 4.26883 (4.26883).
+E = -0.41194, C = 0.0696583.
+M = 0.0303727, X = 0.0941854.
+Dom. Freq. = 0.173812, Dom. Amplitude. = 2.32212
+Rho_T = 7.73044, No. of Families = 2182.
+Overlap = 0.0267549
+Total number of steps (% w/ wrapping): 2559180 (0%).
+Population size = 9953.
+Done for beta = 0.182443!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 4.55149 (4.55149).
+E = -0.42383, C = 0.0733916.
+M = 0.0300363, X = 0.094398.
+Dom. Freq. = 0.173494, Dom. Amplitude. = 2.33774
+Rho_T = 8.04232, No. of Families = 2139.
+Overlap = 0.0270013
+Total number of steps (% w/ wrapping): 2388720 (0%).
+Population size = 9930.
+Done for beta = 0.187508!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 4.85897 (4.85892).
+E = -0.434569, C = 0.0773271.
+M = 0.0296527, X = 0.0966718.
+Dom. Freq. = 0.174764, Dom. Amplitude. = 2.36145
+Rho_T = 8.21886, No. of Families = 2102.
+Overlap = 0.0270391
+Total number of steps (% w/ wrapping): 2234250 (8.95155e-05%).
+Population size = 9973.
+Done for beta = 0.192578!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 5.18771 (5.18762).
+E = -0.445349, C = 0.0818827.
+M = 0.0304375, X = 0.105184.
+Dom. Freq. = 0.173033, Dom. Amplitude. = 2.38382
+Rho_T = 8.38854, No. of Families = 2065.
+Overlap = 0.0271875
+Total number of steps (% w/ wrapping): 2104303 (0.000142565%).
+Population size = 10002.
+Done for beta = 0.197639!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 5.55495 (5.55459).
+E = -0.455687, C = 0.085199.
+M = 0.030276, X = 0.106306.
+Dom. Freq. = 0.173728, Dom. Amplitude. = 2.39865
+Rho_T = 8.66993, No. of Families = 2018.
+Overlap = 0.0272654
+Total number of steps (% w/ wrapping): 1980396 (0.00050495%).
+Population size = 9994.
+Done for beta = 0.202731!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 5.97402 (5.97363).
+E = -0.467917, C = 0.0903662.
+M = 0.0303211, X = 0.109599.
+Dom. Freq. = 0.173001, Dom. Amplitude. = 2.42494
+Rho_T = 9.0036, No. of Families = 1968.
+Overlap = 0.0273117
+Total number of steps (% w/ wrapping): 1848890 (0.000486779%).
+Population size = 9987.
+Done for beta = 0.207802!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 6.44945 (6.44883).
+E = -0.478121, C = 0.0941531.
+M = 0.0306537, X = 0.113901.
+Dom. Freq. = 0.173097, Dom. Amplitude. = 2.43641
+Rho_T = 9.18797, No. of Families = 1931.
+Overlap = 0.0276756
+Total number of steps (% w/ wrapping): 1717764 (0.000698583%).
+Population size = 9948.
+Done for beta = 0.212895!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 6.94754 (6.94565).
+E = -0.489332, C = 0.0993423.
+M = 0.0304564, X = 0.115492.
+Dom. Freq. = 0.172318, Dom. Amplitude. = 2.45742
+Rho_T = 9.41102, No. of Families = 1890.
+Overlap = 0.0279826
+Total number of steps (% w/ wrapping): 1581732 (0.00227599%).
+Population size = 9943.
+Done for beta = 0.217974!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 7.53369 (7.53048).
+E = -0.500798, C = 0.102262.
+M = 0.0309646, X = 0.122972.
+Dom. Freq. = 0.172298, Dom. Amplitude. = 2.4923
+Rho_T = 9.52477, No. of Families = 1849.
+Overlap = 0.0281059
+Total number of steps (% w/ wrapping): 1471564 (0.00373752%).
+Population size = 9927.
+Done for beta = 0.2231!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 8.17912 (8.17386).
+E = -0.512222, C = 0.109493.
+M = 0.0306796, X = 0.12046.
+Dom. Freq. = 0.173063, Dom. Amplitude. = 2.51043
+Rho_T = 9.76312, No. of Families = 1826.
+Overlap = 0.0277001
+Total number of steps (% w/ wrapping): 1350072 (0.00562933%).
+Population size = 9905.
+Done for beta = 0.22817!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 8.90426 (8.894).
+E = -0.523275, C = 0.110243.
+M = 0.0309033, X = 0.127196.
+Dom. Freq. = 0.173057, Dom. Amplitude. = 2.54327
+Rho_T = 9.87911, No. of Families = 1791.
+Overlap = 0.0284155
+Total number of steps (% w/ wrapping): 1248030 (0.00993566%).
+Population size = 9926.
+Done for beta = 0.233338!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 9.73112 (9.7085).
+E = -0.534569, C = 0.118793.
+M = 0.0308992, X = 0.127645.
+Dom. Freq. = 0.172719, Dom. Amplitude. = 2.56218
+Rho_T = 10.1288, No. of Families = 1757.
+Overlap = 0.0285728
+Total number of steps (% w/ wrapping): 1151416 (0.0215387%).
+Population size = 9903.
+Done for beta = 0.238429!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 10.6697 (10.6379).
+E = -0.544548, C = 0.122984.
+M = 0.0310078, X = 0.131449.
+Dom. Freq. = 0.172533, Dom. Amplitude. = 2.58021
+Rho_T = 10.3862, No. of Families = 1725.
+Overlap = 0.0286107
+Total number of steps (% w/ wrapping): 1049718 (0.0292459%).
+Population size = 9901.
+Done for beta = 0.243542!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 11.7535 (11.6905).
+E = -0.556131, C = 0.132789.
+M = 0.0309823, X = 0.142739.
+Dom. Freq. = 0.172303, Dom. Amplitude. = 2.61117
+Rho_T = 10.5904, No. of Families = 1690.
+Overlap = 0.0291095
+Total number of steps (% w/ wrapping): 950496 (0.053551%).
+Population size = 9888.
+Done for beta = 0.248567!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 12.9608 (12.8618).
+E = -0.566876, C = 0.131732.
+M = 0.0314926, X = 0.141751.
+Dom. Freq. = 0.17203, Dom. Amplitude. = 2.64768
+Rho_T = 10.8444, No. of Families = 1667.
+Overlap = 0.0289366
+Total number of steps (% w/ wrapping): 870144 (0.0815957%).
+Population size = 9901.
+Done for beta = 0.253717!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 14.3991 (14.2262).
+E = -0.577714, C = 0.140573.
+M = 0.031149, X = 0.143887.
+Dom. Freq. = 0.174023, Dom. Amplitude. = 2.67129
+Rho_T = 10.9515, No. of Families = 1648.
+Overlap = 0.0294632
+Total number of steps (% w/ wrapping): 792080 (0.132057%).
+Population size = 9842.
+Done for beta = 0.258806!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 16.0122 (15.7067).
+E = -0.589122, C = 0.149129.
+M = 0.0311938, X = 0.14598.
+Dom. Freq. = 0.173555, Dom. Amplitude. = 2.6991
+Rho_T = 11.0133, No. of Families = 1627.
+Overlap = 0.0295384
+Total number of steps (% w/ wrapping): 708624 (0.223108%).
+Population size = 9895.
+Done for beta = 0.263846!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 17.9429 (17.4571).
+E = -0.599749, C = 0.149604.
+M = 0.0314146, X = 0.151464.
+Dom. Freq. = 0.174094, Dom. Amplitude. = 2.72325
+Rho_T = 11.1764, No. of Families = 1598.
+Overlap = 0.0295359
+Total number of steps (% w/ wrapping): 633280 (0.336028%).
+Population size = 9897.
+Done for beta = 0.268976!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 20.2135 (19.3938).
+E = -0.611605, C = 0.156987.
+M = 0.0312545, X = 0.151185.
+Dom. Freq. = 0.175833, Dom. Amplitude. = 2.76453
+Rho_T = 11.4428, No. of Families = 1573.
+Overlap = 0.0295217
+Total number of steps (% w/ wrapping): 574026 (0.530638%).
+Population size = 9829.
+Done for beta = 0.274081!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 22.9851 (21.6628).
+E = -0.622186, C = 0.1606.
+M = 0.0313909, X = 0.15569.
+Dom. Freq. = 0.174716, Dom. Amplitude. = 2.79428
+Rho_T = 11.6193, No. of Families = 1549.
+Overlap = 0.0302644
+Total number of steps (% w/ wrapping): 501279 (0.801949%).
+Population size = 9788.
+Done for beta = 0.279224!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 26.0655 (24.0091).
+E = -0.632775, C = 0.166603.
+M = 0.0309277, X = 0.158789.
+Dom. Freq. = 0.176999, Dom. Amplitude. = 2.81838
+Rho_T = 11.8269, No. of Families = 1525.
+Overlap = 0.0303385
+Total number of steps (% w/ wrapping): 440460 (1.17218%).
+Population size = 9768.
+Done for beta = 0.284368!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 29.8735 (26.5198).
+E = -0.644418, C = 0.173439.
+M = 0.0312418, X = 0.166692.
+Dom. Freq. = 0.176261, Dom. Amplitude. = 2.86333
+Rho_T = 12.04, No. of Families = 1503.
+Overlap = 0.0301085
+Total number of steps (% w/ wrapping): 390720 (1.78261%).
+Population size = 9775.
+Done for beta = 0.289502!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 34.3525 (29.2278).
+E = -0.654544, C = 0.1809.
+M = 0.0317885, X = 0.17187.
+Dom. Freq. = 0.175738, Dom. Amplitude. = 2.89989
+Rho_T = 12.2091, No. of Families = 1477.
+Overlap = 0.0307263
+Total number of steps (% w/ wrapping): 342125 (2.54878%).
+Population size = 9824.
+Done for beta = 0.294621!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 40.1205 (32.1703).
+E = -0.666654, C = 0.182589.
+M = 0.0315019, X = 0.175182.
+Dom. Freq. = 0.177041, Dom. Amplitude. = 2.91578
+Rho_T = 12.4359, No. of Families = 1449.
+Overlap = 0.0312029
+Total number of steps (% w/ wrapping): 294720 (3.66076%).
+Population size = 9850.
+Done for beta = 0.299806!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 46.8866 (34.9029).
+E = -0.678333, C = 0.202679.
+M = 0.0314622, X = 0.170024.
+Dom. Freq. = 0.178207, Dom. Amplitude. = 2.97705
+Rho_T = 12.7803, No. of Families = 1431.
+Overlap = 0.0312395
+Total number of steps (% w/ wrapping): 256100 (5.164%).
+Population size = 9876.
+Done for beta = 0.304814!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 55.1138 (37.3304).
+E = -0.688961, C = 0.198185.
+M = 0.0314984, X = 0.181142.
+Dom. Freq. = 0.177669, Dom. Amplitude. = 3.00085
+Rho_T = 13.073, No. of Families = 1416.
+Overlap = 0.0313594
+Total number of steps (% w/ wrapping): 4345440 (7.077%).
+Population size = 9886.
+Done for beta = 0.309963!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 65.3398 (39.3848).
+E = -0.700129, C = 0.208822.
+M = 0.0318832, X = 0.180996.
+Dom. Freq. = 0.180656, Dom. Amplitude. = 3.03814
+Rho_T = 13.3906, No. of Families = 1390.
+Overlap = 0.032305
+Total number of steps (% w/ wrapping): 3756680 (9.56049%).
+Population size = 9903.
+Done for beta = 0.315063!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 77.9029 (40.7953).
+E = -0.710727, C = 0.215932.
+M = 0.0317847, X = 0.189125.
+Dom. Freq. = 0.178727, Dom. Amplitude. = 3.07777
+Rho_T = 13.6039, No. of Families = 1369.
+Overlap = 0.032399
+Total number of steps (% w/ wrapping): 3168960 (12.6441%).
+Population size = 9905.
+Done for beta = 0.320162!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 93.1341 (41.3709).
+E = -0.722246, C = 0.2215.
+M = 0.031686, X = 0.18823.
+Dom. Freq. = 0.178874, Dom. Amplitude. = 3.12337
+Rho_T = 13.7685, No. of Families = 1343.
+Overlap = 0.0325092
+Total number of steps (% w/ wrapping): 2773400 (16.3015%).
+Population size = 9902.
+Done for beta = 0.325277!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 111.461 (40.7569).
+E = -0.7323, C = 0.228612.
+M = 0.0316297, X = 0.186799.
+Dom. Freq. = 0.180885, Dom. Amplitude. = 3.15192
+Rho_T = 13.9458, No. of Families = 1319.
+Overlap = 0.0329601
+Total number of steps (% w/ wrapping): 2178440 (20.5709%).
+Population size = 9923.
+Done for beta = 0.330393!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 133.665 (39.2104).
+E = -0.744342, C = 0.234179.
+M = 0.0313899, X = 0.188091.
+Dom. Freq. = 0.181904, Dom. Amplitude. = 3.20448
+Rho_T = 14.0813, No. of Families = 1311.
+Overlap = 0.0333271
+Total number of steps (% w/ wrapping): 1984600 (25.3934%).
+Population size = 9880.
+Done for beta = 0.335527!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 160.346 (36.6224).
+E = -0.756044, C = 0.242684.
+M = 0.0313783, X = 0.194549.
+Dom. Freq. = 0.183249, Dom. Amplitude. = 3.24909
+Rho_T = 14.2643, No. of Families = 1301.
+Overlap = 0.0336797
+Total number of steps (% w/ wrapping): 1580800 (30.6588%).
+Population size = 9903.
+Done for beta = 0.340649!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 190.815 (33.2003).
+E = -0.76685, C = 0.253339.
+M = 0.0313967, X = 0.199297.
+Dom. Freq. = 0.181741, Dom. Amplitude. = 3.296
+Rho_T = 14.4925, No. of Families = 1291.
+Overlap = 0.0342427
+Total number of steps (% w/ wrapping): 1386420 (36.1068%).
+Population size = 9888.
+Done for beta = 0.345739!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 226.053 (29.3089).
+E = -0.776828, C = 0.261778.
+M = 0.0310126, X = 0.197072.
+Dom. Freq. = 0.183632, Dom. Amplitude. = 3.35268
+Rho_T = 14.7741, No. of Families = 1266.
+Overlap = 0.0345279
+Total number of steps (% w/ wrapping): 1186560 (41.7017%).
+Population size = 9915.
+Done for beta = 0.35082!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 265.011 (25.0657).
+E = -0.78903, C = 0.273327.
+M = 0.0314436, X = 0.199443.
+Dom. Freq. = 0.184273, Dom. Amplitude. = 3.3876
+Rho_T = 15.0077, No. of Families = 1255.
+Overlap = 0.0347658
+Total number of steps (% w/ wrapping): 991500 (47.2235%).
+Population size = 9912.
+Done for beta = 0.355866!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 306.206 (20.9816).
+E = -0.799019, C = 0.283775.
+M = 0.0313974, X = 0.200823.
+Dom. Freq. = 0.185977, Dom. Amplitude. = 3.44351
+Rho_T = 15.2915, No. of Families = 1240.
+Overlap = 0.0352443
+Total number of steps (% w/ wrapping): 792960 (52.2168%).
+Population size = 9831.
+Done for beta = 0.36089!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 350.689 (17.0791).
+E = -0.811242, C = 0.290727.
+M = 0.0313952, X = 0.211052.
+Dom. Freq. = 0.185679, Dom. Amplitude. = 3.50274
+Rho_T = 15.5254, No. of Families = 1227.
+Overlap = 0.0356927
+Total number of steps (% w/ wrapping): 786480 (57.1314%).
+Population size = 9811.
+Done for beta = 0.365923!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 395.987 (13.4699).
+E = -0.821876, C = 0.299242.
+M = 0.0318188, X = 0.210535.
+Dom. Freq. = 0.186697, Dom. Amplitude. = 3.55515
+Rho_T = 15.616, No. of Families = 1207.
+Overlap = 0.0372686
+Total number of steps (% w/ wrapping): 588660 (61.5564%).
+Population size = 9768.
+Done for beta = 0.370953!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 440.655 (10.6623).
+E = -0.832568, C = 0.296929.
+M = 0.0312838, X = 0.208817.
+Dom. Freq. = 0.186489, Dom. Amplitude. = 3.61595
+Rho_T = 15.7908, No. of Families = 1191.
+Overlap = 0.0367541
+Total number of steps (% w/ wrapping): 586080 (65.344%).
+Population size = 9804.
+Done for beta = 0.376072!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 485.826 (8.21308).
+E = -0.844012, C = 0.307801.
+M = 0.0312426, X = 0.212976.
+Dom. Freq. = 0.188157, Dom. Amplitude. = 3.68012
+Rho_T = 16.2835, No. of Families = 1176.
+Overlap = 0.0373546
+Total number of steps (% w/ wrapping): 588240 (68.9314%).
+Population size = 9779.
+Done for beta = 0.38117!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 527.722 (6.2604).
+E = -0.855177, C = 0.320397.
+M = 0.0309436, X = 0.21119.
+Dom. Freq. = 0.188293, Dom. Amplitude. = 3.75647
+Rho_T = 16.4343, No. of Families = 1163.
+Overlap = 0.0374223
+Total number of steps (% w/ wrapping): 586740 (71.9232%).
+Population size = 9769.
+Done for beta = 0.386234!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 567.781 (4.71472).
+E = -0.86604, C = 0.33122.
+M = 0.0310579, X = 0.212792.
+Dom. Freq. = 0.188562, Dom. Amplitude. = 3.79996
+Rho_T = 16.6943, No. of Families = 1147.
+Overlap = 0.0381022
+Total number of steps (% w/ wrapping): 390760 (74.6978%).
+Population size = 9728.
+Done for beta = 0.39128!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 602.696 (3.6162).
+E = -0.877406, C = 0.3333.
+M = 0.0306105, X = 0.214022.
+Dom. Freq. = 0.189938, Dom. Amplitude. = 3.86699
+Rho_T = 16.9723, No. of Families = 1132.
+Overlap = 0.039294
+Total number of steps (% w/ wrapping): 389120 (76.8421%).
+Population size = 9729.
+Done for beta = 0.396377!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 635.522 (2.76759).
+E = -0.888889, C = 0.349691.
+M = 0.0306736, X = 0.220291.
+Dom. Freq. = 0.189649, Dom. Amplitude. = 3.95802
+Rho_T = 17.0471, No. of Families = 1124.
+Overlap = 0.0398577
+Total number of steps (% w/ wrapping): 389160 (78.82%).
+Population size = 9686.
+Done for beta = 0.401417!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 665.076 (2.10884).
+E = -0.900767, C = 0.356815.
+M = 0.0303749, X = 0.223439.
+Dom. Freq. = 0.190771, Dom. Amplitude. = 4.04018
+Rho_T = 17.2028, No. of Families = 1115.
+Overlap = 0.0406676
+Total number of steps (% w/ wrapping): 387440 (80.6022%).
+Population size = 9640.
+Done for beta = 0.406471!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 690.613 (1.65081).
+E = -0.911889, C = 0.378824.
+M = 0.0301983, X = 0.212534.
+Dom. Freq. = 0.191504, Dom. Amplitude. = 4.12457
+Rho_T = 17.4881, No. of Families = 1102.
+Overlap = 0.0412355
+Total number of steps (% w/ wrapping): 385600 (82.0692%).
+Population size = 9722.
+Done for beta = 0.411437!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 713.337 (1.28465).
+E = -0.922037, C = 0.378302.
+M = 0.0305903, X = 0.225552.
+Dom. Freq. = 0.191045, Dom. Amplitude. = 4.17809
+Rho_T = 17.6283, No. of Families = 1091.
+Overlap = 0.0418162
+Total number of steps (% w/ wrapping): 388880 (83.3882%).
+Population size = 9831.
+Done for beta = 0.416467!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 734.645 (1.02385).
+E = -0.934136, C = 0.395154.
+M = 0.0302892, X = 0.2252.
+Dom. Freq. = 0.191543, Dom. Amplitude. = 4.26541
+Rho_T = 17.9917, No. of Families = 1078.
+Overlap = 0.0425118
+Total number of steps (% w/ wrapping): 393240 (84.6323%).
+Population size = 9814.
+Done for beta = 0.421449!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 753.135 (0.84286).
+E = -0.945281, C = 0.397055.
+M = 0.0302299, X = 0.230201.
+Dom. Freq. = 0.192821, Dom. Amplitude. = 4.36034
+Rho_T = 18.0162, No. of Families = 1065.
+Overlap = 0.0429242
+Total number of steps (% w/ wrapping): 392560 (85.6661%).
+Population size = 9755.
+Done for beta = 0.426479!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 769.618 (0.711643).
+E = -0.956075, C = 0.417139.
+M = 0.0298066, X = 0.22113.
+Dom. Freq. = 0.192734, Dom. Amplitude. = 4.44727
+Rho_T = 18.2132, No. of Families = 1055.
+Overlap = 0.0447273
+Total number of steps (% w/ wrapping): 390200 (86.5597%).
+Population size = 9807.
+Done for beta = 0.431445!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 784.617 (0.578745).
+E = -0.966864, C = 0.40524.
+M = 0.0301572, X = 0.230989.
+Dom. Freq. = 0.193411, Dom. Amplitude. = 4.5423
+Rho_T = 18.7748, No. of Families = 1041.
+Overlap = 0.0442278
+Total number of steps (% w/ wrapping): 392280 (87.4067%).
+Population size = 9817.
+Done for beta = 0.436541!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 800.043 (0.484216).
+E = -0.979036, C = 0.43076.
+M = 0.0299248, X = 0.232169.
+Dom. Freq. = 0.194112, Dom. Amplitude. = 4.64252
+Rho_T = 18.8194, No. of Families = 1033.
+Overlap = 0.0466024
+Total number of steps (% w/ wrapping): 392680 (88.321%).
+Population size = 9868.
+Done for beta = 0.441543!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 813.951 (0.410238).
+E = -0.990836, C = 0.443789.
+M = 0.0299817, X = 0.233127.
+Dom. Freq. = 0.194423, Dom. Amplitude. = 4.7537
+Rho_T = 19.073, No. of Families = 1022.
+Overlap = 0.0477067
+Total number of steps (% w/ wrapping): 394720 (89.1331%).
+Population size = 9924.
+Done for beta = 0.446527!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 825.053 (0.355056).
+E = -1.00117, C = 0.448831.
+M = 0.0295563, X = 0.226896.
+Dom. Freq. = 0.195952, Dom. Amplitude. = 4.88565
+Rho_T = 19.2182, No. of Families = 1014.
+Overlap = 0.0490241
+Total number of steps (% w/ wrapping): 396960 (89.6969%).
+Population size = 9919.
+Done for beta = 0.451539!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 836.014 (0.315115).
+E = -1.01262, C = 0.461588.
+M = 0.0292707, X = 0.228229.
+Dom. Freq. = 0.195915, Dom. Amplitude. = 4.9737
+Rho_T = 19.4184, No. of Families = 1003.
+Overlap = 0.0497817
+Total number of steps (% w/ wrapping): 396760 (90.2866%).
+Population size = 9884.
+Done for beta = 0.456537!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 847.187 (0.274502).
+E = -1.02466, C = 0.466341.
+M = 0.0292147, X = 0.231545.
+Dom. Freq. = 0.196242, Dom. Amplitude. = 5.09997
+Rho_T = 19.5935, No. of Families = 990.
+Overlap = 0.0506494
+Total number of steps (% w/ wrapping): 395360 (90.9343%).
+Population size = 9853.
+Done for beta = 0.461564!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 855.919 (0.241287).
+E = -1.0355, C = 0.485823.
+M = 0.0286354, X = 0.226259.
+Dom. Freq. = 0.196936, Dom. Amplitude. = 5.23309
+Rho_T = 19.9258, No. of Families = 978.
+Overlap = 0.0524937
+Total number of steps (% w/ wrapping): 394120 (91.3549%).
+Population size = 9873.
+Done for beta = 0.466544!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 864.637 (0.218604).
+E = -1.0468, C = 0.496646.
+M = 0.0289319, X = 0.227114.
+Dom. Freq. = 0.19684, Dom. Amplitude. = 5.37489
+Rho_T = 20.0731, No. of Families = 967.
+Overlap = 0.0535393
+Total number of steps (% w/ wrapping): 394920 (91.8069%).
+Population size = 9875.
+Done for beta = 0.471522!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 873.671 (0.194911).
+E = -1.05882, C = 0.516956.
+M = 0.0283552, X = 0.223966.
+Dom. Freq. = 0.197851, Dom. Amplitude. = 5.51351
+Rho_T = 20.2328, No. of Families = 955.
+Overlap = 0.0549316
+Total number of steps (% w/ wrapping): 395000 (92.3172%).
+Population size = 9803.
+Done for beta = 0.476454!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 882.134 (0.174725).
+E = -1.06932, C = 0.521753.
+M = 0.0288982, X = 0.229197.
+Dom. Freq. = 0.19793, Dom. Amplitude. = 5.69945
+Rho_T = 20.2324, No. of Families = 940.
+Overlap = 0.057026
+Total number of steps (% w/ wrapping): 392120 (92.7991%).
+Population size = 9788.
+Done for beta = 0.481414!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 890.437 (0.156224).
+E = -1.08078, C = 0.52719.
+M = 0.028376, X = 0.229155.
+Dom. Freq. = 0.197985, Dom. Amplitude. = 5.85222
+Rho_T = 20.4895, No. of Families = 930.
+Overlap = 0.0587658
+Total number of steps (% w/ wrapping): 391520 (93.2839%).
+Population size = 9785.
+Done for beta = 0.4864!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 897.008 (0.142131).
+E = -1.09225, C = 0.537383.
+M = 0.0280464, X = 0.221762.
+Dom. Freq. = 0.198572, Dom. Amplitude. = 6.00012
+Rho_T = 20.7178, No. of Families = 917.
+Overlap = 0.0599443
+Total number of steps (% w/ wrapping): 391400 (93.6078%).
+Population size = 9781.
+Done for beta = 0.49139!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 903.035 (0.130028).
+E = -1.10334, C = 0.556173.
+M = 0.0277841, X = 0.220665.
+Dom. Freq. = 0.198948, Dom. Amplitude. = 6.16394
+Rho_T = 20.7071, No. of Families = 910.
+Overlap = 0.0625527
+Total number of steps (% w/ wrapping): 391240 (93.8925%).
+Population size = 9763.
+Done for beta = 0.496344!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 909.475 (0.118906).
+E = -1.11484, C = 0.559968.
+M = 0.0274014, X = 0.224779.
+Dom. Freq. = 0.19951, Dom. Amplitude. = 6.32476
+Rho_T = 20.9707, No. of Families = 903.
+Overlap = 0.0644403
+Total number of steps (% w/ wrapping): 390520 (94.2449%).
+Population size = 9810.
+Done for beta = 0.501332!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 915.275 (0.107905).
+E = -1.12571, C = 0.579014.
+M = 0.0275661, X = 0.222902.
+Dom. Freq. = 0.199787, Dom. Amplitude. = 6.51669
+Rho_T = 21.1844, No. of Families = 891.
+Overlap = 0.0671867
+Total number of steps (% w/ wrapping): 392400 (94.5375%).
+Population size = 9791.
+Done for beta = 0.506287!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 920.501 (0.0996936).
+E = -1.13712, C = 0.58236.
+M = 0.027109, X = 0.21963.
+Dom. Freq. = 0.200248, Dom. Amplitude. = 6.69818
+Rho_T = 21.4378, No. of Families = 878.
+Overlap = 0.0684735
+Total number of steps (% w/ wrapping): 391640 (94.7937%).
+Population size = 9800.
+Done for beta = 0.511276!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 926.093 (0.0918546).
+E = -1.14856, C = 0.575698.
+M = 0.0269479, X = 0.217279.
+Dom. Freq. = 0.200303, Dom. Amplitude. = 6.90909
+Rho_T = 21.6937, No. of Families = 873.
+Overlap = 0.0707111
+Total number of steps (% w/ wrapping): 392000 (95.1013%).
+Population size = 9754.
+Done for beta = 0.516343!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 930.224 (0.0856392).
+E = -1.16063, C = 0.603737.
+M = 0.0266932, X = 0.213954.
+Dom. Freq. = 0.200956, Dom. Amplitude. = 7.1433
+Rho_T = 21.7863, No. of Families = 863.
+Overlap = 0.0733343
+Total number of steps (% w/ wrapping): 390160 (95.2653%).
+Population size = 9729.
+Done for beta = 0.52134!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 935.904 (0.0780425).
+E = -1.17164, C = 0.621112.
+M = 0.0267343, X = 0.214142.
+Dom. Freq. = 0.201649, Dom. Amplitude. = 7.36946
+Rho_T = 22.1293, No. of Families = 858.
+Overlap = 0.077018
+Total number of steps (% w/ wrapping): 389160 (95.6028%).
+Population size = 9722.
+Done for beta = 0.526315!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 939.71 (0.0733877).
+E = -1.18196, C = 0.636862.
+M = 0.0259592, X = 0.215114.
+Dom. Freq. = 0.202302, Dom. Amplitude. = 7.56466
+Rho_T = 22.4073, No. of Families = 851.
+Overlap = 0.0783709
+Total number of steps (% w/ wrapping): 388880 (95.7725%).
+Population size = 9758.
+Done for beta = 0.531274!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 944.49 (0.0670347).
+E = -1.19352, C = 0.633422.
+M = 0.0259517, X = 0.215548.
+Dom. Freq. = 0.202901, Dom. Amplitude. = 7.79767
+Rho_T = 22.6876, No. of Families = 843.
+Overlap = 0.0812428
+Total number of steps (% w/ wrapping): 390320 (96.0417%).
+Population size = 9746.
+Done for beta = 0.536294!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 948.619 (0.061025).
+E = -1.20508, C = 0.643978.
+M = 0.0256704, X = 0.20268.
+Dom. Freq. = 0.203398, Dom. Amplitude. = 8.04552
+Rho_T = 22.9911, No. of Families = 835.
+Overlap = 0.0861297
+Total number of steps (% w/ wrapping): 389840 (96.2595%).
+Population size = 9807.
+Done for beta = 0.541319!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 951.644 (0.0578847).
+E = -1.21643, C = 0.673312.
+M = 0.0249272, X = 0.20401.
+Dom. Freq. = 0.204009, Dom. Amplitude. = 8.31884
+Rho_T = 23.374, No. of Families = 829.
+Overlap = 0.0898412
+Total number of steps (% w/ wrapping): 392280 (96.3733%).
+Population size = 9825.
+Done for beta = 0.54628!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 955.871 (0.0531374).
+E = -1.22876, C = 0.700961.
+M = 0.0252556, X = 0.2039.
+Dom. Freq. = 0.204669, Dom. Amplitude. = 8.63091
+Rho_T = 23.7845, No. of Families = 816.
+Overlap = 0.0925741
+Total number of steps (% w/ wrapping): 393000 (96.6206%).
+Population size = 9907.
+Done for beta = 0.551187!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 958.843 (0.0498183).
+E = -1.23983, C = 0.712528.
+M = 0.0246007, X = 0.196107.
+Dom. Freq. = 0.205511, Dom. Amplitude. = 8.94398
+Rho_T = 24.1311, No. of Families = 800.
+Overlap = 0.0960235
+Total number of steps (% w/ wrapping): 396280 (96.746%).
+Population size = 9866.
+Done for beta = 0.556097!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 962.173 (0.0464347).
+E = -1.25103, C = 0.740135.
+M = 0.0242076, X = 0.195554.
+Dom. Freq. = 0.206182, Dom. Amplitude. = 9.26954
+Rho_T = 24.8265, No. of Families = 789.
+Overlap = 0.103372
+Total number of steps (% w/ wrapping): 394640 (96.9253%).
+Population size = 9812.
+Done for beta = 0.560958!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 965.222 (0.0440022).
+E = -1.26379, C = 0.771264.
+M = 0.0238864, X = 0.192469.
+Dom. Freq. = 0.207396, Dom. Amplitude. = 9.61802
+Rho_T = 25.2939, No. of Families = 780.
+Overlap = 0.109584
+Total number of steps (% w/ wrapping): 392480 (97.0753%).
+Population size = 9799.
+Done for beta = 0.565761!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 968.734 (0.0399837).
+E = -1.2747, C = 0.825364.
+M = 0.0236902, X = 0.18944.
+Dom. Freq. = 0.208436, Dom. Amplitude. = 9.96425
+Rho_T = 25.9956, No. of Families = 771.
+Overlap = 0.115545
+Total number of steps (% w/ wrapping): 391960 (97.2857%).
+Population size = 9802.
+Done for beta = 0.570444!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 970.709 (0.0385891).
+E = -1.28739, C = 0.850071.
+M = 0.0232546, X = 0.183055.
+Dom. Freq. = 0.20953, Dom. Amplitude. = 10.3503
+Rho_T = 26.7394, No. of Families = 759.
+Overlap = 0.123226
+Total number of steps (% w/ wrapping): 392080 (97.349%).
+Population size = 9855.
+Done for beta = 0.575097!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 974.041 (0.0345637).
+E = -1.29999, C = 0.901375.
+M = 0.0228822, X = 0.180268.
+Dom. Freq. = 0.21054, Dom. Amplitude. = 10.7574
+Rho_T = 27.8087, No. of Families = 754.
+Overlap = 0.132504
+Total number of steps (% w/ wrapping): 394200 (97.5507%).
+Population size = 9872.
+Done for beta = 0.579652!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 976.012 (0.0339344).
+E = -1.31162, C = 0.932856.
+M = 0.0223865, X = 0.171125.
+Dom. Freq. = 0.211602, Dom. Amplitude. = 11.1877
+Rho_T = 29.156, No. of Families = 747.
+Overlap = 0.144879
+Total number of steps (% w/ wrapping): 394880 (97.6256%).
+Population size = 9918.
+Done for beta = 0.584165!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 978.211 (0.0317277).
+E = -1.32391, C = 0.946884.
+M = 0.022049, X = 0.171397.
+Dom. Freq. = 0.21265, Dom. Amplitude. = 11.6177
+Rho_T = 30.8493, No. of Families = 731.
+Overlap = 0.15736
+Total number of steps (% w/ wrapping): 396720 (97.7322%).
+Population size = 9901.
+Done for beta = 0.588679!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 980.663 (0.0296132).
+E = -1.3364, C = 0.938981.
+M = 0.0219539, X = 0.169455.
+Dom. Freq. = 0.213703, Dom. Amplitude. = 12.075
+Rho_T = 32.8077, No. of Families = 719.
+Overlap = 0.170843
+Total number of steps (% w/ wrapping): 396040 (97.8659%).
+Population size = 9891.
+Done for beta = 0.593248!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 982.443 (0.0280962).
+E = -1.3487, C = 0.943309.
+M = 0.0212328, X = 0.164164.
+Dom. Freq. = 0.214794, Dom. Amplitude. = 12.4856
+Rho_T = 34.2583, No. of Families = 702.
+Overlap = 0.185955
+Total number of steps (% w/ wrapping): 395640 (97.94%).
+Population size = 9865.
+Done for beta = 0.597841!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 984.513 (0.0258464).
+E = -1.361, C = 0.920545.
+M = 0.0211108, X = 0.157749.
+Dom. Freq. = 0.215421, Dom. Amplitude. = 12.8976
+Rho_T = 36.3906, No. of Families = 683.
+Overlap = 0.199975
+Total number of steps (% w/ wrapping): 394600 (98.0443%).
+Population size = 9912.
+Done for beta = 0.602527!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 986.498 (0.0248537).
+E = -1.3727, C = 0.90198.
+M = 0.0203569, X = 0.150241.
+Dom. Freq. = 0.216294, Dom. Amplitude. = 13.292
+Rho_T = 38.6592, No. of Families = 660.
+Overlap = 0.212614
+Total number of steps (% w/ wrapping): 396480 (98.1437%).
+Population size = 9883.
+Done for beta = 0.607297!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 988.553 (0.0233709).
+E = -1.38427, C = 0.88193.
+M = 0.0198299, X = 0.142599.
+Dom. Freq. = 0.21696, Dom. Amplitude. = 13.679
+Rho_T = 40.3688, No. of Families = 640.
+Overlap = 0.227649
+Total number of steps (% w/ wrapping): 395320 (98.2569%).
+Population size = 9919.
+Done for beta = 0.61216!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 990.446 (0.0216025).
+E = -1.39506, C = 0.849619.
+M = 0.0196797, X = 0.144373.
+Dom. Freq. = 0.217465, Dom. Amplitude. = 14.0521
+Rho_T = 42.1172, No. of Families = 621.
+Overlap = 0.239793
+Total number of steps (% w/ wrapping): 396760 (98.3544%).
+Population size = 9916.
+Done for beta = 0.617154!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 992.202 (0.0199551).
+E = -1.40525, C = 0.807048.
+M = 0.019133, X = 0.133752.
+Dom. Freq. = 0.217827, Dom. Amplitude. = 14.3694
+Rho_T = 43.7316, No. of Families = 609.
+Overlap = 0.254363
+Total number of steps (% w/ wrapping): 396640 (98.447%).
+Population size = 9864.
+Done for beta = 0.62232!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 993.772 (0.0189477).
+E = -1.41594, C = 0.748371.
+M = 0.0189069, X = 0.132853.
+Dom. Freq. = 0.218145, Dom. Amplitude. = 14.6948
+Rho_T = 45.5296, No. of Families = 586.
+Overlap = 0.265003
+Total number of steps (% w/ wrapping): 394560 (98.5204%).
+Population size = 9871.
+Done for beta = 0.62773!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 995.539 (0.0177414).
+E = -1.42638, C = 0.677084.
+M = 0.0184891, X = 0.128972.
+Dom. Freq. = 0.218348, Dom. Amplitude. = 14.9787
+Rho_T = 47.3751, No. of Families = 571.
+Overlap = 0.27909
+Total number of steps (% w/ wrapping): 394840 (98.6144%).
+Population size = 9823.
+Done for beta = 0.633467!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 996.555 (0.0172096).
+E = -1.43594, C = 0.659483.
+M = 0.0180684, X = 0.12535.
+Dom. Freq. = 0.218502, Dom. Amplitude. = 15.231
+Rho_T = 48.7131, No. of Families = 550.
+Overlap = 0.286913
+Total number of steps (% w/ wrapping): 392920 (98.6346%).
+Population size = 9831.
+Done for beta = 0.639333!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 998.433 (0.015769).
+E = -1.44543, C = 0.624188.
+M = 0.0178177, X = 0.122366.
+Dom. Freq. = 0.218578, Dom. Amplitude. = 15.4644
+Rho_T = 49.915, No. of Families = 537.
+Overlap = 0.296234
+Total number of steps (% w/ wrapping): 393240 (98.745%).
+Population size = 9833.
+Done for beta = 0.645418!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 999.913 (0.0145734).
+E = -1.45385, C = 0.585761.
+M = 0.0177366, X = 0.121838.
+Dom. Freq. = 0.218667, Dom. Amplitude. = 15.6364
+Rho_T = 51.2293, No. of Families = 514.
+Overlap = 0.304241
+Total number of steps (% w/ wrapping): 393320 (98.8183%).
+Population size = 9883.
+Done for beta = 0.651759!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1001.3 (0.0135991).
+E = -1.46232, C = 0.554793.
+M = 0.0173447, X = 0.116484.
+Dom. Freq. = 0.218696, Dom. Amplitude. = 15.8187
+Rho_T = 52.3776, No. of Families = 506.
+Overlap = 0.315109
+Total number of steps (% w/ wrapping): 395320 (98.8872%).
+Population size = 9897.
+Done for beta = 0.658339!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1003.08 (0.0120314).
+E = -1.47096, C = 0.523999.
+M = 0.0169626, X = 0.11314.
+Dom. Freq. = 0.218715, Dom. Amplitude. = 15.9724
+Rho_T = 53.0793, No. of Families = 492.
+Overlap = 0.318253
+Total number of steps (% w/ wrapping): 395880 (98.9946%).
+Population size = 9844.
+Done for beta = 0.665179!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1004.14 (0.011601).
+E = -1.47891, C = 0.489195.
+M = 0.0170712, X = 0.117857.
+Dom. Freq. = 0.218725, Dom. Amplitude. = 16.1278
+Rho_T = 54.379, No. of Families = 477.
+Overlap = 0.323888
+Total number of steps (% w/ wrapping): 393760 (99.0322%).
+Population size = 9881.
+Done for beta = 0.67233!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1005.46 (0.010591).
+E = -1.486, C = 0.471961.
+M = 0.0168313, X = 0.113879.
+Dom. Freq. = 0.218744, Dom. Amplitude. = 16.2487
+Rho_T = 54.8809, No. of Families = 470.
+Overlap = 0.328618
+Total number of steps (% w/ wrapping): 395240 (99.1%).
+Population size = 9836.
+Done for beta = 0.67969!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1006.53 (0.0101134).
+E = -1.4939, C = 0.448762.
+M = 0.0164278, X = 0.108537.
+Dom. Freq. = 0.218744, Dom. Amplitude. = 16.372
+Rho_T = 55.4027, No. of Families = 463.
+Overlap = 0.331394
+Total number of steps (% w/ wrapping): 393440 (99.1457%).
+Population size = 9804.
+Done for beta = 0.687319!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1007.82 (0.00919778).
+E = -1.50088, C = 0.422512.
+M = 0.0164693, X = 0.106862.
+Dom. Freq. = 0.21875, Dom. Amplitude. = 16.4788
+Rho_T = 55.3846, No. of Families = 459.
+Overlap = 0.336807
+Total number of steps (% w/ wrapping): 392160 (99.2146%).
+Population size = 9833.
+Done for beta = 0.695271!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1008.81 (0.0087664).
+E = -1.50806, C = 0.393035.
+M = 0.016298, X = 0.110233.
+Dom. Freq. = 0.218753, Dom. Amplitude. = 16.5735
+Rho_T = 56.0272, No. of Families = 451.
+Overlap = 0.344073
+Total number of steps (% w/ wrapping): 393320 (99.2581%).
+Population size = 9837.
+Done for beta = 0.703611!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1009.91 (0.00797245).
+E = -1.51433, C = 0.379301.
+M = 0.0163592, X = 0.110781.
+Dom. Freq. = 0.218753, Dom. Amplitude. = 16.6577
+Rho_T = 56.1683, No. of Families = 444.
+Overlap = 0.346159
+Total number of steps (% w/ wrapping): 393480 (99.3118%).
+Population size = 9833.
+Done for beta = 0.712202!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1010.81 (0.00743415).
+E = -1.52136, C = 0.372479.
+M = 0.0162366, X = 0.108647.
+Dom. Freq. = 0.21876, Dom. Amplitude. = 16.745
+Rho_T = 57.0736, No. of Families = 436.
+Overlap = 0.346751
+Total number of steps (% w/ wrapping): 393320 (99.3496%).
+Population size = 9831.
+Done for beta = 0.720977!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1011.78 (0.00694233).
+E = -1.52745, C = 0.346931.
+M = 0.0160893, X = 0.108142.
+Dom. Freq. = 0.218763, Dom. Amplitude. = 16.8291
+Rho_T = 57.3965, No. of Families = 432.
+Overlap = 0.349388
+Total number of steps (% w/ wrapping): 393240 (99.3973%).
+Population size = 9895.
+Done for beta = 0.730182!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1012.9 (0.00614452).
+E = -1.53341, C = 0.338969.
+M = 0.0160204, X = 0.109594.
+Dom. Freq. = 0.218763, Dom. Amplitude. = 16.9029
+Rho_T = 58.3204, No. of Families = 426.
+Overlap = 0.355774
+Total number of steps (% w/ wrapping): 395800 (99.4613%).
+Population size = 9883.
+Done for beta = 0.739613!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1013.72 (0.0056663).
+E = -1.5391, C = 0.315334.
+M = 0.015961, X = 0.110122.
+Dom. Freq. = 0.218766, Dom. Amplitude. = 16.9683
+Rho_T = 58.6081, No. of Families = 423.
+Overlap = 0.356255
+Total number of steps (% w/ wrapping): 395320 (99.4996%).
+Population size = 9931.
+Done for beta = 0.749517!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1014.32 (0.00544255).
+E = -1.54451, C = 0.311755.
+M = 0.0157794, X = 0.108286.
+Dom. Freq. = 0.218772, Dom. Amplitude. = 17.0369
+Rho_T = 59.6152, No. of Families = 417.
+Overlap = 0.359805
+Total number of steps (% w/ wrapping): 397240 (99.5179%).
+Population size = 9959.
+Done for beta = 0.759612!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1015.39 (0.00469174).
+E = -1.55027, C = 0.295695.
+M = 0.0158647, X = 0.114818.
+Dom. Freq. = 0.218775, Dom. Amplitude. = 17.0998
+Rho_T = 60.2469, No. of Families = 413.
+Overlap = 0.363019
+Total number of steps (% w/ wrapping): 398360 (99.583%).
+Population size = 9941.
+Done for beta = 0.770117!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1016.24 (0.0041017).
+E = -1.55581, C = 0.298951.
+M = 0.0159166, X = 0.113814.
+Dom. Freq. = 0.218788, Dom. Amplitude. = 17.1604
+Rho_T = 61.2481, No. of Families = 411.
+Overlap = 0.366299
+Total number of steps (% w/ wrapping): 397640 (99.6306%).
+Population size = 9945.
+Done for beta = 0.780708!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1016.58 (0.00406486).
+E = -1.56104, C = 0.286511.
+M = 0.0160221, X = 0.116165.
+Dom. Freq. = 0.218794, Dom. Amplitude. = 17.2013
+Rho_T = 63.1462, No. of Families = 408.
+Overlap = 0.368197
+Total number of steps (% w/ wrapping): 397800 (99.6302%).
+Population size = 9936.
+Done for beta = 0.791676!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1017.23 (0.00372383).
+E = -1.56606, C = 0.269004.
+M = 0.0161019, X = 0.120966.
+Dom. Freq. = 0.218803, Dom. Amplitude. = 17.25
+Rho_T = 64.5354, No. of Families = 404.
+Overlap = 0.372931
+Total number of steps (% w/ wrapping): 397440 (99.6618%).
+Population size = 9965.
+Done for beta = 0.803155!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1017.91 (0.00331912).
+E = -1.57097, C = 0.265928.
+M = 0.0158822, X = 0.120078.
+Dom. Freq. = 0.218803, Dom. Amplitude. = 17.2957
+Rho_T = 65.7904, No. of Families = 399.
+Overlap = 0.371296
+Total number of steps (% w/ wrapping): 398600 (99.6984%).
+Population size = 9943.
+Done for beta = 0.814867!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1018.56 (0.00289651).
+E = -1.5752, C = 0.257873.
+M = 0.0159998, X = 0.121899.
+Dom. Freq. = 0.218813, Dom. Amplitude. = 17.3368
+Rho_T = 66.4131, No. of Families = 395.
+Overlap = 0.373262
+Total number of steps (% w/ wrapping): 397720 (99.7345%).
+Population size = 9962.
+Done for beta = 0.826933!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1019.08 (0.00259486).
+E = -1.58044, C = 0.247331.
+M = 0.0161687, X = 0.123955.
+Dom. Freq. = 0.218832, Dom. Amplitude. = 17.3737
+Rho_T = 67.5484, No. of Families = 391.
+Overlap = 0.377992
+Total number of steps (% w/ wrapping): 398480 (99.7606%).
+Population size = 9998.
+Done for beta = 0.839437!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1019.38 (0.002523).
+E = -1.5844, C = 0.237378.
+M = 0.0160985, X = 0.126595.
+Dom. Freq. = 0.218844, Dom. Amplitude. = 17.4028
+Rho_T = 68.5504, No. of Families = 384.
+Overlap = 0.377451
+Total number of steps (% w/ wrapping): 399920 (99.766%).
+Population size = 9989.
+Done for beta = 0.852394!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1019.88 (0.00224497).
+E = -1.58859, C = 0.234678.
+M = 0.0164316, X = 0.131554.
+Dom. Freq. = 0.218863, Dom. Amplitude. = 17.428
+Rho_T = 69.7226, No. of Families = 377.
+Overlap = 0.37606
+Total number of steps (% w/ wrapping): 399560 (99.7938%).
+Population size = 10011.
+Done for beta = 0.865625!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1020.48 (0.0018155).
+E = -1.59263, C = 0.224477.
+M = 0.0166446, X = 0.13629.
+Dom. Freq. = 0.218894, Dom. Amplitude. = 17.4572
+Rho_T = 71.4095, No. of Families = 369.
+Overlap = 0.380982
+Total number of steps (% w/ wrapping): 400440 (99.8312%).
+Population size = 10004.
+Done for beta = 0.879364!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1020.92 (0.00155938).
+E = -1.59673, C = 0.214812.
+M = 0.0168464, X = 0.140656.
+Dom. Freq. = 0.2189, Dom. Amplitude. = 17.484
+Rho_T = 73.0232, No. of Families = 363.
+Overlap = 0.377513
+Total number of steps (% w/ wrapping): 400160 (99.8561%).
+Population size = 10017.
+Done for beta = 0.893632!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1021.13 (0.00149496).
+E = -1.60061, C = 0.205565.
+M = 0.017002, X = 0.149193.
+Dom. Freq. = 0.21894, Dom. Amplitude. = 17.4992
+Rho_T = 75.2231, No. of Families = 358.
+Overlap = 0.380739
+Total number of steps (% w/ wrapping): 400680 (99.86%).
+Population size = 9978.
+Done for beta = 0.908453!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1021.42 (0.00135298).
+E = -1.60433, C = 0.197857.
+M = 0.0171677, X = 0.155229.
+Dom. Freq. = 0.218985, Dom. Amplitude. = 17.5066
+Rho_T = 77.3178, No. of Families = 356.
+Overlap = 0.379497
+Total number of steps (% w/ wrapping): 399120 (99.8725%).
+Population size = 10001.
+Done for beta = 0.923812!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1021.76 (0.00113989).
+E = -1.60772, C = 0.200934.
+M = 0.017283, X = 0.16106.
+Dom. Freq. = 0.219022, Dom. Amplitude. = 17.5124
+Rho_T = 79.6216, No. of Families = 353.
+Overlap = 0.379084
+Total number of steps (% w/ wrapping): 400040 (99.8908%).
+Population size = 10076.
+Done for beta = 0.939309!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1021.96 (0.00109667).
+E = -1.61109, C = 0.192341.
+M = 0.0176008, X = 0.166838.
+Dom. Freq. = 0.219066, Dom. Amplitude. = 17.5224
+Rho_T = 81.5702, No. of Families = 350.
+Overlap = 0.378805
+Total number of steps (% w/ wrapping): 403040 (99.8975%).
+Population size = 10067.
+Done for beta = 0.955415!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1022.22 (0.000941194).
+E = -1.61471, C = 0.188647.
+M = 0.0177657, X = 0.1763.
+Dom. Freq. = 0.219101, Dom. Amplitude. = 17.5249
+Rho_T = 84.0212, No. of Families = 349.
+Overlap = 0.382588
+Total number of steps (% w/ wrapping): 402680 (99.9121%).
+Population size = 10081.
+Done for beta = 0.971957!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1022.44 (0.000813411).
+E = -1.61784, C = 0.181305.
+M = 0.0181466, X = 0.186906.
+Dom. Freq. = 0.219193, Dom. Amplitude. = 17.522
+Rho_T = 87.5772, No. of Families = 345.
+Overlap = 0.383838
+Total number of steps (% w/ wrapping): 403240 (99.9219%).
+Population size = 10056.
+Done for beta = 0.989122!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1022.67 (0.000683671).
+E = -1.62124, C = 0.171472.
+M = 0.0185922, X = 0.196715.
+Dom. Freq. = 0.219288, Dom. Amplitude. = 17.5123
+Rho_T = 93.2505, No. of Families = 341.
+Overlap = 0.375932
+Total number of steps (% w/ wrapping): 402240 (99.9356%).
+Population size = 10027.
+Done for beta = 1.00708!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1022.87 (0.000555999).
+E = -1.62413, C = 0.170834.
+M = 0.0189831, X = 0.204177.
+Dom. Freq. = 0.219395, Dom. Amplitude. = 17.4969
+Rho_T = 97.7107, No. of Families = 336.
+Overlap = 0.380859
+Total number of steps (% w/ wrapping): 401080 (99.9464%).
+Population size = 10071.
+Done for beta = 1.02541!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.03 (0.000471651).
+E = -1.6272, C = 0.161794.
+M = 0.0192537, X = 0.21671.
+Dom. Freq. = 0.219523, Dom. Amplitude. = 17.4825
+Rho_T = 103.253, No. of Families = 332.
+Overlap = 0.378797
+Total number of steps (% w/ wrapping): 402840 (99.9543%).
+Population size = 10067.
+Done for beta = 1.04458!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.13 (0.000434588).
+E = -1.62997, C = 0.160617.
+M = 0.0196275, X = 0.232335.
+Dom. Freq. = 0.219694, Dom. Amplitude. = 17.4527
+Rho_T = 110.926, No. of Families = 328.
+Overlap = 0.376202
+Total number of steps (% w/ wrapping): 402680 (99.9573%).
+Population size = 10073.
+Done for beta = 1.06418!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.34 (0.000297826).
+E = -1.63275, C = 0.156412.
+M = 0.0200689, X = 0.246208.
+Dom. Freq. = 0.219864, Dom. Amplitude. = 17.4169
+Rho_T = 119.439, No. of Families = 322.
+Overlap = 0.373319
+Total number of steps (% w/ wrapping): 402920 (99.9715%).
+Population size = 10076.
+Done for beta = 1.08441!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.37 (0.000320067).
+E = -1.63553, C = 0.155169.
+M = 0.0205475, X = 0.263437.
+Dom. Freq. = 0.220022, Dom. Amplitude. = 17.3863
+Rho_T = 131.779, No. of Families = 312.
+Overlap = 0.373917
+Total number of steps (% w/ wrapping): 403040 (99.9692%).
+Population size = 10019.
+Done for beta = 1.10511!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.63 (9.98104e-05).
+E = -1.6382, C = 0.150398.
+M = 0.0210081, X = 0.283763.
+Dom. Freq. = 0.22025, Dom. Amplitude. = 17.3379
+Rho_T = 147.333, No. of Families = 306.
+Overlap = 0.367112
+Total number of steps (% w/ wrapping): 20038 (99.99%).
+Population size = 10022.
+Done for beta = 1.12654!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.52 (0.000249451).
+E = -1.64066, C = 0.145193.
+M = 0.0215479, X = 0.304954.
+Dom. Freq. = 0.220518, Dom. Amplitude. = 17.2682
+Rho_T = 169.524, No. of Families = 296.
+Overlap = 0.370635
+Total number of steps (% w/ wrapping): 20044 (99.9751%).
+Population size = 9986.
+Done for beta = 1.14877!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.6 (0.00020028).
+E = -1.64306, C = 0.140929.
+M = 0.0221417, X = 0.331267.
+Dom. Freq. = 0.220772, Dom. Amplitude. = 17.1993
+Rho_T = 195.22, No. of Families = 286.
+Overlap = 0.367469
+Total number of steps (% w/ wrapping): 19972 (99.98%).
+Population size = 9945.
+Done for beta = 1.17179!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.74 (0.000100553).
+E = -1.64551, C = 0.133866.
+M = 0.0227421, X = 0.358592.
+Dom. Freq. = 0.221075, Dom. Amplitude. = 17.1276
+Rho_T = 228.219, No. of Families = 282.
+Overlap = 0.369097
+Total number of steps (% w/ wrapping): 19890 (99.9899%).
+Population size = 10005.
+Done for beta = 1.19587!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.82 (4.9975e-05).
+E = -1.64776, C = 0.129156.
+M = 0.0233828, X = 0.386695.
+Dom. Freq. = 0.221402, Dom. Amplitude. = 17.0454
+Rho_T = 269.453, No. of Families = 271.
+Overlap = 0.362918
+Total number of steps (% w/ wrapping): 20010 (99.995%).
+Population size = 10060.
+Done for beta = 1.22089!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.89 (0).
+E = -1.64995, C = 0.12406.
+M = 0.0240265, X = 0.41393.
+Dom. Freq. = 0.221695, Dom. Amplitude. = 16.9738
+Rho_T = 314.824, No. of Families = 257.
+Overlap = 0.362811
+Total number of steps (% w/ wrapping): 20120 (100%).
+Population size = 10001.
+Done for beta = 1.24696!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.86 (4.9995e-05).
+E = -1.65208, C = 0.115501.
+M = 0.0245845, X = 0.445275.
+Dom. Freq. = 0.221928, Dom. Amplitude. = 16.8992
+Rho_T = 362.069, No. of Families = 241.
+Overlap = 0.362359
+Total number of steps (% w/ wrapping): 20002 (99.995%).
+Population size = 10060.
+Done for beta = 1.27455!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.88 (4.97018e-05).
+E = -1.65404, C = 0.10888.
+M = 0.0253215, X = 0.479366.
+Dom. Freq. = 0.22213, Dom. Amplitude. = 16.8239
+Rho_T = 414.732, No. of Families = 234.
+Overlap = 0.357889
+Total number of steps (% w/ wrapping): 20120 (99.995%).
+Population size = 10088.
+Done for beta = 1.3036!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.89 (4.95638e-05).
+E = -1.6558, C = 0.103457.
+M = 0.0259037, X = 0.513527.
+Dom. Freq. = 0.222353, Dom. Amplitude. = 16.7458
+Rho_T = 482.52, No. of Families = 225.
+Overlap = 0.359385
+Total number of steps (% w/ wrapping): 20176 (99.995%).
+Population size = 10092.
+Done for beta = 1.33407!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.85 (9.90884e-05).
+E = -1.65754, C = 0.0953578.
+M = 0.0265251, X = 0.54866.
+Dom. Freq. = 0.222537, Dom. Amplitude. = 16.6595
+Rho_T = 557.297, No. of Families = 207.
+Overlap = 0.359139
+Total number of steps (% w/ wrapping): 20184 (99.9901%).
+Population size = 10077.
+Done for beta = 1.36656!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.91 (4.96179e-05).
+E = -1.65918, C = 0.087793.
+M = 0.0271532, X = 0.592408.
+Dom. Freq. = 0.222747, Dom. Amplitude. = 16.5543
+Rho_T = 659.129, No. of Families = 189.
+Overlap = 0.35487
+Total number of steps (% w/ wrapping): 20154 (99.995%).
+Population size = 10100.
+Done for beta = 1.40124!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.97 (0).
+E = -1.6607, C = 0.0805776.
+M = 0.0277918, X = 0.629512.
+Dom. Freq. = 0.222868, Dom. Amplitude. = 16.4369
+Rho_T = 782.84, No. of Families = 173.
+Overlap = 0.359994
+Total number of steps (% w/ wrapping): 20200 (100%).
+Population size = 10161.
+Done for beta = 1.43836!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.98 (0).
+E = -1.66211, C = 0.0740293.
+M = 0.0283867, X = 0.663794.
+Dom. Freq. = 0.22285, Dom. Amplitude. = 16.3209
+Rho_T = 925.239, No. of Families = 161.
+Overlap = 0.358458
+Total number of steps (% w/ wrapping): 20322 (100%).
+Population size = 10167.
+Done for beta = 1.47812!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.99 (0).
+E = -1.66342, C = 0.0667358.
+M = 0.0289893, X = 0.696688.
+Dom. Freq. = 0.222863, Dom. Amplitude. = 16.1879
+Rho_T = 1099.4, No. of Families = 144.
+Overlap = 0.367485
+Total number of steps (% w/ wrapping): 20334 (100%).
+Population size = 10171.
+Done for beta = 1.52114!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.99 (0).
+E = -1.66461, C = 0.0602035.
+M = 0.0297414, X = 0.72634.
+Dom. Freq. = 0.222713, Dom. Amplitude. = 16.0303
+Rho_T = 1330.73, No. of Families = 136.
+Overlap = 0.371645
+Total number of steps (% w/ wrapping): 20342 (100%).
+Population size = 10143.
+Done for beta = 1.56776!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.94 (4.92951e-05).
+E = -1.6657, C = 0.0539697.
+M = 0.0303912, X = 0.751263.
+Dom. Freq. = 0.222555, Dom. Amplitude. = 15.8434
+Rho_T = 1605.34, No. of Families = 123.
+Overlap = 0.382267
+Total number of steps (% w/ wrapping): 20286 (99.9951%).
+Population size = 10065.
+Done for beta = 1.61851!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1023.99 (0).
+E = -1.66674, C = 0.0461392.
+M = 0.0312153, X = 0.769921.
+Dom. Freq. = 0.222392, Dom. Amplitude. = 15.6317
+Rho_T = 1965.31, No. of Families = 98.
+Overlap = 0.397889
+Total number of steps (% w/ wrapping): 20130 (100%).
+Population size = 10125.
+Done for beta = 1.67517!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1024 (0).
+E = -1.66768, C = 0.0394048.
+M = 0.0323368, X = 0.771048.
+Dom. Freq. = 0.222139, Dom. Amplitude. = 15.3932
+Rho_T = 2409.01, No. of Families = 79.
+Overlap = 0.421582
+Total number of steps (% w/ wrapping): 20250 (100%).
+Population size = 10167.
+Done for beta = 1.73863!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1024 (0).
+E = -1.66846, C = 0.0347753.
+M = 0.0336248, X = 0.758514.
+Dom. Freq. = 0.221836, Dom. Amplitude. = 15.1541
+Rho_T = 2910.02, No. of Families = 68.
+Overlap = 0.45049
+Total number of steps (% w/ wrapping): 20334 (100%).
+Population size = 10182.
+Done for beta = 1.80874!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1024 (0).
+E = -1.66917, C = 0.0298181.
+M = 0.0351077, X = 0.72799.
+Dom. Freq. = 0.221457, Dom. Amplitude. = 14.9073
+Rho_T = 3473.4, No. of Families = 62.
+Overlap = 0.479397
+Total number of steps (% w/ wrapping): 20364 (100%).
+Population size = 10181.
+Done for beta = 1.88751!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1024 (0).
+E = -1.66979, C = 0.0250945.
+M = 0.0367694, X = 0.675141.
+Dom. Freq. = 0.221138, Dom. Amplitude. = 14.6412
+Rho_T = 4140.62, No. of Families = 51.
+Overlap = 0.520902
+Total number of steps (% w/ wrapping): 20362 (100%).
+Population size = 10142.
+Done for beta = 1.97711!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1024 (0).
+E = -1.67035, C = 0.020459.
+M = 0.0386648, X = 0.587841.
+Dom. Freq. = 0.22079, Dom. Amplitude. = 14.3603
+Rho_T = 4909.78, No. of Families = 48.
+Overlap = 0.575534
+Total number of steps (% w/ wrapping): 20284 (100%).
+Population size = 10134.
+Done for beta = 2.08106!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Average (non-wrapping) cluster size: 1024 (0).
+E = -1.67082, C = 0.0161861.
+M = 0.0406828, X = 0.485698.
+Dom. Freq. = 0.220483, Dom. Amplitude. = 14.1021
+Rho_T = 5681.89, No. of Families = 38.
+Overlap = 0.634048
+Total number of steps (% w/ wrapping): 20268 (100%).
+Population size = 10158.
+Done for beta = 2.2!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1,-1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[1,1,1,1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[1,1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],\
+[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],\
+]Time taken: 3278.43 seconds.
+Simulation complete.
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Done!

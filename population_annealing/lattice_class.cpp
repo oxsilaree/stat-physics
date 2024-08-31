@@ -1,10 +1,11 @@
 #include "lattice_class.h"
 
 // Constructor definition
-Lattice::Lattice(double kappa)
+Lattice::Lattice(double kappa, int family)
     {
     // Initialize other members if needed
     Lattice::kappa = kappa;
+    Lattice::family = family;
     Lattice::energy = 0;
     Lattice::mag = 0;
     Lattice::abs_mag = 0;
@@ -269,21 +270,17 @@ void Lattice::doSweep(double *Beta)
         */
 }
 
-void Lattice::doWolffAlgo(double *Beta, fftw_plan p)
+void Lattice::doWolffAlgo(double *Beta, fftw_plan p, int num_steps)
 {
     // Only do the MC steps. Burn In is completed during initialization.
     wrap_counter = 0, nowrap_counter = 0;
     avg_cluster_size = 0, avg_nowrap_cluster_size = 0;
     // int num_sweeps = (*Beta <= 0.46) ? SWEEPS : SWEEPS / 4;
-    int num_sweeps = (*Beta < .25) ? SWEEPS*10 : (*Beta < .46) ? SWEEPS : SWEEPS/4;
     double padd1 = 1 - exp(-2 * *Beta * J);
     double padd2 = 1 - exp(-2 * *Beta * J * kappa);
-    for (int i = 0; i < num_sweeps; i++)
+    for (int i = 0; i < num_steps; i++)
     {
-        for (int j = 0; j < STEPS; j++)
-        {
-            doStep(&padd1, &padd2);
-        }
+        doStep(&padd1, &padd2); // Num_sweeps is encoded into the num_steps already
     }
     doFFT(p);
 }
@@ -406,3 +403,17 @@ void Lattice::doFFT(fftw_plan p)
     dom_amplitude = max;
 }
 
+void Lattice::printLattice() {
+    cout << "[";
+    for (int i = 0; i < LEN; i++) {
+        cout << "[";
+        for (int j = 0; j < LEN; j++) {
+            spinSite* spin = getSpinSite(j,i);
+            if (j == LEN-1)
+                cout << spin->getSpin() << "],\\\n";
+            else
+            cout << spin->getSpin() << ",";
+        }
+    }
+    cout << "]";
+}

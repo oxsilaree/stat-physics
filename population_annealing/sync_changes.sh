@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define variables
-LOCAL_DIR="/Users/shanekeiser/Documents/Summer 2024/Research/PopulationAnnealing"
-REPO_DIR="/Users/shanekeiser/Documents/Summer 2024/Research/stat-physics" # Update this path to where you cloned the repository
+LOCAL_DIR="/Users/shanekeiser/Documents/ANNNI/populationannealing"
+REPO_DIR="/Users/shanekeiser/Documents/ANNNI/git-clone/stat-physics" # Update this path to where you cloned the repository
 
 # Function to handle errors
 handle_error() {

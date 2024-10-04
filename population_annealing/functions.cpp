@@ -86,3 +86,16 @@ void initializeRNG(gsl_rng **r, int seed)
 	for (int i = 0; i < 10000; i++)
 		gsl_rng_uniform(*r);
 }
+
+
+
+
+// Timer function
+TimePoint timeCheck(TimePoint referenceTime) {
+    TimePoint currentTime = std::chrono::steady_clock::now();
+    chrono::duration<double> duration = currentTime - referenceTime;
+    cout << fixed << std::setprecision(4);
+    cout << "~~~~~~~~~~~~~~~~~~~~   Last portion took " << duration.count() << " seconds" << std::endl;
+    
+    return currentTime;
+}

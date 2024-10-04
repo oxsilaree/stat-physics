@@ -20,6 +20,8 @@
 #include "parameters.h"
 #include "functions.h"
 #include "lattice_class.h"
+#include <deque>
+#include <set>
 
 #include <fftw3.h>
 
@@ -43,11 +45,13 @@ private:
     double avg_cluster_size, avg_nowrap_cluster_size;
     int wrap_counter, nowrap_count;
     double free_energy;
+    double smoothed_var_e;
 
 
     void reSample(double *Beta, gsl_rng *r, double avg_e, double var_e);
     void calculateEnergies(double *avg_e, double *var_e);
     void calculateFamilies(void);
+    void makeHistograms(string kappastr);
 
 public:
     // Constructors
@@ -58,12 +62,13 @@ public:
     void run(string);
     void runSA(string kappastr);
     void runTR(string kappastr);
-    void doTwoReplica(double padd1, double padd2, fftw_plan p, int num_steps, gsl_rng *r, int index1, int index2);
-    void doTwoRepStep(double padd1, double padd2, fftw_plan p, gsl_rng *r, int index1, int index2);
+    void doTwoReplica(double padd1, double padd2, int num_steps, gsl_rng *r, int index1, int index2);
+    void doTwoRepStep(double padd1, double padd2, gsl_rng *r, int index1, int index2);
     void collectData(double *Beta, double, double);
     void collectDataSA(double *Beta);
     void loadData(string);
     void measureOverlap();
+    bool haveSharedFamily(Lattice* lattice1, Lattice* lattice2);
 
 	int countFamilies(void);
     

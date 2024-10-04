@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 #include <chrono>
 #include <stack>
 #include <random>
@@ -28,7 +30,7 @@ public: // Member functions
     // Constructor
     
     // Change data members
-    void AssignValues();
+    void AssignValues(int value);
     void Flip(); // changes spin
     void AddToCluster(); // changes in_cluster
     void Reset(); // changes in_cluster

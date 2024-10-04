@@ -6,6 +6,7 @@ Lattice::Lattice(double kappa, int family)
     // Initialize other members if needed
     Lattice::kappa = kappa;
     Lattice::family = family;
+    Lattice::new_family = family;
     Lattice::energy = 0;
     Lattice::mag = 0;
     Lattice::abs_mag = 0;
@@ -17,27 +18,36 @@ Lattice::Lattice(double kappa, int family)
     Lattice::suscep = 0.0;
     Lattice::lattice_number = 0;
     Lattice::lattice_object = vector<vector<spinSite> >(LEN, vector<spinSite>(LEN));
+        for (int i = 0; i < 5; ++i) {
+            Lattice::recent_families.push_back(family);
+        }
     }
 
 
 void Lattice::initializeSites(double *Beta)
 {
-
+    gsl_rng * r = gsl_rng_alloc(gsl_rng_mt19937); // You can replace gsl_rng_mt19937 with another RNG algorithm if desired
+    gsl_rng_set(r, time(NULL));
+    int value;
+    int seed = 5;
+    
     for (int i = 0; i < LEN; i++)
     {
         for (int j = 0; j < LEN; j++)
         {
             // cout << " ---i = " << i << ", j = " << j <<"--- \n";
             spinSite* starter = getSpinSite(i,j);
-            starter->AssignValues();
+            value = gsl_rng_uniform_int(r, seed);
+            starter->AssignValues(value);
             // cout << "Spin is " << starter->getSpin() << ". \n";
         }
     }
-    // Initialize and Burn-in
+    gsl_rng_free(r);
+    // Burn-in
     if (*Beta != 0) { // 23/7/24 if we start at inf temp, no need to burn in. Just resample
         doBurnIn(*Beta);
     }
-     
+    
 }
 
 
@@ -329,12 +339,9 @@ void Lattice::updateTotalEnergy()
 
             energy += -J * (root * (L + R + U + D));
             energy += J * kappa * (root * (U2 + D2));
-            // energy += (mid_s->getSpin())*(-1*J) * (((left_s->getSpin()) + (right_s->getSpin()) \
-            //                                     + (up_s->getSpin()) + (down_s->getSpin())) \
-            //                                     - (kappa * ((up2_s->getSpin()) + (down2_s->getSpin()))));
         }  
     }   
-    energy = (double)(energy / 2.0);
+    energy /= 2.0;
 }
 
 void Lattice::updateTotalMag()
@@ -416,4 +423,9 @@ void Lattice::printLattice() {
         }
     }
     cout << "]";
+}
+
+void Lattice::updateRecentFamilies(int nf) {
+    recent_families.pop_front();
+    recent_families.push_back(nf);
 }

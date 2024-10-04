@@ -18,12 +18,16 @@
 
 using namespace std;
 
-extern int neighbor_table[LEN][LEN][NN_MAX][DIM];
 
+extern int neighbor_table[LEN][LEN][NN_MAX][DIM];
 
 int* getNeighbor(int, int, int);
 void makeNeighborTable();
 void initializeRNG(gsl_rng **r, int seed);
+
+// Timer function
+using TimePoint = chrono::steady_clock::time_point;
+TimePoint timeCheck(TimePoint referenceTime);
 
 
 

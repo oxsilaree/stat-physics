@@ -2,7 +2,7 @@
 
 # Define variables
 LOCAL_DIR="/Users/shanekeiser/Documents/ANNNI/populationannealing"
-REPO_DIR="/Users/shanekeiser/Documents/ANNNI/git-clone/stat-physics" # Update this path to where you cloned the repository
+REPO_DIR="/Users/shanekeiser/Documents/ANNNI/populationannealing/git-clone/stat-physics" # Update this path to where you cloned the repository
 
 # Function to handle errors
 handle_error() {

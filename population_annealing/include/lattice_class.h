@@ -16,19 +16,23 @@
 #include "spin_class.h"
 #include <mutex>
 #include <fftw3.h>
+#include <deque>
+#include <set>
 
 using namespace std;
 
 class Lattice
 {
 private:
-    int mag, abs_mag, avg_cluster_size, avg_nowrap_cluster_size;
+    int mag, abs_mag;
+    double avg_cluster_size, avg_nowrap_cluster_size;
     int wrap_counter, nowrap_counter; // Relevant for data collection
     double energy, spec_heat, suscep;  //---^
     double kappa;
     double dom_freq, dom_amplitude; // Dominant frequency and corresponding amplitude
     vector<vector<spinSite> > lattice_object;
-    int family; // For checking ancestors of replicas
+    int family, new_family; // For checking ancestors of replicas (and for pairing)
+    std::deque<int> recent_families;
     
 
 public:
@@ -64,6 +68,10 @@ public:
     double getDomAmplitude();
     spinSite* getSpinSite(int row, int col);
     int getFamily();
+    int getNewFamily();
+    void setNewFamily(int nf);
+    deque<int> getRecentFamilies();
+    void updateRecentFamilies(int nf);
     void printLattice();
 
 };
@@ -113,4 +121,19 @@ inline double Lattice::getDomAmplitude()
 inline int Lattice::getFamily()
 {
     return family;
+}
+
+inline int Lattice::getNewFamily()
+{
+    return new_family;
+}
+
+inline void Lattice::setNewFamily(int nf)
+{
+    new_family = nf;
+}
+
+inline deque<int> Lattice::getRecentFamilies()
+{
+    return recent_families;
 }

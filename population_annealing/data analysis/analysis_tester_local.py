@@ -51,7 +51,7 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
     if fname == "nil" or info_name == "nil":
         print("Please include both the data and parameter files. Exiting...")
         return (1)
-    info = np.loadtxt(info_name, delimiter = ',', dtype = str)
+    info = np.loadtxt(info_name, delimiter = ',', dtype = str, skiprows=1)
     df = pd.read_csv(fname)
     
     NN = float(info[1])**2
@@ -74,12 +74,13 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
     if quantities == []:
 
         title = f"Quantities of interest for\n{titlestr}"
-        axes = df.plot(x='Beta', subplots = True, layout = [7,2], figsize = [10,8], title = title, legend = False, marker = marker)
+        axes = df.plot(x='Beta', subplots = True, layout = [6,3], figsize = [10,8], title = title, legend = False, marker = marker, linewidth = 0)
         ax_x, ax_y = 0,0
         for i in range(1,len(list(df))):
             axes[ax_x, ax_y].set_ylabel(list(df)[i], fontsize = 'small')
+            axes[ax_x, ax_y].grid()
             ax_y += 1
-            if ax_y == 2:
+            if ax_y == 3:
                 ax_x += 1
                 ax_y = 0
         plt.tight_layout()
@@ -89,9 +90,9 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
         for i in quantities:
             headers.append(list(df)[i])
         title = f"Comparison plot for\n{titlestr}"
-        df.plot(x = 'Beta', y = headers, title = title, marker = marker)
+        df.plot(x = 'Beta', y = headers, title = title, marker = marker, linewidth = 0)
         plt.show()
-    
+    print(f"No. of Temperature steps = {len(df['Beta'])}")
     print(df.head(5))
 
 
@@ -182,7 +183,7 @@ def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '
 # Analyze(0.25,16, quantities = [8,9])
 # Analyze(0.25,32, quantities = [8,9])
 
-Analyze(0.75, 32, quantities = [18], normalize=False)
+Analyze(1,32, quantities = [], normalize=False)
 # Analyze(0.6, 16, quantities = [15,16,17], normalize=True)    
 
 # Analyze(0.25,64, normalize = True, quantities = [7,10])

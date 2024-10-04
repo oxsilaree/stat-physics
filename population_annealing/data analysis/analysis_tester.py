@@ -14,8 +14,8 @@ def Analyze(kappa = None, size = None, quantities = [], normalize = False, marke
         kappa = float(input("Kappa: "))
         size = input("Length (16,32,64,128,256): ")
     kappastr = f'{kappa:.2f}'
-    df = f"/Users/shanekeiser/Downloads/data/emcx_data_{kappastr}_kappa_{size}_L.csv"
-    param_info = f"/Users/shanekeiser/Downloads/data/parameter_info_{kappastr}_kappa_{size}_L.csv"
+    df = f"/Users/shanekeiser/Downloads/data/21-9-24/emcx_data_{kappastr}_kappa_{size}_L.csv"
+    param_info = f"/Users/shanekeiser/Downloads/data/21-9-24/parameter_info_{kappastr}_kappa_{size}_L.csv"
     makePlots(df, param_info, quantities, normalize = normalize, marker = marker)
     return 0
 
@@ -23,7 +23,7 @@ def Analyze(kappa = None, size = None, quantities = [], normalize = False, marke
 # 0: Beta    1: Energy   2: Energy Squared   3: Mag   4: Mag Squared   5: Absolute Mag  6: Specific Heat
 # 7: Susceptibility    8: Cluster Size   9: Non-Wrapping Cluster Size   10: Wrapping Probability
 
-quantities = { 0 : "Beta",
+quantity_dict = { 0 : "Beta",
                1 : "Energy",
                2 : "Energy Squared",
                3 : "Magnetization",
@@ -41,6 +41,7 @@ quantities = { 0 : "Beta",
                15: "Overlap",
                16: "Absolute Overlap",
                17: "Overlap Variance",
+               18: "Free Energy"
                }
 
 
@@ -71,12 +72,13 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
     if quantities == []:
 
         title = f"Quantities of interest for\n{titlestr}"
-        axes = df.plot(x='Beta', subplots = True, layout = [7,2], figsize = [10,8], title = title, legend = False, marker = marker)
+        axes = df.plot(x='Beta', subplots = True, layout = [6,3], figsize = [10,8], title = title, legend = False, marker = marker, linewidth = 0)
         ax_x, ax_y = 0,0
         for i in range(1,len(list(df))):
             axes[ax_x, ax_y].set_ylabel(list(df)[i], fontsize = 'small')
+            axes[ax_x, ax_y].grid()
             ax_y += 1
-            if ax_y == 2:
+            if ax_y == 3:
                 ax_x += 1
                 ax_y = 0
         plt.tight_layout()
@@ -86,9 +88,9 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
         for i in quantities:
             headers.append(list(df)[i])
         title = f"Comparison plot for\n{titlestr}"
-        df.plot(x = 'Beta', y = headers, title = title, marker = marker)
+        df.plot(x = 'Beta', y = headers, title = title, marker = marker, linewidth = 0)
         plt.show()
-    
+    print(f"No. of Temperature steps = {len(df['Beta'])}")
     print(df.head(5))
 
 
@@ -120,8 +122,8 @@ def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '
         return 2
     elif len(sizes) == 1:
         for i in range(len(kappas)):
-            fname = f"/Users/shanekeiser/Downloads/data/emcx_data_{kappastrs[i]}_kappa_{sizes[0]}_L.csv"
-            info_name = f"/Users/shanekeiser/Downloads/data/parameter_info_{kappastrs[i]}_kappa_{sizes[0]}_L.csv"
+            fname = f"/Users/shanekeiser/Downloads/data/emcx_data_{kappastrs[0]}_kappa_{sizes[i]}_L.csv"
+            info_name = f"/Users/shanekeiser/Downloads/data/parameter_info_{kappastrs[0]}_kappa_{sizes[i]}_L.csv"
             infos.append(np.loadtxt(info_name, delimiter = ',', dtype = str))
             dfs.append(pd.read_csv(fname))
         header = list(dfs[0])[quantity]
@@ -176,46 +178,68 @@ def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '
                 df.plot(ax = ax, x = "Beta", y = header, label = f'$LEN$ = {info[1]}', color = colors[i], marker = marker)
         plt.show()
 
+
 # Analyze(0.25,16, quantities = [8,9])
 # Analyze(0.25,32, quantities = [8,9])
-Analyze(0.6, 32, quantities = [7], normalize=True)    
+Analyze(1,32, quantities = [], normalize=False)    
 
 # Analyze(0.25,64, normalize = True, quantities = [7,10])
 
 
-# Compare(kappas = [0,0.25,0.5,0.75,1], sizes = [32], quantity = 7)
+## Compare(kappas = [0,0.25,0.5,0.75,1], sizes = [128], quantity = 7)
 
 
 # Compare(kappas = [0.25], sizes = [16,32], quantity = 1, normalize = True)
 
+def CompareObservables(observable1, observable2 = -1, kappas = [], sizes = [], normalize = False, marker = '.'):
+    dfs = []
+    infos = []
 
-
-
-
-
-
-
-
-
-def EnergyPlateau(kappas = [], sizes = []):
-    dfs, infos, kappastrs, energy_plateaus = [],[],[],[]
-
-    for kappa in kappas:
-        kappastrs.append(f'{kappa:.2f}')
-    if len(sizes) == 1:
-        for i in range(len(kappas)):
-            fname = f"/Users/shanekeiser/Downloads/data/emcx_data_{kappastrs[i]}_kappa_{sizes[0]}_L.csv"
-            info_name = f"/Users/shanekeiser/Downloads/data/parameter_info_{kappastrs[i]}_kappa_{sizes[0]}_L.csv"
-            infos.append(np.loadtxt(info_name, delimiter = ',', dtype = str))
-            dfs.append(pd.read_csv(fname))
-        header = list(dfs[0])[1]
-        for i in range(len(kappas)):
-            df = dfs[i]
-            info = infos[i]
-            energy_plateaus.append(np.min(df["Energy"]))
+    if len(sizes) == 0 or len(kappas) == 0:
+        print("Please provide kappa or size values to begin analysis.")
+        return 2
     
-    plt.plot(kappas, energy_plateaus, '-')
-    plt.title(f"Energy minimas over several kappa, L = {infos[0][1]}")
+    kappastrs = [f'{kappa:.2f}' for kappa in kappas]
+
+    # Load data
+    for L in sizes:
+        for i, kappa in enumerate(kappas):
+            fname = f"/Users/shanekeiser/Downloads/data/20-9-24/t/emcx_data_{kappastrs[i]}_kappa_{L}_L.csv"
+            info_name = f"/Users/shanekeiser/Downloads/data/20-9-24/t/parameter_info_{kappastrs[i]}_kappa_{L}_L.csv"
+            infos.append(np.loadtxt(info_name, delimiter=',', dtype=str))
+            dfs.append(pd.read_csv(fname))
+    example_df = dfs[0]
+    # Set up color gradients
+    color_map_2 = plt.cm.Blues(np.linspace(0.5, 1, max(len(sizes),len(kappas)))) # One color gradient for each L
+    color_map_1 = plt.cm.Oranges(np.linspace(0.5, 1, max(len(sizes),len(kappas))))  # One color gradient for each kappa
+    plt.figure(figsize=(10, 8))
+
+    for j, L in enumerate(sizes):
+        
+        for i, kappa in enumerate(kappas):
+            df = dfs[i + j * len(kappas)]
+            info = infos[i + j * len(kappas)]
+            if normalize:
+                NN = float(info[1])**2
+                df[observable1] = df[observable1].div(NN)
+                if observable2 != -1:
+                    df[observable2] = df[observable2].div(NN)
+            
+            plt.scatter(df[quantity_dict[0]], df[quantity_dict[observable1]], label=f'L={L}, kappa={kappa}', color=color_map_1[max(i,j)], marker=marker)
+            if observable2 != -1:
+                plt.scatter(df[quantity_dict[0]], df[quantity_dict[observable2]], label=f'L={L}, kappa={kappa}', color=color_map_2[max(i,j)], marker=marker)
+    # Plot formatting
+    plt.title(f'Comparison of {observable1} and {observable2}')
+    plt.xlabel(df[quantity_dict[0]])
+    plt.ylabel("Observables")
+    plt.grid(True)
+    plt.legend()
     plt.show()
+
+
+## CompareObservables(7,kappas = [0], sizes = [32,64,128])
+
+
+
 
 

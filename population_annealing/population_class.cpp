@@ -27,6 +27,7 @@ Population::Population(int nom_pop, gsl_rng *r, double kappa, string mode)
     Population::avg_nowrap_cluster_size = 0;
     Population::nowrap_count = 0;
     Population::r = r;
+    Population::smoothed_var_e = 0;
     Population::pop_array.reserve(max_pop); // Reserve initial memory for the vector
     Population::energy_data.reserve((int)2*T_ITER);
     Population::magnetization_data.reserve((int)2*T_ITER);
@@ -64,9 +65,9 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
     int j = 0,     floor = 0, ceiling = 0;
     int new_pop_size = 0;
     double energy_j, weight_j, tau_j, expected_copies_j; // used for reweighting
+    int new_family_counter = 0;
 
-
-    double d_Beta = CULLING_FRAC * LEN * sqrt(2 *PI /var_e); // This is a slightly more optimized way to run Pop.Annealing
+    double d_Beta = CULLING_FRAC * sqrt(2 *PI / var_e); // This is a slightly more optimized way to run Pop.Annealing
     if (*Beta + d_Beta < MAX_BETA)
 		*Beta += d_Beta;
 	else
@@ -82,12 +83,12 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
         Lattice* lattice_j = &pop_array[j];
         lattice_j->updateTotalEnergy();
         energy_j = lattice_j->getTotalEnergy();
-        weight_j = -d_Beta * (energy_j - avg_e); // These get massive
+        weight_j = -d_Beta * (energy_j); // These get massive (-avg_e)
         config_weight[j] = exp(weight_j); // Storing these values is good to get tau later on
         Q += config_weight[j];
     }
     Q /= (double)pop_size;
-    free_energy = log(Q);
+    free_energy += log(Q);
 
     for (j = 0; j < pop_size; j++) // Get the expected new number of replicas per currently existing lattice,
     {                              // and new population size
@@ -119,26 +120,60 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
 
     The replacements and deletions occur from right to left due to deleters being a stack. The addition of
     a lattice is left->right because of push_back. This can lead to a relatively  mixed array of replicas.
-  */
+
+    *//*
     for (int i = 0; i < pop_size; i++) // Iterate over current set of replicas
-    {   
+    {      
+        pop_array[i].setNewFamily(new_family_counter);
+        pop_array[i].updateRecentFamilies(new_family_counter);
         for (int j = 0; j < num_replicas[i] - 1; j++)   // Iterate over a single replica's number of new copies
         {                                               // minus 1 to ensure we don't redundantly add in the original replica
             if (deleters.empty() == false) 
             {                                           // deleters is a stack of indices for replicas to be deleted
                 pop_array[deleters.top()] = pop_array[i];
+                pop_array[deleters.top()].setNewFamily(new_family_counter); // Rewrite new family to ensure no identical replicas are paired later
+                pop_array[deleters.top()].updateRecentFamilies(new_family_counter);
                 deleters.pop();                         
             } else {
                 pop_array.push_back(pop_array[i]);
+                Lattice back_lattice = pop_array.back();
+                back_lattice.setNewFamily(new_family_counter);      // BE CAREFUL THIS IS NEW CODE !!!!!!!!!!!!!!!!!
+                back_lattice.updateRecentFamilies(new_family_counter);
                 new_pop_size += 1;
             }
         }
+        new_family_counter += 1;
     }
     while (deleters.empty() == false)
     {
         pop_array.erase(pop_array.begin() + deleters.top());
         deleters.pop();
         new_pop_size -= 1;
+    }
+    */
+
+    // THIS IS A DIFFERENT LIFE/DEATH ROUTINE WHERE NEWBORNS ARE PLACED TO THE RIGHT OF THEIR ANCESTORS
+    vector<Lattice>::iterator pop_it = pop_array.begin();  
+    // int ii = 0;
+    for (int ii = 0; ii < pop_size; ii++) // Iterate over current set of replicas
+    {   
+        pop_it->setNewFamily(new_family_counter);
+        pop_it->updateRecentFamilies(new_family_counter);
+        if (num_replicas[ii] == 0) {
+            pop_array.erase(pop_it);
+            new_pop_size -= 1;
+        } else if (num_replicas[ii] == 1) {
+            pop_it += 1;
+        } else {
+            for (int j = 0; j < num_replicas[ii] - 1; j++) {
+                vector<Lattice>::iterator pop_next = pop_it + 1;
+                pop_array.insert(pop_next, *pop_it);
+                pop_next->setNewFamily(new_family_counter);
+                pop_next->updateRecentFamilies(new_family_counter);
+                new_pop_size += 1;
+            }
+        }
+        new_family_counter += 1;
     }
 
     pop_size = new_pop_size;
@@ -187,7 +222,7 @@ void Population::run(string kappastr)
         if (Beta == 0) {
             step_const = LEN*LEN;
         } else {
-            step_const = ceil((LEN*LEN)/(clustersize_data.back()));
+            step_const = ceil((LEN*LEN)/(sqrt(clustersize_data.back())));
         }
 
         num_sweeps = (Beta < 0.30 || Beta > 1.1) ? 1 : 20;
@@ -213,6 +248,7 @@ void Population::run(string kappastr)
         
         measureOverlap();
         collectData(&Beta, avg_e, var_e);
+        // makeHistograms(kappastr);
         reSample(&Beta, r, avg_e, var_e);
         /*
         if (var_e != 0)
@@ -268,12 +304,13 @@ void Population::calculateEnergies(double *avg_e, double *var_e) {
 void Population::collectData(double *Beta, double avg_e, double var_e)
 {
     int m;
+    double half_pop = pop_size/2;
     // double Beta = 1/T;
     double E,M, E2, M2, M_abs,C,X; // Placeholders
     double ene = 0, ene_sq = 0, mag = 0, mag_sq = 0, mag_abs = 0, spec_heat = 0, susc = 0;
     double CS, avg_clust_size = 0; // For wrapping
     double NWCS, avg_nowrap_clust_size = 0;
-    int NWC, nowrap_counter = 0;
+    double NWC, nowrap_counter = 0;
     double FR, AMP, freqs = 0, amps = 0;
     double OL, OA, OV;
     double ove, ove_abs, ove_var;
@@ -307,19 +344,22 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
     }
 
     if (mode == "t") { // I'm so sorry that these are named this way. LHS are for data collection only
-            avg_clust_size = 2*avg_cluster_size;                     // RHS are data members of the population
-            avg_nowrap_clust_size = 2*avg_nowrap_cluster_size;      // 2x because of the pairing 
-            nowrap_counter = nowrap_count;                         // nowraps counters don't require 2x.
+            avg_clust_size = 2.0*avg_cluster_size;                     // RHS are data members of the population
+            avg_nowrap_clust_size = 2.0*avg_nowrap_cluster_size;      // 2x to account for pop_size instead of half_pop in denom.
+            nowrap_counter = nowrap_count;                         // when pushing to data file
     }
     double wrap_percent;
     if (mode == ("t"))
-        wrap_percent = (double)(pop_size*num_steps/2 - nowrap_counter)/(pop_size*num_steps/2);
+        wrap_percent = (wrap_counter)/(half_pop*num_steps);
+        // wrap_percent = (double)((double)pop_size*num_steps/2 - (double)nowrap_counter)/((double)pop_size*num_steps/2);
     else
-        wrap_percent = (double)(((double)pop_size*num_steps - (double)nowrap_counter)/(double)(pop_size*num_steps));
+        wrap_percent = (double)(wrap_counter/(double)(pop_size*num_steps));
 
     spec_heat = ((ene_sq/(pop_size*LEN*LEN)) - pow(ene/(pop_size*LEN),2)) * (*Beta * *Beta);
     susc      = ((mag_sq/(pop_size*LEN*LEN)) - pow(mag_abs/(pop_size*LEN),2)) * *Beta;
+    
     beta_values.push_back(*Beta);
+    
     // Quantities PER SPIN will have LEN*LEN in the denominator
     energy_data.push_back(ene/(pop_size*LEN*LEN)); //
     energy_sq_data.push_back(ene_sq/(pop_size*LEN*LEN));
@@ -380,13 +420,14 @@ void Population::loadData(string kappastr)
     ofstream run_info;
     ofstream emcx_data;
     string lenstr = to_string(LEN);
-    // run_info.open("./data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv"); // in SLURM
-    run_info.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv"); // in my computer
-    run_info << kappa << "," << LEN << "," << INIT_POP_SIZE << "," << CULLING_FRAC << ",";
+    run_info.open("./data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv"); // in SLURM
+    // run_info.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv"); // in my computer
+    run_info << "Kappa,L,Initial Pop. Size,Culling Fraction\n";
+    run_info << kappa << "," << LEN << "," << INIT_POP_SIZE << "," << CULLING_FRAC;
     run_info.close();
 
-    // emcx_data.open("./data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv");
-    emcx_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv");
+    emcx_data.open("./data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv");
+    // emcx_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv");
     emcx_data << "Beta,Energy,Energy Squared,Magnetization,Magnetization Squared,Absolute Magnetization,";
     emcx_data << "Specific Heat,Susceptibility,Cluster Size,Non-Wrapping Cluster Size,Wrapping Probability,";
     emcx_data << "Dominant Frequency,Dominant Amplitude,Rho T,Unique Families,";
@@ -479,7 +520,7 @@ void Population::calculateFamilies(void) {
 	for (i = 0; i < nom_pop; i++) {
 		if (family_size[i] > 0) {
 			counter++;
-			rho_t += (double) family_size[i] *family_size[i] /pop_size /pop_size;
+			rho_t += (double) family_size[i] *family_size[i] /(pop_size * pop_size);
 		}
 	}
 
@@ -532,16 +573,16 @@ void Population::measureOverlap(){
                 q += (spin_1->getSpin())*(spin_2->getSpin());
             }
         }
+        q /= (LEN*LEN);
         abs_q = abs(q);
-        overlap += q/(LEN*LEN); // Definition of Overlap (C. Amey, J. Machta)
-        abs_overlap += abs_q/(LEN*LEN);
+        overlap += q; // Definition of Overlap (C. Amey, J. Machta)
+        abs_overlap += abs_q;
         overlap_sq += q*q;
     }
     overlap /= pop_size; // this is <q>
     abs_overlap /= pop_size; // this is <|q|>
     overlap_sq /= pop_size; // this is <q^2>
-    // var_overlap = (overlap_sq / (pop_size*LEN*LEN)) - pow(overlap/(pop_size*LEN*LEN),2);
-    var_overlap = overlap_sq - pow(abs_overlap,2); // this is <q^2> - <q>^2
+    var_overlap = overlap_sq - pow(abs_overlap,2); // this is <q^2> - <|q|>^2
 }
 
 
@@ -663,16 +704,16 @@ void Population::runSA(string kappastr)
 
 }
 
-void Population::doTwoReplica(double padd1, double padd2, fftw_plan p, int num_steps, gsl_rng *r, int index1, int index2) // Wolff-style two-replica cluster algorithm
+void Population::doTwoReplica(double padd1, double padd2, int num_steps, gsl_rng *r, int index1, int index2) // Wolff-style two-replica cluster algorithm
 { 
     for (int s = 0; s < num_steps; s++)
-        doTwoRepStep(padd1, padd2, p, r, index1, index2);
+        doTwoRepStep(padd1, padd2, r, index1, index2);
 }
 
-void Population::doTwoRepStep(double padd1, double padd2, fftw_plan p, gsl_rng *r, int index1, int index2)
+void Population::doTwoRepStep(double padd1, double padd2, gsl_rng *r, int index1, int index2)
 {
-    int sp, cluster_size;
-    int i, j,   lx, ly,     oldspin, newspin,   oldspin_2, newspin_2;
+    double cluster_size;
+    int sp, i, j,   lx, ly,     oldspin, newspin,   oldspin_2, newspin_2;
     int current_x, current_y,   nn_i, nn_j; // Lattice indices
     int root_x, root_y,     coord_x, coord_y,   pos_update_x, pos_update_y; // Coordinates for wrapping criteria
     int old_x, old_y,       new_x, new_y;       // More coordinates for wrapping criteria 
@@ -718,7 +759,8 @@ void Population::doTwoRepStep(double padd1, double padd2, fftw_plan p, gsl_rng *
             nn_i = neighbor_table[current_x][current_y][k][0];
             nn_j = neighbor_table[current_x][current_y][k][1];
 
-            spinSite* neighbor_spin = lattice_1->getSpinSite(nn_i,nn_j); spinSite* neighbor_spin_2 = lattice_2->getSpinSite(nn_i,nn_j);
+            spinSite* neighbor_spin   = lattice_1->getSpinSite(nn_i,nn_j); 
+            spinSite* neighbor_spin_2 = lattice_2->getSpinSite(nn_i,nn_j);
             bool neighbor_checked = neighbor_spin->checkStatus();
             if (wrapping_crit == false && neighbor_checked == true) { // Check for wrapping once
 
@@ -792,16 +834,17 @@ void Population::runTR(string kappastr)
 {   
     gsl_rng *r_thread[NUM_THREADS];
     double avg_e = 0.0, var_e = 0.0;
-
+    int tmp_rnd;
+    int temp_steps = 0;
+    auto ref_time = chrono::high_resolution_clock::now(); // PROFILER SET-UP
     
 	for (int i = 0; i < NUM_THREADS; i++) 
     {
-		int tmp_rnd = gsl_rng_uniform_int(r, 10000000) + 1000000;
+		tmp_rnd = gsl_rng_uniform_int(r, 10000000) + 1000000;
 		initializeRNG(&r_thread[i], tmp_rnd);
 	}
     
     double Beta = 0.0; // INITIAL BETA --> 'Infinite temperature' or some finite value
-
     // Initialization
     for (int j = 0; j < nom_pop; j++)
     {
@@ -812,13 +855,15 @@ void Population::runTR(string kappastr)
     while (Beta < MAX_BETA) // Where the actual annealing happens (T > T_FINAL), BETA_MAX = 5
     { 
         int step_const, num_sweeps;
-        if (Beta == 0) {
+        temp_steps++;
+        if (clustersize_data.empty()) {
             step_const = LEN*LEN;
-        } else {
+        } else if  (ceil((LEN*LEN)/(clustersize_data.back())) > 10) {
             step_const = ceil((LEN*LEN)/(clustersize_data.back()));
+        } else {
+            step_const = 10;
         }
-
-        num_sweeps = (Beta < 0.20 || Beta > 1.1) ? 1 : (Beta < 0.30) ? 5 : 20;
+        num_sweeps = (Beta < 0.35) ? 1 : (Beta < 1.1) ? 20 : 5;
         num_steps = num_sweeps * step_const;
         double *in, *out;
         in = (double*) fftw_alloc_real(LEN);
@@ -829,59 +874,171 @@ void Population::runTR(string kappastr)
         // THIS IS THE ACTUAL RUN
         wrap_counter = 0, nowrap_count = 0;
         avg_cluster_size = 0, avg_nowrap_cluster_size = 0;
-        gsl_rng *r0 = r_thread[0];
+
         // If odd number of replicas, remove a random replica
         if (pop_size % 2 == 1) {
-            int r1 = gsl_rng_uniform_int(r0,pop_size);
-            pop_array.erase(pop_array.begin() + r1);
+            gsl_rng *r1 = gsl_rng_alloc(gsl_rng_mt19937); // You can replace gsl_rng_mt19937 with another RNG algorithm if desired
+            gsl_rng_set(r1, time(NULL));
+            int value = gsl_rng_uniform_int(r1, pop_size);
+            pop_array.erase(pop_array.begin() + value);
+            gsl_rng_free(r1);
             pop_size -= 1;
         }
+        ref_time = chrono::high_resolution_clock::now(); // PROFILER STEP
+        cout << "~~~~~~~~~~~~~~~~~~~~ Pairing and swapping...\n"; // PROFILER STEP
 
         // Pre-make random pairs of indices
         vector<int> indices(pop_size);
-        for (int i = 0; i < pop_size; ++i) {
+        for (int i = 0; i < pop_size; i++) {
             indices[i] = i;
-        }
+        }   
         random_device rd;
         mt19937 g(rd());
         shuffle(indices.begin(), indices.end(), g);
-
-        double padd1 = 1 - exp(-4 * Beta * J);
-        double padd2 = 1 - exp(-4 * Beta * J * kappa);
         int half_pop = pop_size/2;
 
-        // Pair up lattices and do two replica cluster moves (parallelized)
-        #pragma omp parallel for shared(pop_array, padd1, padd2, num_steps, p, r_thread) schedule(dynamic, 10)
+        
+        // Swap replicas if we have correlated pairs
+        
+        if (Beta > 0.1) {
+            for (int m = 0; m < half_pop; m++) {
+                vector<int>::iterator it, it2, it3; // Use this to edit the indices vector
+                int it_count = 2;
+                it = indices.begin() + 2*m;                         // v--(d = 50)--v
+                
+                while (abs(indices[2*m] - indices[2*m + 1]) < MIN_DISTANCE) { // "If randomly paired replicas are within d replicas 
+                    vector<int>::iterator swapper = indices.begin() + ((2*m + it_count) % pop_size); // from each other on the population array"
+                    iter_swap(it+1, swapper);                       
+                    it_count++;
+                } 
+                /*
+                // This one is for k-step look-back
+                while (haveSharedFamily(&pop_array[indices[2*m]], &pop_array[indices[2*m + 1]])) { // "If randomly paired replicas share a family
+                    iter_swap(it+1, it+it_count);                                                       // up to k annealing steps back"
+                    it_count++;
+                }
+                *//*
+                // This one is for single look-back
+                while (pop_array[indices[2*m]].getNewFamily() == pop_array[indices[2*m + 1]].getNewFamily()) { // "If randomly paired replicas are identical"
+                    iter_swap(it+1, it+it_count);
+                    it_count++;
+                }
+                */
+                
+            } 
+        }
+        
+        
+        ref_time = timeCheck(ref_time); // PROFILER STEP
+        
+        cout << "~~~~~~~~~~~~~~~~~~~~ Doing Wolff steps... \n";
+        // Decorrelate pairs using Wolff steps
+        
+        double w_padd1 = 1 - exp(-2*Beta*J);
+        double w_padd2 = 1 - exp(-2*Beta*J*kappa);
+        int wolff_steps;
+        if (temp_steps > 2) {
+            wolff_steps = (spec_heat_data.back()*10) + 1;
+            wolff_steps = max(30,wolff_steps);
+            cout << "Number of wolff Steps = " << wolff_steps << "\n";
+        } else {
+            wolff_steps = 1;
+        }
+        #pragma omp parallel for shared(pop_array, w_padd1, w_padd2) schedule(dynamic, 20)
+        for (int m = 0; m < pop_size; m++) {
+            Lattice* lattice_m = &pop_array[m];
+            for (int j = 0; j < 30; j++) {
+                lattice_m->doStep(&w_padd1, &w_padd2);
+            }
+        }
+        
+        ref_time = timeCheck(ref_time); // PROFILER STEP
+        
+        double padd1 = 1 - exp(-4 * Beta * J);
+        double padd2 = 1 - exp(-4 * Beta * J * kappa);
+        
+        cout << "~~~~~~~~~~~~~~~~~~~~ Doing Two-Replica steps...\n";
+        // Pair up lattices and do two replica cluster moves (parallelized) --- only pair once
+        
+        #pragma omp parallel for shared(pop_array, padd1, padd2, num_steps, r_thread, indices, wrap_counter) schedule(dynamic, 10)
         for (int m = 0; m < half_pop; m++) {
             int thread = omp_get_thread_num();
-            doTwoReplica(padd1, padd2, p, num_steps, r_thread[thread % NUM_THREADS], indices[m], indices[pop_size - 1 - m]);
+            doTwoReplica(padd1, padd2, num_steps, r_thread[thread % NUM_THREADS], indices[2*m], indices[2*m + 1]);
         }                                            // For some reason, need to mod this above.
-
-        // doTwoReplica(&Beta, p, num_steps, r_thread);
-
+        ref_time = timeCheck(ref_time); // PROFILER STEP
         
-        #pragma omp parallel for shared (p) schedule(auto)
+        
+        // Do two replica cluster moves but re-pair replicas every sweep.
+        /*
+        for (int sw = 0; sw < num_sweeps; sw++) {
+            // Shuffle, swap and fix pairs once per sweep
+            if (sw % 5 == 0)
+                shuffle(indices.begin(), indices.end(), g);
+            for (int m = 0; m < half_pop; m++) {
+                vector<int>::iterator it; // Use this to edit the indices vector
+                int it_count = 2;
+                it = indices.begin() + 2*m;                         // v--(d = 50)--v
+                while (abs(indices[2*m] - indices[2*m + 1]) < MIN_DISTANCE) { // "If randomly paired replicas are within d replicas 
+                    vector<int>::iterator swapper = indices.begin() + (((2*m) + it_count) % pop_size); // from each other on the population array"
+                    iter_swap(it+1, swapper);                       
+                    it_count++;
+                }
+            }
+            #pragma omp parallel for shared(pop_array, padd1, padd2, r_thread, indices, wrap_counter) schedule(dynamic, 10)
+            for (int m = 0; m < half_pop; m++) {
+                int thread = omp_get_thread_num();
+                for (int st = 0; st < step_const; st++) {
+                    doTwoRepStep(padd1, padd2, r_thread[thread % NUM_THREADS], indices[2*m], indices[2*m + 1]);
+                }
+            }
+        }
+        
+        
+        ref_time = timeCheck(ref_time); // PROFILER STEP
+        */
+        cout << "~~~~~~~~~~~~~~~~~~~~ Doing FFTs...\n";
+        #pragma omp parallel for shared (p) schedule(dynamic, 10)
         for (int m = 0; m < pop_size; m++) {
             pop_array[m].doFFT(p);
         }
         
-
-        calculateEnergies(&avg_e, &var_e);
-        calculateFamilies();
-                
-        // Cleanup
+        // FFT plan Cleanup
         fftw_destroy_plan(p);
         fftw_cleanup();
-        
-        measureOverlap();
-        collectData(&Beta, avg_e, var_e);
-        reSample(&Beta, r, avg_e, var_e);
-        /*
-        if (var_e != 0)
-        {
-            collectData(&Beta, avg_e, var_e);
-            reSample(&Beta, r, avg_e, var_e);
+        ref_time = timeCheck(ref_time); // PROFILER STEP
+
+        cout << "~~~~~~~~~~~~~~~~~~~~ Doing data collection...\n";
+        calculateEnergies(&avg_e, &var_e);
+        if (smoothed_var_e == 0) {
+            smoothed_var_e += var_e;
         } else {
+            smoothed_var_e += var_e;
+            smoothed_var_e /= 2;
+        }
+        // CHECK FOR ENERGY OUTLIERS 
+        int anomaly_counter = 0;
+        for (int mm = 0; mm < pop_size; mm++) {
+            Lattice* lattice_mm = &pop_array[indices[mm]];
+            double ene_mm = lattice_mm->getTotalEnergy();
+            if (abs(ene_mm - avg_e) > 4*sqrt(var_e)){ // Find lattices that are 5 sigma away.
+                // cout << "Lattice number " << indices[mm] << " is weird. " << mm << " is its position in the randomized order. E = " << ene_mm << ". Family number = " << lattice_mm->getFamily() << ", latest NewFamily number = " << lattice_mm->getNewFamily() << ".\n";
+                anomaly_counter++;
+            }
+        }
+
+        calculateFamilies();
+        measureOverlap();
+        if (Beta > 0) {
+            collectData(&Beta, avg_e, var_e);
+        }
+        ref_time = timeCheck(ref_time); // PROFILER STEP
+        // makeHistograms(kappastr);
+        cout << "~~~~~~~~~~~~~~~~~~~~ Doing resampling...\n";
+        reSample(&Beta, r, avg_e, var_e);
+        ref_time = timeCheck(ref_time); // PROFILER STEP
+        /*
+        if (var_e == 0)
+        {
             cout << "Variance went to 0. Sufficient data gathered. Beta = " << Beta << ".";
             cout << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
             break;
@@ -891,7 +1048,8 @@ void Population::runTR(string kappastr)
         
         
         
-        cout << "Done for beta = " << Beta << "!\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+        cout << "Done for beta = " << Beta << "! StDev in energy = " << sqrt(var_e) << ", no. of anomalies (>4sigma) = " << anomaly_counter;
+        cout << "\nNo. of steps = " << step_const << ", No. of sweeps = " << num_sweeps << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
 
         // T -= double((T_INIT - T_FINAL)/T_ITER); // "Cooling" the system
         // T = floor((100.*T)+.5)/100;
@@ -901,4 +1059,52 @@ void Population::runTR(string kappastr)
 
     Lattice* lattice = &pop_array[0];
     lattice->printLattice();
+    cout << "Total temperature steps: " << temp_steps << "\n";
 }
+
+void Population::makeHistograms(string kappastr) {
+    ofstream ene_histograms;
+    ofstream mag_histograms;
+    string lenstr = to_string(LEN);
+    // ene_histograms.open("./data/" + mode + "/ene_hist" + kappastr + "_kappa_" + lenstr + "_L" + ".csv", ios::app); // in SLURM
+    // ene_histograms.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/ene_hist_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv",ios::app); // in my computer
+    // mag_histograms.open("./data/" + mode + "/mag_hist_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv",ios::app); // in SLURM
+    // mag_histograms.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/mag_hist_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv",ios::app); // in my computer
+
+    for (int m = 0; m < max_pop; m++) {
+        if (m < pop_size) {
+            Lattice* lattice_m = &pop_array[m];
+            ene_histograms << lattice_m->getTotalEnergy() << ",";
+            mag_histograms << lattice_m->getTotalMag() << ",";
+        } else {
+            ene_histograms << "5000" << ",";
+            mag_histograms << "5000" << ",";
+        }
+    }
+    ene_histograms << "\n";
+    mag_histograms << "\n";
+    ene_histograms.close();
+    mag_histograms.close();
+}
+
+
+// Function to check if two lattices share at least one family number
+bool Population::haveSharedFamily(Lattice* lattice1, Lattice* lattice2) {
+    // Create a set from lattice1's recent_families
+    deque<int> rec_fams_1 = lattice1->getRecentFamilies();
+    deque<int> rec_fams_2 = lattice2->getRecentFamilies();
+    set<int> families_set(rec_fams_1.begin(), rec_fams_1.end());
+
+    // Check if any element in lattice2's recent_families exists in the set
+    for (int family : rec_fams_2) {
+        if (families_set.count(family)) {
+            return true;  // At least one shared number found
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
+
+

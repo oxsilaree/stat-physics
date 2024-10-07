@@ -22,6 +22,25 @@ Lattice::Lattice(double kappa, int family)
             Lattice::recent_families.push_back(family);
         }
     }
+/*
+Lattice::Lattice(const Lattice& parent)
+{
+    kappa = parent.kappa;
+    family = parent.family;
+    new_family = parent.family;
+    energy = parent.energy;
+    mag = parent.mag;
+    abs_mag = parent.abs_mag;
+    avg_cluster_size = parent.avg_cluster_size;
+    avg_nowrap_cluster_size = parent.avg_nowrap_cluster_size;
+    wrap_counter = parent.wrap_counter;
+    nowrap_counter = parent.nowrap_counter;
+    spec_heat = parent.spec_heat;
+    suscep = parent.suscep;
+    lattice_number = parent.lattice_number;
+    lattice_object = parent.lattice_object;
+}
+*/
 
 
 void Lattice::initializeSites(double *Beta)

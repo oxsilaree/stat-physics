@@ -14,8 +14,8 @@ def Analyze(kappa = None, size = None, quantities = [], normalize = False, marke
         kappa = float(input("Kappa: "))
         size = input("Length (16,32,64,128,256): ")
     kappastr = f'{kappa:.2f}'
-    df = f"/Users/shanekeiser/Downloads/data/21-9-24/emcx_data_{kappastr}_kappa_{size}_L.csv"
-    param_info = f"/Users/shanekeiser/Downloads/data/21-9-24/parameter_info_{kappastr}_kappa_{size}_L.csv"
+    df = f"/Users/shanekeiser/Downloads/data/5-10-24/emcx_data_{kappastr}_kappa_{size}_L.csv"
+    param_info = f"/Users/shanekeiser/Downloads/data/5-10-24/parameter_info_{kappastr}_kappa_{size}_L.csv"
     makePlots(df, param_info, quantities, normalize = normalize, marker = marker)
     return 0
 
@@ -49,7 +49,7 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
     if fname == "nil" or info_name == "nil":
         print("Please include both the data and parameter files. Exiting...")
         return (1)
-    info = np.loadtxt(info_name, delimiter = ',', dtype = str)
+    info = np.loadtxt(info_name, skiprows = 1, delimiter = ',', dtype = str)
     df = pd.read_csv(fname)
     
     NN = float(info[1])**2
@@ -181,7 +181,7 @@ def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '
 
 # Analyze(0.25,16, quantities = [8,9])
 # Analyze(0.25,32, quantities = [8,9])
-Analyze(1,32, quantities = [], normalize=False)    
+Analyze(0.6,64, quantities = [], normalize=False)    
 
 # Analyze(0.25,64, normalize = True, quantities = [7,10])
 
@@ -206,7 +206,7 @@ def CompareObservables(observable1, observable2 = -1, kappas = [], sizes = [], n
         for i, kappa in enumerate(kappas):
             fname = f"/Users/shanekeiser/Downloads/data/20-9-24/t/emcx_data_{kappastrs[i]}_kappa_{L}_L.csv"
             info_name = f"/Users/shanekeiser/Downloads/data/20-9-24/t/parameter_info_{kappastrs[i]}_kappa_{L}_L.csv"
-            infos.append(np.loadtxt(info_name, delimiter=',', dtype=str))
+            infos.append(np.loadtxt(info_name, skiprows = 1, delimiter=',', dtype=str))
             dfs.append(pd.read_csv(fname))
     example_df = dfs[0]
     # Set up color gradients

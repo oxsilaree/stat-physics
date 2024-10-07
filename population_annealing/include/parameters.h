@@ -12,7 +12,7 @@
 #define INIT_POP_SIZE 5000
 #define CULLING_FRAC 0.05
 #define MAX_BETA 1.25
-#define MIN_DISTANCE 50
+#define MIN_DISTANCE 300
 
 
 // Maybe all of these numbers are redundant now.

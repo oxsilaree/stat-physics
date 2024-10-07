@@ -42,8 +42,9 @@ public:
 
     int lattice_number; // Relevant for population annealing
     
-    // Constructor Declaration
-    Lattice(double kappa, int family);
+    
+    Lattice(double kappa, int family); // Constructor
+    //  Lattice(const Lattice&); // Copy constructor
 
     // Methods
     void initializeSites(double *Beta);
@@ -53,6 +54,7 @@ public:
     void doSweep(double *Beta);
     void doWolffAlgo(double *Beta, fftw_plan p, int num_steps);
     void doFFT(fftw_plan p);
+    
 
     // Update data members
     void updateTotalEnergy();

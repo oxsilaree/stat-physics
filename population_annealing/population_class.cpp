@@ -67,7 +67,7 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
     double energy_j, weight_j, tau_j, expected_copies_j; // used for reweighting
     int new_family_counter = 0;
 
-    double d_Beta = CULLING_FRAC * sqrt(2 *PI / var_e); // This is a slightly more optimized way to run Pop.Annealing
+    double d_Beta = CULLING_FRAC * sqrt(2 *PI / var_e); // This is a more optimized annealing schedule
     if (*Beta + d_Beta < MAX_BETA)
 		*Beta += d_Beta;
 	else
@@ -157,21 +157,26 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
     // int ii = 0;
     for (int ii = 0; ii < pop_size; ii++) // Iterate over current set of replicas
     {   
-        pop_it->setNewFamily(new_family_counter);
-        pop_it->updateRecentFamilies(new_family_counter);
+        // pop_it->setNewFamily(new_family_counter);
+        // pop_it->updateRecentFamilies(new_family_counter);
         if (num_replicas[ii] == 0) {
             pop_array.erase(pop_it);
             new_pop_size -= 1;
         } else if (num_replicas[ii] == 1) {
             pop_it += 1;
         } else {
+            vector<Lattice>::iterator pop_next = pop_it + 1;
+            pop_array.insert(pop_next, num_replicas[ii] - 1, *pop_it);
+            pop_it += num_replicas[ii] - 1;
+            new_pop_size += num_replicas[ii] - 1;
+            /*
             for (int j = 0; j < num_replicas[ii] - 1; j++) {
                 vector<Lattice>::iterator pop_next = pop_it + 1;
                 pop_array.insert(pop_next, *pop_it);
                 pop_next->setNewFamily(new_family_counter);
                 pop_next->updateRecentFamilies(new_family_counter);
                 new_pop_size += 1;
-            }
+            } */
         }
         new_family_counter += 1;
     }
@@ -863,7 +868,7 @@ void Population::runTR(string kappastr)
         } else {
             step_const = 10;
         }
-        num_sweeps = (Beta < 0.35) ? 1 : (Beta < 1.1) ? 20 : 5;
+        num_sweeps = (Beta < 0.35) ? 1 : (Beta < 1.1) ? 10 : 3;
         num_steps = num_sweeps * step_const;
         double *in, *out;
         in = (double*) fftw_alloc_real(LEN);
@@ -899,81 +904,85 @@ void Population::runTR(string kappastr)
 
         
         // Swap replicas if we have correlated pairs
-        
+        /*
         if (Beta > 0.1) {
             for (int m = 0; m < half_pop; m++) {
                 vector<int>::iterator it, it2, it3; // Use this to edit the indices vector
                 int it_count = 2;
                 it = indices.begin() + 2*m;                         // v--(d = 50)--v
                 
+                
                 while (abs(indices[2*m] - indices[2*m + 1]) < MIN_DISTANCE) { // "If randomly paired replicas are within d replicas 
                     vector<int>::iterator swapper = indices.begin() + ((2*m + it_count) % pop_size); // from each other on the population array"
                     iter_swap(it+1, swapper);                       
                     it_count++;
                 } 
-                /*
+                
+                
                 // This one is for k-step look-back
+                
                 while (haveSharedFamily(&pop_array[indices[2*m]], &pop_array[indices[2*m + 1]])) { // "If randomly paired replicas share a family
                     iter_swap(it+1, it+it_count);                                                       // up to k annealing steps back"
                     it_count++;
                 }
-                *//*
+                
+                
                 // This one is for single look-back
                 while (pop_array[indices[2*m]].getNewFamily() == pop_array[indices[2*m + 1]].getNewFamily()) { // "If randomly paired replicas are identical"
                     iter_swap(it+1, it+it_count);
                     it_count++;
                 }
-                */
+                
                 
             } 
         }
-        
+        */
         
         ref_time = timeCheck(ref_time); // PROFILER STEP
-        
+        /*
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing Wolff steps... \n";
         // Decorrelate pairs using Wolff steps
         
         double w_padd1 = 1 - exp(-2*Beta*J);
         double w_padd2 = 1 - exp(-2*Beta*J*kappa);
         int wolff_steps;
-        if (temp_steps > 2) {
-            wolff_steps = (spec_heat_data.back()*10) + 1;
-            wolff_steps = max(30,wolff_steps);
+        if (temp_steps > 5) {
+            wolff_steps = (int)(LEN*LEN)/(nowrapclustersize_data.back());
+            wolff_steps = min(30,wolff_steps);
             cout << "Number of wolff Steps = " << wolff_steps << "\n";
         } else {
             wolff_steps = 1;
         }
-        #pragma omp parallel for shared(pop_array, w_padd1, w_padd2) schedule(dynamic, 20)
+        #pragma omp parallel for shared(pop_array, w_padd1, w_padd2) schedule(static, 10)
         for (int m = 0; m < pop_size; m++) {
             Lattice* lattice_m = &pop_array[m];
-            for (int j = 0; j < 30; j++) {
+            for (int j = 0; j < wolff_steps; j++) {
                 lattice_m->doStep(&w_padd1, &w_padd2);
             }
         }
         
         ref_time = timeCheck(ref_time); // PROFILER STEP
-        
+        */
         double padd1 = 1 - exp(-4 * Beta * J);
         double padd2 = 1 - exp(-4 * Beta * J * kappa);
         
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing Two-Replica steps...\n";
         // Pair up lattices and do two replica cluster moves (parallelized) --- only pair once
-        
+        /*
         #pragma omp parallel for shared(pop_array, padd1, padd2, num_steps, r_thread, indices, wrap_counter) schedule(dynamic, 10)
         for (int m = 0; m < half_pop; m++) {
             int thread = omp_get_thread_num();
             doTwoReplica(padd1, padd2, num_steps, r_thread[thread % NUM_THREADS], indices[2*m], indices[2*m + 1]);
         }                                            // For some reason, need to mod this above.
         ref_time = timeCheck(ref_time); // PROFILER STEP
-        
+        */
         
         // Do two replica cluster moves but re-pair replicas every sweep.
-        /*
+        
         for (int sw = 0; sw < num_sweeps; sw++) {
             // Shuffle, swap and fix pairs once per sweep
-            if (sw % 5 == 0)
-                shuffle(indices.begin(), indices.end(), g);
+            
+            shuffle(indices.begin(), indices.end(), g);
             for (int m = 0; m < half_pop; m++) {
                 vector<int>::iterator it; // Use this to edit the indices vector
                 int it_count = 2;
@@ -995,7 +1004,7 @@ void Population::runTR(string kappastr)
         
         
         ref_time = timeCheck(ref_time); // PROFILER STEP
-        */
+        
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing FFTs...\n";
         #pragma omp parallel for shared (p) schedule(dynamic, 10)
         for (int m = 0; m < pop_size; m++) {
@@ -1009,12 +1018,7 @@ void Population::runTR(string kappastr)
 
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing data collection...\n";
         calculateEnergies(&avg_e, &var_e);
-        if (smoothed_var_e == 0) {
-            smoothed_var_e += var_e;
-        } else {
-            smoothed_var_e += var_e;
-            smoothed_var_e /= 2;
-        }
+
         // CHECK FOR ENERGY OUTLIERS 
         int anomaly_counter = 0;
         for (int mm = 0; mm < pop_size; mm++) {

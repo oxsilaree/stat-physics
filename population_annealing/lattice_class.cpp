@@ -2,7 +2,7 @@
 
 // Constructor definition
 Lattice::Lattice(double kappa, int family)
-    {
+{
     // Initialize other members if needed
     Lattice::kappa = kappa;
     Lattice::family = family;
@@ -18,10 +18,11 @@ Lattice::Lattice(double kappa, int family)
     Lattice::suscep = 0.0;
     Lattice::lattice_number = 0;
     Lattice::lattice_object = vector<vector<spinSite> >(LEN, vector<spinSite>(LEN));
-        for (int i = 0; i < 5; ++i) {
-            Lattice::recent_families.push_back(family);
-        }
-    }
+    /*
+    for (int i = 0; i < 5; ++i) {
+        Lattice::recent_families.push_back(family);
+    }*/
+}
 /*
 Lattice::Lattice(const Lattice& parent)
 {
@@ -168,6 +169,9 @@ void Lattice::doStep(double *padd1, double *padd2)
     int sp, cluster_size; // Counters
     double randnum; // Number to decide if add to cluster
     bool wrapping_crit = false;
+    bool z_wrapping_crit = false;
+    bool x_wrapping_crit = false;
+    bool xz_wrapping_crit = false;
     vector<pair<int, int> > stacker;
     stacker.reserve(LEN*LEN);
     stack<int> cluster_x;
@@ -207,7 +211,7 @@ void Lattice::doStep(double *padd1, double *padd2)
 
             spinSite* neighbor_spin = getSpinSite(nn_i,nn_j);
             bool neighbor_checked = neighbor_spin->checkStatus();
-            if (wrapping_crit == false && neighbor_checked == true) { // Check for wrapping once
+            if (neighbor_checked && (!wrapping_crit || !z_wrapping_crit || !x_wrapping_crit || !xz_wrapping_crit))  { // Check for wrapping once
 
                 old_x = neighbor_spin->getX();
                 old_y = neighbor_spin->getY();
@@ -223,10 +227,26 @@ void Lattice::doStep(double *padd1, double *padd2)
                 new_x = neighbor_spin->getX();
                 new_y = neighbor_spin->getY();
 
-                if (old_x != new_x || old_y != new_y) {
-                    wrapping_crit = true;
-                    wrap_counter++;
+                // Get wrapping data
+                if (wrapping_crit == false)
+                {
+                    avg_nowrap_cluster_size += cluster_size;
+                    nowrap_counter++;
                 }
+                if (z_wrapping_crit == true)
+                {
+                    avg_zwrap_cluster_size += cluster_size;
+                }
+                if (x_wrapping_crit == true)
+                {
+                    avg_xwrap_cluster_size += cluster_size;
+                }
+
+                if (xz_wrapping_crit == true)
+                {
+                    avg_xzwrap_cluster_size += cluster_size;
+                }
+                avg_cluster_size += cluster_size;
             }   else if (neighbor_checked == false)  {
                 randnum = static_cast<double>(rand()) / RAND_MAX;
                 if ((neighbor_spin->getSpin() == oldspin && k <= 3 && randnum <= *padd1) ||
@@ -443,8 +463,8 @@ void Lattice::printLattice() {
     }
     cout << "]";
 }
-
+/*
 void Lattice::updateRecentFamilies(int nf) {
     recent_families.pop_front();
     recent_families.push_back(nf);
-}
+}*/

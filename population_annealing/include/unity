@@ -44,10 +44,10 @@ private:
     double overlap, var_overlap, abs_overlap;
 
     // Wrapping and percolation observables
-    int wrap_counter;
-    int z_wrap_counter, x_wrap_counter, xz_wrap_counter, nowrap_count;
-    double avg_cluster_size;
-    double avg_zwrap_cluster_size, avg_xwrap_cluster_size, avg_xzwrap_cluster_size, avg_nowrap_cluster_size;
+    int wrap_counter, nowrap_count;
+    int z_wrap_counter, non_z_wrap_counter;
+    double avg_cluster_size, avg_nowrap_cluster_size;
+    double avg_zwrap_cluster_size, avg_nonzwrap_cluster_size;
 
     // Other observables
     double free_energy;
@@ -74,8 +74,7 @@ public:
     void collectDataSA(double *Beta);
     void loadData(string);
     void measureOverlap();
-    void getOverlapDistribution(vector<int>, int, string);
-    // bool haveSharedFamily(Lattice* lattice1, Lattice* lattice2);
+    bool haveSharedFamily(Lattice* lattice1, Lattice* lattice2);
 
 	int countFamilies(void);
     
@@ -99,12 +98,8 @@ public:
     vector<double> abs_overlap_data;
     vector<double> var_overlap_data;
     vector<double> free_energy_data;
-
     vector<double> z_wrapping_data;
-    vector<double> x_wrapping_data;
-    vector<double> xz_wrapping_data;
+    vector<double> nonz_wrapping_data;
     vector<double> z_clustersize_data;
-    vector<double> x_clustersize_data;
-    vector<double> xz_clustersize_data;
-
+    vector<double> nonz_clustersize_data;
 };

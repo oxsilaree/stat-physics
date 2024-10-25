@@ -25,14 +25,20 @@ class Lattice
 {
 private:
     int mag, abs_mag;
-    double avg_cluster_size, avg_nowrap_cluster_size;
-    int wrap_counter, nowrap_counter; // Relevant for data collection
     double energy, spec_heat, suscep;  //---^
     double kappa;
     double dom_freq, dom_amplitude; // Dominant frequency and corresponding amplitude
     vector<vector<spinSite> > lattice_object;
     int family, new_family; // For checking ancestors of replicas (and for pairing)
-    std::deque<int> recent_families;
+    // std::deque<int> recent_families;
+
+    // Wrapping and percolation observables
+    int wrap_counter, nowrap_counter;
+    int z_wrap_counter, x_wrap_counter, xz_wrap_counter;
+    double avg_cluster_size, avg_nowrap_cluster_size;
+    double avg_zwrap_cluster_size, avg_xwrap_cluster_size, avg_xzwrap_cluster_size;
+
+   
     
 
 public:
@@ -65,7 +71,11 @@ public:
     int getTotalMag();
     double getAvgClusterSize();
     double getAvgNowrapClusterSize();
+    int getWrapCount();
     int getNoWrapCount();
+    int getZWrapCount();
+    int getXWrapCount();
+    int getXZWrapCount();
     double getDomFreq();
     double getDomAmplitude();
     spinSite* getSpinSite(int row, int col);
@@ -88,11 +98,30 @@ inline double Lattice::getAvgNowrapClusterSize()
     return avg_nowrap_cluster_size;
 }
 
+inline int Lattice::getWrapCount()
+{
+    return wrap_counter;
+}
+
 inline int Lattice::getNoWrapCount()
 {
     return nowrap_counter;
 }
 
+inline int Lattice::getZWrapCount()
+{
+    return z_wrap_counter;
+}
+
+inline int Lattice::getXWrapCount()
+{
+    return x_wrap_counter;
+}
+
+inline int Lattice::getXZWrapCount()
+{
+    return xz_wrap_counter;
+}
 
 inline int Lattice::getTotalEnergy()
 {
@@ -135,7 +164,8 @@ inline void Lattice::setNewFamily(int nf)
     new_family = nf;
 }
 
+/*
 inline deque<int> Lattice::getRecentFamilies()
 {
     return recent_families;
-}
+}*/

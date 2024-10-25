@@ -14,8 +14,8 @@ def Analyze(kappa = None, size = None, quantities = [], normalize = False, marke
         kappa = float(input("Kappa: "))
         size = input("Length (16,32,64,128,256): ")
     kappastr = f'{kappa:.2f}'
-    df = f"/Users/shanekeiser/Downloads/data/5-10-24/emcx_data_{kappastr}_kappa_{size}_L.csv"
-    param_info = f"/Users/shanekeiser/Downloads/data/5-10-24/parameter_info_{kappastr}_kappa_{size}_L.csv"
+    df = f"/Users/shanekeiser/Downloads/data/16-10-24a/emcx_data_{kappastr}_kappa_{size}_L.csv"
+    param_info = f"/Users/shanekeiser/Downloads/data/16-10-24a/parameter_info_{kappastr}_kappa_{size}_L.csv"
     makePlots(df, param_info, quantities, normalize = normalize, marker = marker)
     return 0
 
@@ -72,13 +72,13 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
     if quantities == []:
 
         title = f"Quantities of interest for\n{titlestr}"
-        axes = df.plot(x='Beta', subplots = True, layout = [6,3], figsize = [10,8], title = title, legend = False, marker = marker, linewidth = 0)
+        axes = df.plot(x='Beta', subplots = True, layout = [6,4], figsize = [10,8], title = title, legend = False, marker = marker, linewidth = 0)
         ax_x, ax_y = 0,0
         for i in range(1,len(list(df))):
             axes[ax_x, ax_y].set_ylabel(list(df)[i], fontsize = 'small')
             axes[ax_x, ax_y].grid()
             ax_y += 1
-            if ax_y == 3:
+            if ax_y == 4:
                 ax_x += 1
                 ax_y = 0
         plt.tight_layout()
@@ -88,7 +88,7 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
         for i in quantities:
             headers.append(list(df)[i])
         title = f"Comparison plot for\n{titlestr}"
-        df.plot(x = 'Beta', y = headers, title = title, marker = marker, linewidth = 0)
+        df.plot(x = 'Beta', y = headers, title = title, marker = marker, linewidth = 0.5)
         plt.show()
     print(f"No. of Temperature steps = {len(df['Beta'])}")
     print(df.head(5))
@@ -181,7 +181,7 @@ def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '
 
 # Analyze(0.25,16, quantities = [8,9])
 # Analyze(0.25,32, quantities = [8,9])
-Analyze(0.6,64, quantities = [], normalize=False)    
+Analyze(0.6,32, quantities = [16], normalize=False)    
 
 # Analyze(0.25,64, normalize = True, quantities = [7,10])
 

@@ -74,13 +74,13 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
     if quantities == []:
 
         title = f"Quantities of interest for\n{titlestr}"
-        axes = df.plot(x='Beta', subplots = True, layout = [6,3], figsize = [10,8], title = title, legend = False, marker = marker, linewidth = 0)
+        axes = df.plot(x='Beta', subplots = True, layout = [6,4], figsize = [10,8], title = title, legend = False, marker = marker, linewidth = 0)
         ax_x, ax_y = 0,0
         for i in range(1,len(list(df))):
             axes[ax_x, ax_y].set_ylabel(list(df)[i], fontsize = 'small')
             axes[ax_x, ax_y].grid()
             ax_y += 1
-            if ax_y == 3:
+            if ax_y == 4:
                 ax_x += 1
                 ax_y = 0
         plt.tight_layout()

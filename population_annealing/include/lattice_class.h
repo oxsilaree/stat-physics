@@ -33,7 +33,7 @@ private:
     // std::deque<int> recent_families;
 
     // Wrapping and percolation observables
-    int wrap_counter, nowrap_counter;
+    int wrap_counter, no_wrap_counter;
     int z_wrap_counter, x_wrap_counter, xz_wrap_counter;
     double avg_cluster_size, avg_nowrap_cluster_size;
     double avg_zwrap_cluster_size, avg_xwrap_cluster_size, avg_xzwrap_cluster_size;
@@ -70,7 +70,10 @@ public:
     int getTotalEnergy();
     int getTotalMag();
     double getAvgClusterSize();
-    double getAvgNowrapClusterSize();
+    double getAvgNoWrapClusterSize();
+    double getAvgXWrapClusterSize();
+    double getAvgZWrapClusterSize();
+    double getAvgXZWrapClusterSize();
     int getWrapCount();
     int getNoWrapCount();
     int getZWrapCount();
@@ -93,10 +96,26 @@ inline double Lattice::getAvgClusterSize()
     return avg_cluster_size;
 }
 
-inline double Lattice::getAvgNowrapClusterSize()
+inline double Lattice::getAvgNoWrapClusterSize()
 {
     return avg_nowrap_cluster_size;
 }
+
+inline double Lattice::getAvgXWrapClusterSize()
+{
+    return avg_xwrap_cluster_size;
+}
+
+inline double Lattice::getAvgZWrapClusterSize()
+{
+    return avg_zwrap_cluster_size;
+}
+
+inline double Lattice::getAvgXZWrapClusterSize()
+{
+    return avg_xzwrap_cluster_size;
+}
+
 
 inline int Lattice::getWrapCount()
 {
@@ -105,7 +124,7 @@ inline int Lattice::getWrapCount()
 
 inline int Lattice::getNoWrapCount()
 {
-    return nowrap_counter;
+    return no_wrap_counter;
 }
 
 inline int Lattice::getZWrapCount()

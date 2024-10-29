@@ -18,7 +18,7 @@ using namespace std;
         FFT measurement
         Wrapping measurement
         Capabilities to use 1 of 3 methods:
-          - Simulated Annealing with Wolff cluster method (no overlap measurement)
+          - Simulated Annealing with Wolff cluster method (not updated)
           - Population Annealing with Wolff cluster method 
           - Population Annealing with Two-Replica cluster method
 */
@@ -39,7 +39,7 @@ Population::Population(int nom_pop, gsl_rng *r, double kappa, string mode)
     Population::pop_size = nom_pop;
     Population::avg_cluster_size = 0;
     Population::avg_nowrap_cluster_size = 0;
-    Population::nowrap_count = 0;
+    Population::no_wrap_counter = 0;
     Population::r = r;
     Population::smoothed_var_e = 0;
     Population::pop_array.reserve(max_pop); // Reserve initial memory for the vector
@@ -269,7 +269,7 @@ void Population::run(string kappastr)
         // omp_set_num_threads(NUM_THREADS);
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing Wolff steps...\n";
         
-        #pragma omp parallel for shared(pop_array, padd1, padd2, r_thread, wrap_counter) schedule(dynamic, 10)
+        #pragma omp parallel for shared(pop_array, padd1, padd2, r_thread, wrap_counter) schedule(dynamic, 20)
         for (int m = 0; m < pop_size; m++) 
         {
             int thread = omp_get_thread_num();
@@ -359,9 +359,13 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
     double ene = 0, ene_sq = 0, mag = 0, mag_sq = 0, mag_abs = 0, spec_heat = 0, susc = 0;
 
     // Wrapping data
+    double WC, wrap_counter_alt;
     double CS, avg_clust_size = 0; 
     double NWCS, avg_nowrap_clust_size = 0;
-    double NWC, nowrap_counter = 0;
+    double NWC;
+    double XWC;
+    double ZWC;
+    double XZWC;
     double ZCS, avg_zwrap_clust_size = 0;
     double XCS, avg_xwrap_clust_size = 0;
     double XZCS, avg_xzwrap_clust_size = 0;
@@ -392,51 +396,58 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
         amps += AMP;
 
         if (mode != "t") {
+            WC = lattice_m->getWrapCount();
             CS = lattice_m->getAvgClusterSize();
-            NWCS = lattice_m->getAvgNowrapClusterSize();
             NWC = lattice_m->getNoWrapCount();
-            avg_clust_size += CS;
-            avg_nowrap_clust_size += NWCS;
-            nowrap_counter += NWC;
+            NWCS = lattice_m->getAvgNoWrapClusterSize();
+            XWC = lattice_m->getXWrapCount();
+            XCS = lattice_m->getAvgXWrapClusterSize();
+            ZWC = lattice_m->getZWrapCount();
+            ZCS = lattice_m->getAvgZWrapClusterSize();
+            XZWC = lattice_m->getXZWrapCount();
+            XZCS = lattice_m->getAvgXZWrapClusterSize();
+
+            wrap_counter_alt += WC;
+            avg_cluster_size += CS;
+            avg_nowrap_cluster_size += NWCS;
+            avg_xwrap_cluster_size += XCS;
+            avg_zwrap_cluster_size += ZCS;
+            avg_xzwrap_cluster_size += XZCS;
+            no_wrap_counter += NWC;
+            x_wrap_counter += XWC;
+            z_wrap_counter += ZWC;
+            xz_wrap_counter += XZWC;
         }
     }
 
-    if (mode == "t") { // I'm so sorry that these are named this way. LHS are for data collection only
-        avg_clust_size = avg_cluster_size/(half_pop*num_steps);                     // RHS are data members of the population
-        avg_nowrap_clust_size = avg_nowrap_cluster_size/(half_pop*num_steps - wrap_counter);     
-        nowrap_counter = nowrap_count;                         
-        avg_zwrap_clust_size = avg_zwrap_cluster_size/(z_wrap_counter);
-        avg_xwrap_clust_size = avg_xwrap_cluster_size/(x_wrap_counter);
-        avg_xzwrap_clust_size = avg_xzwrap_cluster_size/(xz_wrap_counter);
-    } else {
-        avg_clust_size /= (pop_size*num_steps);                     // RHS are data members of the population
-        avg_nowrap_clust_size /= (pop_size*num_steps);                            
-        avg_zwrap_clust_size /= (pop_size*num_steps);
-        avg_xwrap_clust_size /= (pop_size*num_steps);
-        avg_xzwrap_clust_size /= (pop_size*num_steps);
-    }
     double no_wrap_percent, z_wrap_percent, x_wrap_percent, xz_wrap_percent;
-    if (mode == ("t")) {
-        no_wrap_percent = (half_pop*num_steps - wrap_counter)/(half_pop*num_steps);
-        z_wrap_percent = (z_wrap_counter)/(half_pop*num_steps);
-        x_wrap_percent = (x_wrap_counter)/(half_pop*num_steps);
-        xz_wrap_percent = (xz_wrap_counter)/(half_pop*num_steps);
+    double denom = (mode == "t") ? half_pop*num_steps : pop_size*num_steps;
+    if (mode == "t") { // I'm so sorry that these are named this way. LHS are for data collection only
+        avg_cluster_size/=(denom);                     // RHS are data members of the population
+        avg_nowrap_cluster_size/=(denom - wrap_counter);                    
+        avg_zwrap_cluster_size/=(z_wrap_counter);
+        avg_xwrap_cluster_size/=(x_wrap_counter);
+        avg_xzwrap_cluster_size/=(xz_wrap_counter);
+        no_wrap_percent = (denom - wrap_counter)/(denom);
+        z_wrap_percent = (z_wrap_counter)/(denom);
+        x_wrap_percent = (x_wrap_counter)/(denom);
+        xz_wrap_percent = (xz_wrap_counter)/(denom);
     } else {
-        wrap_counter = 0;
-        z_wrap_counter = 0;
-        x_wrap_counter = 0;
-        xz_wrap_counter = 0;
-        for (int ii = 0; ii < pop_size; ii++) {
-            Lattice* lattice_ii = &pop_array[ii];
-            wrap_counter += lattice_ii->getWrapCount();
-            z_wrap_counter += lattice_ii->getZWrapCount();
-            x_wrap_counter += lattice_ii->getXWrapCount();
-            xz_wrap_counter += lattice_ii->getXZWrapCount();
-        }
-        no_wrap_percent = (double)((pop_size*num_steps - wrap_counter)/(double)(pop_size*num_steps));
-        z_wrap_percent = (double)(z_wrap_counter/(double)(pop_size*num_steps));
-        x_wrap_percent = (double)(x_wrap_counter/(double)(pop_size*num_steps));
-        xz_wrap_percent = (double)(xz_wrap_counter/(double)(pop_size*num_steps));
+        avg_cluster_size /= (denom);                     // RHS are data members of the population
+        avg_nowrap_cluster_size /= (denom);                            
+        avg_zwrap_cluster_size /= (denom);
+        avg_xwrap_cluster_size /= (denom);
+        avg_xzwrap_cluster_size /= (denom);
+        no_wrap_percent = (double)((denom - wrap_counter_alt)/(double)(denom));
+        z_wrap_percent = (double)(z_wrap_counter/(double)(denom));
+        x_wrap_percent = (double)(x_wrap_counter/(double)(denom));
+        xz_wrap_percent = (double)(xz_wrap_counter/(double)(denom));
+    }
+   
+    if (mode == ("t")) {
+        
+    } else {
+       
     }
        
 
@@ -453,8 +464,8 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
     magnetization_abs_data.push_back(mag_abs/(pop_size*LEN*LEN));
     spec_heat_data.push_back(spec_heat);
     susceptibility_data.push_back(susc);
-    clustersize_data.push_back(avg_clust_size);
-    nowrapclustersize_data.push_back(avg_nowrap_clust_size); ////// CHECK THIS!!!!!
+    clustersize_data.push_back(avg_cluster_size);
+    nowrapclustersize_data.push_back(avg_nowrap_cluster_size); ////// CHECK THIS!!!!!
     wrapping_data.push_back(no_wrap_percent);
     fft_freq_data.push_back(freqs/pop_size);
     fft_amp_data.push_back(amps/pop_size);
@@ -467,9 +478,9 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
     z_wrapping_data.push_back(z_wrap_percent);
     x_wrapping_data.push_back(x_wrap_percent);
     xz_wrapping_data.push_back(xz_wrap_percent);
-    z_clustersize_data.push_back(avg_zwrap_clust_size);     //(pop_size*num_steps));
-    x_clustersize_data.push_back(avg_xwrap_clust_size);      //(pop_size*num_steps));
-    xz_clustersize_data.push_back(avg_xzwrap_clust_size);      //(pop_size*num_steps));
+    z_clustersize_data.push_back(avg_zwrap_cluster_size);     //(pop_size*num_steps));
+    x_clustersize_data.push_back(avg_xwrap_cluster_size);      //(pop_size*num_steps));
+    xz_clustersize_data.push_back(avg_xzwrap_cluster_size);      //(pop_size*num_steps));
 
     cout << "Average (non-wrapping) cluster size: " << clustersize_data.back() << " (" << nowrapclustersize_data.back() << ").\n";
     cout << "E = " << ene/(pop_size*LEN*LEN) << ", C = " << spec_heat << ".\n";
@@ -480,9 +491,10 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
     if (mode == "t") {
         cout << "Total number of steps (w/ wrapping, %): " << pop_size*num_steps/2 << " (" << wrap_counter << "," << 100*(1-no_wrap_percent) <<"%).\n";
     } else {
-        cout << "Total number of steps (% w/ wrapping): " << pop_size*num_steps << " (" << wrap_counter << "," << 100*(1-no_wrap_percent) <<"%).\n";
+        cout << "Total number of steps (% w/ wrapping): " << pop_size*num_steps << " (" << wrap_counter_alt << "," << 100*(1-no_wrap_percent) <<"%).\n";
     }
 }
+
 
 void Population::loadData(string kappastr)
 {
@@ -695,7 +707,7 @@ void Population::runSA(string kappastr)
             E = lattice->getTotalEnergy();
             M = lattice->getTotalMag();
             CS = lattice->getAvgClusterSize();
-            NWCS = lattice->getAvgNowrapClusterSize();
+            NWCS = lattice->getAvgNoWrapClusterSize();
             NWC = lattice->getNoWrapCount();
             FR = lattice->getDomFreq();
             AMP = lattice->getDomAmplitude();
@@ -883,7 +895,7 @@ void Population::doTwoRepStep(double padd1, double padd2, gsl_rng *r, int index1
     if (wrapping_crit == false) // x-bar, z-bar
     {
         avg_nowrap_cluster_size += cluster_size;
-        nowrap_count++;
+        no_wrap_counter++;
     }
     if (z_wrapping_crit == true && x_wrapping_crit == false) // x-bar, z
     {
@@ -963,7 +975,7 @@ void Population::runTR(string kappastr)
         // THIS IS THE ACTUAL RUN
         wrap_counter = 0;
         z_wrap_counter = 0, x_wrap_counter = 0;
-        xz_wrap_counter = 0, nowrap_count = 0;
+        xz_wrap_counter = 0, no_wrap_counter = 0;
         avg_cluster_size = 0, avg_nowrap_cluster_size = 0;
         avg_zwrap_cluster_size = 0, avg_xwrap_cluster_size = 0, avg_xzwrap_cluster_size = 0;
         

@@ -8,14 +8,14 @@ import glob
 
 ### Single Kappa/size measure
 kappa = 0
-def Analyze(kappa = None, size = None, quantities = [], normalize = False, marker = '.'):
+def Analyze(kappa = None, size = None, mode = 't', quantities = [], normalize = False, marker = '.'):
     while kappa == None or size == None:
         print("Kappa or size missing. Please input both. ")
         kappa = float(input("Kappa: "))
         size = input("Length (16,32,64,128,256): ")
     kappastr = f'{kappa:.2f}'
-    df = f"/Users/shanekeiser/Downloads/data/16-10-24a/emcx_data_{kappastr}_kappa_{size}_L.csv"
-    param_info = f"/Users/shanekeiser/Downloads/data/16-10-24a/parameter_info_{kappastr}_kappa_{size}_L.csv"
+    df = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/emcx_data_{kappastr}_kappa_{size}_L.csv"
+    param_info = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/parameter_info_{kappastr}_kappa_{size}_L.csv"
     makePlots(df, param_info, quantities, normalize = normalize, marker = marker)
     return 0
 
@@ -97,7 +97,7 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
 
 
 # To compare across several kappa or lengths
-def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '.'):
+def Compare(kappas = [], sizes = [], mode = 't', quantity = 0, normalize = False, marker = '.'):
     dfs = []
     infos = []
 
@@ -122,8 +122,10 @@ def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '
         return 2
     elif len(sizes) == 1:
         for i in range(len(kappas)):
-            fname = f"/Users/shanekeiser/Downloads/data/emcx_data_{kappastrs[0]}_kappa_{sizes[i]}_L.csv"
-            info_name = f"/Users/shanekeiser/Downloads/data/parameter_info_{kappastrs[0]}_kappa_{sizes[i]}_L.csv"
+            kappastr = str(f"{kappa:.2f}")
+            size = sizes[0]
+            fname = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/emcx_data_{kappastr}_kappa_{size}_L.csv"
+            info_name = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/parameter_info_{kappastr}_kappa_{size}_L.csv"
             infos.append(np.loadtxt(info_name, delimiter = ',', dtype = str))
             dfs.append(pd.read_csv(fname))
         header = list(dfs[0])[quantity]
@@ -142,7 +144,7 @@ def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '
             
             # Make plots
             if i == 0:
-                titlestr = f'{header} comparison over varying $\kappa$ for $L$ = {info[1]}\nINIT_POP_SIZE = {info[2]}, CULLING_FRAC = {info[3]}'
+                titlestr = f'{header} comparison over varying $\kappa$ for $L$ = {infos[i][1]}\nINIT_POP_SIZE = {info[i][1]}, CULLING_FRAC = {info[i][1]}'
                 if normalize == True:
                     titlestr = titlestr + '\n(values normalized: divided by no. of spins)'
                 ax = df.plot(x="Beta", y = header, label = f'$\kappa$ = {info[0]}', title = titlestr, color = colors[0], marker = marker)
@@ -181,8 +183,9 @@ def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '
 
 # Analyze(0.25,16, quantities = [8,9])
 # Analyze(0.25,32, quantities = [8,9])
-Analyze(0.6,32, quantities = [16], normalize=False)    
-
+Analyze(0,32, mode = 'p', quantities = [11], normalize=False)    
+# Analyze(0.45,32, mode = 't', quantities = [11], normalize=False)    
+# Compare(kappas = [0,0.45], sizes = [32], quantity = 11)
 # Analyze(0.25,64, normalize = True, quantities = [7,10])
 
 

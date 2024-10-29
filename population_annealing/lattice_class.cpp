@@ -13,7 +13,7 @@ Lattice::Lattice(double kappa, int family)
     Lattice::avg_cluster_size = 0;
     Lattice::avg_nowrap_cluster_size = 0;
     Lattice::wrap_counter = 0;
-    Lattice::nowrap_counter = 0;
+    Lattice::no_wrap_counter = 0;
     Lattice::spec_heat = 0.0;
     Lattice::suscep = 0.0;
     Lattice::lattice_number = 0;
@@ -211,7 +211,7 @@ void Lattice::doStep(double *padd1, double *padd2)
 
             spinSite* neighbor_spin = getSpinSite(nn_i,nn_j);
             bool neighbor_checked = neighbor_spin->checkStatus();
-            if (neighbor_checked && (!wrapping_crit || !z_wrapping_crit || !x_wrapping_crit || !xz_wrapping_crit))  { // Check for wrapping once
+            if (neighbor_checked && (!wrapping_crit || !z_wrapping_crit || !x_wrapping_crit))  { // Check for wrapping once
 
                 old_x = neighbor_spin->getX();
                 old_y = neighbor_spin->getY();
@@ -227,26 +227,21 @@ void Lattice::doStep(double *padd1, double *padd2)
                 new_x = neighbor_spin->getX();
                 new_y = neighbor_spin->getY();
 
-                // Get wrapping data
-                if (wrapping_crit == false)
-                {
-                    avg_nowrap_cluster_size += cluster_size;
-                    nowrap_counter++;
+               if (old_x != new_x && !x_wrapping_crit) {
+                    x_wrapping_crit = true;
+                    if (!wrapping_crit) {
+                        wrap_counter++;
+                        wrapping_crit = true;
+                    }
                 }
-                if (z_wrapping_crit == true)
-                {
-                    avg_zwrap_cluster_size += cluster_size;
-                }
-                if (x_wrapping_crit == true)
-                {
-                    avg_xwrap_cluster_size += cluster_size;
+                if (old_y != new_y && !z_wrapping_crit) {
+                    z_wrapping_crit = true;
+                    if (!wrapping_crit) {
+                        wrap_counter++;
+                        wrapping_crit = true;
+                    }
                 }
 
-                if (xz_wrapping_crit == true)
-                {
-                    avg_xzwrap_cluster_size += cluster_size;
-                }
-                avg_cluster_size += cluster_size;
             }   else if (neighbor_checked == false)  {
                 randnum = static_cast<double>(rand()) / RAND_MAX;
                 if ((neighbor_spin->getSpin() == oldspin && k <= 3 && randnum <= *padd1) ||
@@ -273,14 +268,30 @@ void Lattice::doStep(double *padd1, double *padd2)
         }
     }
 
-    // For simpler percolation data, we are just interested in the non-wrapping cluster size.
-    if (wrapping_crit == false)
+     // Get wrapping data
+    if (wrapping_crit == false) // x-bar, z-bar
     {
         avg_nowrap_cluster_size += cluster_size;
-        nowrap_counter++;
+        no_wrap_counter++;
     }
-    avg_cluster_size += cluster_size;
+    if (z_wrapping_crit == true && x_wrapping_crit == false) // x-bar, z
+    {
+        z_wrap_counter++;
+        avg_zwrap_cluster_size += cluster_size;
+    }
+    if (x_wrapping_crit == true && z_wrapping_crit == false) // x, z-bar
+    {
+        x_wrap_counter++;
+        avg_xwrap_cluster_size += cluster_size;
+    }
+    if (x_wrapping_crit == true && z_wrapping_crit == true) // x, z
+    {
+        xz_wrapping_crit = true;
+        xz_wrap_counter++;
+        avg_xzwrap_cluster_size += cluster_size;
+    }
 
+    avg_cluster_size += cluster_size;
     /* Go over all the spins in the stack and flip if they are in the cluster */
     while (!cluster_x.empty()) {
         lx = cluster_x.top();
@@ -322,7 +333,7 @@ void Lattice::doSweep(double *Beta)
 void Lattice::doWolffAlgo(double *Beta, fftw_plan p, int num_steps)
 {
     // Only do the MC steps. Burn In is completed during initialization.
-    wrap_counter = 0, nowrap_counter = 0;
+    wrap_counter = 0, no_wrap_counter = 0;
     avg_cluster_size = 0, avg_nowrap_cluster_size = 0;
     // int num_sweeps = (*Beta <= 0.46) ? SWEEPS : SWEEPS / 4;
     double padd1 = 1 - exp(-2 * *Beta * J);

@@ -45,7 +45,7 @@ private:
 
     // Wrapping and percolation observables
     int wrap_counter;
-    int z_wrap_counter, x_wrap_counter, xz_wrap_counter, nowrap_count;
+    int z_wrap_counter, x_wrap_counter, xz_wrap_counter, no_wrap_counter;
     double avg_cluster_size;
     double avg_zwrap_cluster_size, avg_xwrap_cluster_size, avg_xzwrap_cluster_size, avg_nowrap_cluster_size;
 
@@ -71,6 +71,7 @@ public:
     void doTwoReplica(double padd1, double padd2, int num_steps, gsl_rng *r, int index1, int index2);
     void doTwoRepStep(double padd1, double padd2, gsl_rng *r, int index1, int index2);
     void collectData(double *Beta, double, double);
+    void collectData1(double *Beta, double, double);
     void collectDataSA(double *Beta);
     void loadData(string);
     void measureOverlap();

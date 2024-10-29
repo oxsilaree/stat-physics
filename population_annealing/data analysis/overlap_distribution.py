@@ -4,7 +4,7 @@ import pandas as pd
 
 
 
-kappa = 1
+kappa = 0.45
 kappastr = f'{kappa:.2f}'
 size = 32
 
@@ -22,7 +22,7 @@ betas = df["Beta"]
 data = np.loadtxt(fname, delimiter = ',', usecols = np.arange(0,2401,1))
 print(data.shape)
 
-temp_step = 255
+temp_step = 100
 print(betas[temp_step])
 plt.hist(data[temp_step,:], bins = np.linspace(-1,1,200))
 plt.xlabel("Overlap (normalized to lattice size)")

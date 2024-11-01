@@ -268,6 +268,13 @@ void Population::run(string kappastr)
         const fftw_plan p = fftw_plan_r2r_1d(LEN, in, out, FFTW_R2HC, FFTW_MEASURE);
         // omp_set_num_threads(NUM_THREADS);
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing Wolff steps...\n";
+
+        // THIS IS THE ACTUAL RUN
+        wrap_counter = 0;
+        z_wrap_counter = 0, x_wrap_counter = 0;
+        xz_wrap_counter = 0, no_wrap_counter = 0;
+        avg_cluster_size = 0, avg_nowrap_cluster_size = 0;
+        avg_zwrap_cluster_size = 0, avg_xwrap_cluster_size = 0, avg_xzwrap_cluster_size = 0;
         
         #pragma omp parallel for shared(pop_array, padd1, padd2, r_thread, wrap_counter) schedule(dynamic, 20)
         for (int m = 0; m < pop_size; m++) 
@@ -407,7 +414,7 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
             XZWC = lattice_m->getXZWrapCount();
             XZCS = lattice_m->getAvgXZWrapClusterSize();
 
-            wrap_counter_alt += WC;
+            wrap_counter += WC;
             avg_cluster_size += CS;
             avg_nowrap_cluster_size += NWCS;
             avg_xwrap_cluster_size += XCS;
@@ -438,7 +445,7 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
         avg_zwrap_cluster_size /= (denom);
         avg_xwrap_cluster_size /= (denom);
         avg_xzwrap_cluster_size /= (denom);
-        no_wrap_percent = (double)((denom - wrap_counter_alt)/(double)(denom));
+        no_wrap_percent = (double)((denom - wrap_counter)/(double)(denom));
         z_wrap_percent = (double)(z_wrap_counter/(double)(denom));
         x_wrap_percent = (double)(x_wrap_counter/(double)(denom));
         xz_wrap_percent = (double)(xz_wrap_counter/(double)(denom));
@@ -491,7 +498,7 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
     if (mode == "t") {
         cout << "Total number of steps (w/ wrapping, %): " << pop_size*num_steps/2 << " (" << wrap_counter << "," << 100*(1-no_wrap_percent) <<"%).\n";
     } else {
-        cout << "Total number of steps (% w/ wrapping): " << pop_size*num_steps << " (" << wrap_counter_alt << "," << 100*(1-no_wrap_percent) <<"%).\n";
+        cout << "Total number of steps (% w/ wrapping): " << pop_size*num_steps << " (" << wrap_counter << "," << 100*(1-no_wrap_percent) <<"%).\n";
     }
 }
 

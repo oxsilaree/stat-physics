@@ -10,16 +10,16 @@ relative_path = "../data/t/"
 ### Single Kappa/size measure
 
 kappa = 0
-def Analyze(kappa = None, size = None, quantities = [], normalize = False, marker = '.'):
+def Analyze(kappa = None, size = None, mode = 't', quantities = [], normalize = False, marker = '.'):
     while kappa == None or size == None:
         print("Kappa or size missing. Please input both. ")
         kappa = float(input("Kappa: "))
         size = input("Length (16,32,64,128,256): ")
     kappastr = f'{kappa:.2f}'
-    df = f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/t/emcx_data_{kappastr}_kappa_{size}_L.csv"
-    param_info = f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/t/parameter_info_{kappastr}_kappa_{size}_L.csv"
+    df = f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + f"/emcx_data_{kappastr}_kappa_{size}_L.csv"
+    param_info = f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + f"/parameter_info_{kappastr}_kappa_{size}_L.csv"
 
-    makePlots(df, param_info, quantities, normalize = normalize, marker = marker)
+    makePlots(df, param_info, mode, quantities, normalize = normalize, marker = marker)
     return 0
 
 # Quantities (in order):
@@ -47,7 +47,7 @@ quantities = { 0 : "Beta",
                }
 
 
-def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = False, marker = '.'):
+def makePlots(fname = "nil", info_name = "nil", mode = "t", quantities = [], normalize = False, marker = '.'):
     if fname == "nil" or info_name == "nil":
         print("Please include both the data and parameter files. Exiting...")
         return (1)
@@ -69,8 +69,12 @@ def makePlots(fname = "nil", info_name = "nil", quantities = [], normalize = Fal
         new_NWCS = NWCS*B
         df["Non-Wrapping Cluster Size"]=new_NWCS
     
-
-    titlestr = f"kappa = {info[0]}, L = {info[1]}, INIT_POP_SIZE = {info[2]}, CULLING_FRAC = {info[3]}"
+    modestr = "nil"
+    if mode == "t":
+        modestr = "Two replica"
+    elif mode == "p":
+        modestr = "Wolff"
+    titlestr = f"kappa = {info[0]}, L = {info[1]}, INIT_POP_SIZE = {info[2]}, CULLING_FRAC = {info[3]}, algorithm = {modestr}"
     if quantities == []:
 
         title = f"Quantities of interest for\n{titlestr}"
@@ -183,7 +187,7 @@ def Compare(kappas = [], sizes = [], quantity = 0, normalize = False, marker = '
 # Analyze(0.25,16, quantities = [8,9])
 # Analyze(0.25,32, quantities = [8,9])
 
-Analyze(1,32, quantities = [], normalize=False)
+Analyze(0,16, mode = 'p', quantities = [], normalize=False)
 # Analyze(0.6, 16, quantities = [15,16,17], normalize=True)    
 
 # Analyze(0.25,64, normalize = True, quantities = [7,10])

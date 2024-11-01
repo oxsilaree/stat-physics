@@ -333,8 +333,11 @@ void Lattice::doSweep(double *Beta)
 void Lattice::doWolffAlgo(double *Beta, fftw_plan p, int num_steps)
 {
     // Only do the MC steps. Burn In is completed during initialization.
-    wrap_counter = 0, no_wrap_counter = 0;
+    wrap_counter = 0;
+    z_wrap_counter = 0, x_wrap_counter = 0;
+    xz_wrap_counter = 0, no_wrap_counter = 0;
     avg_cluster_size = 0, avg_nowrap_cluster_size = 0;
+    avg_zwrap_cluster_size = 0, avg_xwrap_cluster_size = 0, avg_xzwrap_cluster_size = 0;
     // int num_sweeps = (*Beta <= 0.46) ? SWEEPS : SWEEPS / 4;
     double padd1 = 1 - exp(-2 * *Beta * J);
     double padd2 = 1 - exp(-2 * *Beta * J * kappa);

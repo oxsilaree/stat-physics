@@ -5,7 +5,7 @@ import pandas as pd
 mode = "p"
 kappa = 0
 kappastr = f'{kappa:.2f}'
-size = 32
+size = 16
 
 method = "Undeclared"
 
@@ -14,8 +14,11 @@ if mode == "t":
 elif mode == "p":
     method = "Wolff with PA"
 
-fname = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/emcx_data_{kappastr}_kappa_{size}_L.csv"
-param_info = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/parameter_info_{kappastr}_kappa_{size}_L.csv"
+# fname = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/emcx_data_{kappastr}_kappa_{size}_L.csv"
+# param_info = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/parameter_info_{kappastr}_kappa_{size}_L.csv"
+fname = f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + f"/emcx_data_{kappastr}_kappa_{size}_L.csv"
+param_info = f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + f"/parameter_info_{kappastr}_kappa_{size}_L.csv"
+
 
 info = np.loadtxt(param_info, skiprows = 1, delimiter = ',', dtype = str)
 df = pd.read_csv(fname)

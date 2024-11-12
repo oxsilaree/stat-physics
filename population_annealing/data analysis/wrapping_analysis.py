@@ -3,16 +3,16 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 mode = "p"
-kappa = 0
+kappa = 0.55
 kappastr = f'{kappa:.2f}'
 size = 16
 
 method = "Undeclared"
 
 if mode == "t":
-    method = "Two-Replica with PA"
+    method = "Two-Replica"
 elif mode == "p":
-    method = "Wolff with PA"
+    method = "Wolff"
 
 # fname = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/emcx_data_{kappastr}_kappa_{size}_L.csv"
 # param_info = f"/Users/shanekeiser/Downloads/data/25-10-24/" + mode + f"/parameter_info_{kappastr}_kappa_{size}_L.csv"
@@ -58,7 +58,7 @@ plt.plot(beta_vals, wrap_prob, '.', label = r"Any wrapping ($xz + \bar{x}z + x\b
 plt.plot(beta_vals, total_prob, '.', label = f"All possibilities\n" + r"($xz + \bar{x}z + x\bar{z} + \bar{x}\bar{z}$)")
 plt.plot(beta_vals, probs["xbar_zbar"], '.', label = r"No wrapping ($\bar{x} \bar{z}$)")
 plt.legend()
-plt.title(f"Wrapping plots, {method}\nKappa = {kappastr}, lattice size = {size}, population size = {pop_size}")
+plt.title(f"Wrapping probabilities, {method}\nKappa = {kappastr}, lattice size = {size}, population size = {pop_size}")
 plt.show()
 
 
@@ -68,7 +68,7 @@ plt.plot(beta_vals, probs["x_zbar"], '.', label = r"$x\bar{z}$")
 plt.plot(beta_vals, probs["x_z"], '.', label = r"$xz$")
 plt.plot(beta_vals, total_prob, '.', label = f"All possibilities\n" + r"($xz + \bar{x}z + x\bar{z} + \bar{x}\bar{z}$)")
 plt.legend()
-plt.title(f"Disjoint wrapping plots, {method}\nKappa = {kappastr}, lattice size = {size}, population size = {pop_size}")
+plt.title(f"Disjoint wrapping probabilities, {method}\nKappa = {kappastr}, lattice size = {size}, population size = {pop_size}")
 plt.show()
 probs = probs.fillna(0)
 sizes = sizes.fillna(0) ### NEED THIS?
@@ -91,7 +91,7 @@ plt.plot(beta_vals, wrap_sizes, '.', label = "all clusters wrapping")
 plt.plot(beta_vals, total_sizes, '.', label = "all clusters")
 plt.legend()
 plt.xlim(min(beta_vals), max(beta_vals))
-plt.title("Average wrapping sizes")
+plt.title(f"Wrapping sizes, {method}\nKappa = {kappastr}, lattice size = {size}, population size = {pop_size}")
 plt.show()
 
 print(z_wrap_sizes)
@@ -100,7 +100,7 @@ plt.plot(beta_vals, sizes["x_zbar"], '.', label = "wrapping in only X")
 plt.plot(beta_vals, sizes["x_z"], '.', label = "wrapping in both dir")
 plt.plot(beta_vals, sizes["xbar_zbar"], '.', label = "wrapping in neither dir")
 plt.legend()
-plt.title("Average wrapping sizes")
+plt.title(f"Disjoint wrapping sizes, {method}\nKappa = {kappastr}, lattice size = {size}, population size = {pop_size}")
 plt.show()
 
 print(sizes["xbar_z"])

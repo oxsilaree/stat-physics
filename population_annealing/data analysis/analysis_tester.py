@@ -183,7 +183,7 @@ def Compare(kappas = [], sizes = [], mode = 't', quantity = 0, normalize = False
 
 # Analyze(0.25,16, quantities = [8,9])
 # Analyze(0.25,32, quantities = [8,9])
-Analyze(0,32, mode = 'p', quantities = [11], normalize=False)    
+Analyze(0,32, mode = 'p', quantities = [], normalize=False)    
 # Analyze(0.45,32, mode = 't', quantities = [11], normalize=False)    
 # Compare(kappas = [0,0.45], sizes = [32], quantity = 11)
 # Analyze(0.25,64, normalize = True, quantities = [7,10])

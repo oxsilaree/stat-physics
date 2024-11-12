@@ -1,18 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from scipy.interpolate import make_interp_spline
 
 
 
-kappa = 0.6
-size = 16
+kappa = 0
+size = 32
 kappastr = f"{kappa:.2f}"
 quantity = 11
-
-fname_t= f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/t/emcx_data_{kappastr}_kappa_{size}_L.csv"
-fname_p= f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/p/emcx_data_{kappastr}_kappa_{size}_L.csv"
-info_name = f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/t/parameter_info_{kappastr}_kappa_{size}_L.csv" # just use 't' for simplicity
+date = "4-11-24"
+fname_t= f"/Users/shanekeiser/Downloads/data/{date}/t/emcx_data_{kappastr}_kappa_{size}_L.csv"
+fname_p= f"/Users/shanekeiser/Downloads/data/{date}/p/emcx_data_{kappastr}_kappa_{size}_L.csv"
+info_name = f"/Users/shanekeiser/Downloads/data/{date}/t/parameter_info_{kappastr}_kappa_{size}_L.csv" # just use 't' for simplicity
 
 info = np.loadtxt(info_name, delimiter = ',', dtype = str, skiprows=1)
 df_t = pd.read_csv(fname_t)
@@ -39,24 +38,17 @@ betaF_t = -1*df_t["Free Energy"]/df_t["Beta"]
 betaF_p = -1*df_p["Free Energy"]/df_p["Beta"]
 print(betaF_t)
 fig, ax = plt.subplots()
-ax.plot(df_t["Beta"], betaF_t, markersize = 0, color = 'r', label = "Two replica", linewidth = 0.5)
-ax.plot(df_p["Beta"], betaF_p, markersize = 0, color = 'b', label = "Wolff", linewidth = 0.5)
+ax.plot(df_t["Beta"], betaF_t, marker = '.', color = 'r', label = "Two replica", linewidth = 0)
+ax.plot(df_p["Beta"], betaF_p, marker = '.', color = 'b', label = "Wolff", linewidth = 0)
 # ax.set_title(r"Comparison of free energy $F_k = - \frac{1}{\beta_k} \sum_{j=K}^{k+1} \ln Q(\beta_j, \beta_{j-1})$" + f"\n(for Two-Replica and Wolff algorithms)")
-ax.set_title(r"Comparison of free energy $\tilde{F}_k = - \frac{1}{\beta_k} \sum_{K}^{k+1} \ln Q(\beta_k, \beta_{k-1})$" + f"\n(for Two-Replica and Wolff algorithms)")
+ax.set_title(r"Comparison of change in free energy $\Delta F_k = - \frac{1}{\beta_k} \ln Q(\beta_k, \beta_{k-1})$" + f"\n(for Two-Replica and Wolff algorithms)")
 ax.legend()
 ax.set_xlabel(r"Inverse temperature $\beta$")
-ax.set_ylabel(r"Free energy estimator $\tilde{F}$")
-ax.text(x = 0.4, y = 0.8, s = text_box,
+ax.set_ylabel(r"$\Delta F$")
+ax.text(x = 0.4, y = 0.5, s = text_box,
          fontsize=9, color="black", ha="left", va="center",
          bbox=dict(facecolor="beige", edgecolor="black", boxstyle="round,pad=0.2"),
          transform = ax.transAxes)
 plt.tight_layout()
 plt.show()
-
-
-plt.plot(df_t["Beta"], betaF_t - betaF_p, marker = '.', linewidth = 0.1)
-plt.title("Free Energy (TR - Wolff)")
-plt.show()
-
-
 

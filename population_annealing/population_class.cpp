@@ -113,7 +113,7 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
         Q += config_weight[j];
     }
     Q /= (double)pop_size;
-    free_energy += log(Q);
+    free_energy += log(Q); /////// THIS IS F
 
     for (j = 0; j < pop_size; j++) // Get the expected new number of replicas per currently existing lattice,
     {                              // and new population size
@@ -254,13 +254,11 @@ void Population::run(string kappastr)
         int step_const, num_sweeps;
         temp_steps++;
         if (clustersize_data.empty()) {
-            step_const = LEN*LEN;
-        } else if  (ceil((LEN*LEN)/(clustersize_data.back())) > 10) {
-            step_const = ceil((LEN*LEN)/(clustersize_data.back()));
+            step_const = LEN*LEN;   
         } else {
-            step_const = 10;
+            step_const = ceil((LEN*LEN)/(clustersize_data.back()));
         }
-        num_sweeps = (Beta < 0.35) ? 1 : (Beta < 1.1) ? 10 : 3;
+        num_sweeps = (Beta < 0.35) ? 1 : (Beta < 1.1) ? 10 : 10;
         num_steps = num_sweeps * step_const / 2; // To account for pairing
         double *in, *out;
         in = (double*) fftw_alloc_real(LEN);
@@ -536,14 +534,15 @@ void Population::loadData(string kappastr)
     ofstream run_info;
     ofstream emcx_data;
     string lenstr = to_string(LEN);
-    run_info.open("./data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv"); // in SLURM
-    // run_info.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv"); // in my computer
+    string popstr = to_string(nom_pop);
+    run_info.open("./data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv"); // in SLURM
+    // run_info.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv"); // in my computer
     run_info << "Kappa,L,Initial Pop. Size,Culling Fraction\n";
     run_info << kappa << "," << LEN << "," << INIT_POP_SIZE << "," << CULLING_FRAC;
     run_info.close();
 
-    emcx_data.open("./data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv");
-    // emcx_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv");
+    emcx_data.open("./data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv");
+    // emcx_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv");
     emcx_data << "Beta,Energy,Energy Squared,Magnetization,Magnetization Squared,Absolute Magnetization,";
     emcx_data << "Specific Heat,Susceptibility,Cluster Size,Non-Wrapping Cluster Size,Wrapping Prob. (Neither),";
     emcx_data << "Dominant Frequency,Dominant Amplitude,Rho T,Unique Families,";
@@ -966,12 +965,10 @@ void Population::runTR(string kappastr)
         temp_steps++;
         if (clustersize_data.empty()) {
             step_const = LEN*LEN;
-        } else if  (ceil((LEN*LEN)/(clustersize_data.back())) > 10) {
-            step_const = ceil((LEN*LEN)/(clustersize_data.back()));
         } else {
-            step_const = 10;
+            step_const = ceil((LEN*LEN)/(clustersize_data.back()));
         }
-        num_sweeps = (Beta < 0.35) ? 1 : (Beta < 1.1) ? 10 : 3;
+        num_sweeps = (Beta < 0.35) ? 1 : (Beta < 1.1) ? 10 : 10;
         num_steps = num_sweeps * step_const;
         double *in, *out;
         in = (double*) fftw_alloc_real(LEN);
@@ -1116,7 +1113,7 @@ void Population::runTR(string kappastr)
         for (int m = 0; m < pop_size; m++) {
             pop_array[m].doFFT(p);
         }
-        
+        getStructureFactorIntensity(kappastr, temp_steps);
         // FFT plan Cleanup
         fftw_destroy_plan(p);
         fftw_cleanup();
@@ -1181,10 +1178,11 @@ void Population::getOverlapDistribution(vector<int> indices, int temp_steps, str
     int half_pop = pop_size/2;
     ofstream q_distribution;
     string lenstr = to_string(LEN);
+    string popstr = to_string(nom_pop);
     if (temp_steps == 1)
-        q_distribution.open("./data/" + mode + "/overlap_distribution_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv"); // in SLURM
+        q_distribution.open("./data/" + mode + "/overlap_distribution_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv"); // in SLURM
     else
-        q_distribution.open("./data/" + mode + "/overlap_distribution_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv", ios::app); // in SLURM
+        q_distribution.open("./data/" + mode + "/overlap_distribution_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv", ios::app); // in SLURM
 
     for (int m = 0; m < half_pop; m++) {
         q = 0, abs_q = 0;
@@ -1214,10 +1212,11 @@ void Population::makeHistograms(string kappastr) {
     ofstream ene_histograms;
     ofstream mag_histograms;
     string lenstr = to_string(LEN);
-    // ene_histograms.open("./data/" + mode + "/ene_hist" + kappastr + "_kappa_" + lenstr + "_L" + ".csv", ios::app); // in SLURM
-    // ene_histograms.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/ene_hist_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv",ios::app); // in my computer
-    // mag_histograms.open("./data/" + mode + "/mag_hist_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv",ios::app); // in SLURM
-    // mag_histograms.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/mag_hist_" + kappastr + "_kappa_" + lenstr + "_L" + ".csv",ios::app); // in my computer
+    string popstr = to_string(nom_pop);
+    // ene_histograms.open("./data/" + mode + "/ene_hist" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv", ios::app); // in SLURM
+    // ene_histograms.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/ene_hist_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv",ios::app); // in my computer
+    // mag_histograms.open("./data/" + mode + "/mag_hist_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv",ios::app); // in SLURM
+    // mag_histograms.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/mag_hist_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv",ios::app); // in my computer
 
     for (int m = 0; m < max_pop; m++) {
         if (m < pop_size) {
@@ -1256,5 +1255,51 @@ bool Population::haveSharedFamily(Lattice* lattice1, Lattice* lattice2) {
 }
 */
 
+void Population::getStructureFactorIntensity(string kappastr, int temp_steps) {
+
+    string lenstr = to_string(LEN);
+    string popstr = to_string(nom_pop);
+    std::vector<double> freq_checkers; // Make vector of frequencies to check against
+    for (double value = 0.0; value <= 0.25; value += 1/(double)LEN) 
+        freq_checkers.push_back(value);
+
+    std::vector<int> sfi_values(freq_checkers.size(), 0); // Make vector of 0s
+    for (int i = 0; i < pop_size; i++) {
+        Lattice* lattice_i = &pop_array[i];
+        double freq = lattice_i->getDomFreq();
+        for (int j = 0; j < freq_checkers.size(); j++) {
+            if (abs(freq - freq_checkers[j]) <= 1e-5) {
+                sfi_values[j]++;
+            }
+        }
+    }
+
+    ofstream sfi_data;
+
+    if (temp_steps == 1) {
+        // sfi_data.open("./data/" + mode + "/sfi_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv"); // in SLURM
+        sfi_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/sfi_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv"); // in my computer
+        vector<double>::iterator it_d = freq_checkers.begin(); // Get those frequencies in there for reference
+        while (it_d != freq_checkers.end()) {
+            sfi_data << *it_d << ',';
+            it_d++;
+    }
+    sfi_data << "\n";
+    } else {
+        // sfi_data.open("./data/" + mode + "/sfi_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv", ios::app); // in SLURM
+        sfi_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/sfi_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv", ios::app); // in my computer
+    }
+    
+    
+
+    // Then we can add the rest
+    vector<int>::iterator it = sfi_values.begin();  
+    while (it != sfi_values.end()) {
+        sfi_data << *it << ',';
+        it++;
+    }
+    sfi_data << "\n";
+    sfi_data.close();
+}
 
 

@@ -71,7 +71,7 @@ public:
     void doTwoReplica(double padd1, double padd2, int num_steps, gsl_rng *r, int index1, int index2);
     void doTwoRepStep(double padd1, double padd2, gsl_rng *r, int index1, int index2);
     void collectData(double *Beta, double, double);
-    void collectData1(double *Beta, double, double);
+    void getStructureFactorIntensity(string kappastr, int);
     void collectDataSA(double *Beta);
     void loadData(string);
     void measureOverlap();

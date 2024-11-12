@@ -22,6 +22,7 @@
 // #include "spin_class.h"
 // #include "lattice_class.h"
 #include "./include/population_class.h"
+#include "./include/parameters.h"
 #include "./include/functions.h"
 
 using namespace std;
@@ -32,9 +33,9 @@ int main(int argc, char** argv)
 
 try 
 {
-    if (argc <= 2) 
+    if (argc <= 3) 
     {
-        throw std::runtime_error("Kappa/mode not provided. Please type argument in command line.\nTypical values: 0 < kappa < 2\nAll modes: 't', 's', 'p'");
+        throw std::runtime_error("Kappa/mode not provided. Please type argument in command line.\nTypical values: 0 < kappa < 2\nAll modes: 't', 's', 'p'\nR := init_pop_size >= 1");
     }
 }   catch (const std::runtime_error& e) 
     {
@@ -52,6 +53,8 @@ try
     srand(time(NULL));
     string prekappastr = argv[1];
     string mode = argv[2];
+    string r_string = argv[3];
+    int init_pop_size = (int)stod(r_string);
     double prekappa = stod(argv[1]);
     double kappa = prekappa;                // FOR TESTING
     // double kappa = prekappa/4;          // For N kappa values, we divide by N-1 (FOR BATCH ARRAY JOB)
@@ -73,19 +76,19 @@ try
 
 
     if (mode == "p"){
-        Population test_pop(INIT_POP_SIZE, r, kappa, mode);
+        Population test_pop(init_pop_size, r, kappa, mode);
         cout << "Population Annealing\n";
-        cout << "Starting population size = " << INIT_POP_SIZE << ".\n";
+        cout << "Starting population size = " << init_pop_size << ".\n";
         test_pop.run(kappastr);
     } else if (mode == "s") {
         Population test_pop(1, r, kappa, mode);
         cout << "Simulated Annealing\n";
-        cout << "No. of Blocks = " << INIT_POP_SIZE << ".\n";
+        cout << "No. of Blocks = " << init_pop_size << ".\n";
         test_pop.runSA(kappastr);
     } else if (mode == "t") {
-        Population test_pop(INIT_POP_SIZE, r, kappa, mode);
+        Population test_pop(init_pop_size, r, kappa, mode);
         cout << "Two Replica with Annealing\n";
-        cout << "Starting population size = " << INIT_POP_SIZE << ".\n";
+        cout << "Starting population size = " << init_pop_size << ".\n";
         test_pop.runTR(kappastr);
     } else {
         cout << "Incorrect mode indicated. Please use the following:\n\

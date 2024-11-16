@@ -8,6 +8,7 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <math.h>
+#include <string>
 #include <time.h>
 #include <chrono>
 #include <stack>
@@ -28,6 +29,10 @@ void initializeRNG(gsl_rng **r, int seed);
 // Timer function
 using TimePoint = chrono::steady_clock::time_point;
 TimePoint timeCheck(TimePoint referenceTime);
+
+// Get current date/time, format is YYYY-MM-DD_HH-mm-ss
+const string currentDateTime(); 
+
 
 
 

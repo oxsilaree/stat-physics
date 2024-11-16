@@ -529,20 +529,20 @@ void Population::loadData(string kappastr)
     vector<double> XCS = x_clustersize_data;
     vector<double> XZCS = xz_clustersize_data;
 
-
-
+    string timestr = currentDateTime();
+    cout << "Time of completion:" << timestr << "\n";
     ofstream run_info;
     ofstream emcx_data;
     string lenstr = to_string(LEN);
     string popstr = to_string(nom_pop);
-    run_info.open("./data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv"); // in SLURM
-    // run_info.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv"); // in my computer
+    run_info.open("./data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv"); // in SLURM
+    // run_info.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv"); // in my computer
     run_info << "Kappa,L,Initial Pop. Size,Culling Fraction\n";
-    run_info << kappa << "," << LEN << "," << INIT_POP_SIZE << "," << CULLING_FRAC;
+    run_info << kappa << "," << LEN << "," << nom_pop << "," << CULLING_FRAC;
     run_info.close();
 
-    emcx_data.open("./data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv");
-    // emcx_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv");
+    emcx_data.open("./data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv");
+    // emcx_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv");
     emcx_data << "Beta,Energy,Energy Squared,Magnetization,Magnetization Squared,Absolute Magnetization,";
     emcx_data << "Specific Heat,Susceptibility,Cluster Size,Non-Wrapping Cluster Size,Wrapping Prob. (Neither),";
     emcx_data << "Dominant Frequency,Dominant Amplitude,Rho T,Unique Families,";

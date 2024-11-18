@@ -95,8 +95,10 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
     double d_Beta = CULLING_FRAC * sqrt(2 *PI / var_e); // This is a more optimized annealing schedule
     if (*Beta + d_Beta < MAX_BETA)
 		*Beta += d_Beta;
-	else
+	else if (*Beta < MAX_BETA) {
 		*Beta = MAX_BETA;
+        return;
+    }
 
 	long double config_weight[pop_size];
 	long double Q = 0.0;
@@ -204,8 +206,6 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
             } */
         }
         new_family_counter += 1;
-        if (pop_it >= pop_array.end())
-            cout << "Reached the final replica!\n";
     }
 
     pop_size = new_pop_size;
@@ -229,7 +229,7 @@ void Population::run(string kappastr)
     gsl_rng *r_thread[NUM_THREADS];
     double avg_e = 0.0, var_e = 0.0;
     int temp_steps = 0;
-    auto ref_time = chrono::high_resolution_clock::now(); // PROFILER SET-UP
+    auto ref_time = chrono::steady_clock::now(); // PROFILER SET-UP
 
     for (int i = 0; i < NUM_THREADS; i++) {
 		int tmp_rnd = gsl_rng_uniform_int(r, 10000000) + 1000000;
@@ -286,8 +286,19 @@ void Population::run(string kappastr)
         cout << "~~~~~~~~~~~~~~~~~~~~ Collecting data...\n";
 
         calculateEnergies(&avg_e, &var_e);
+        
+        // CHECK FOR ENERGY OUTLIERS 
+        int anomaly_counter = 0;
+        for (int mm = 0; mm < pop_size; mm++) {
+            Lattice* lattice_mm = &pop_array[mm];
+            double ene_mm = lattice_mm->getTotalEnergy();
+            if (abs(ene_mm - avg_e) > 4*sqrt(var_e)){ // Find lattices that are 5 sigma away.
+                // cout << "Lattice number " << indices[mm] << " is weird. " << mm << " is its position in the randomized order. E = " << ene_mm << ". Family number = " << lattice_mm->getFamily() << ", latest NewFamily number = " << lattice_mm->getNewFamily() << ".\n";
+                anomaly_counter++;
+            }
+        }
         calculateFamilies();
-
+        getStructureFactorIntensity(kappastr, temp_steps);
                 
         // Cleanup
         fftw_destroy_plan(p);
@@ -302,6 +313,8 @@ void Population::run(string kappastr)
         // makeHistograms(kappastr);
         cout << "~~~~~~~~~~~~~~~~~~~~ Resampling...\n";
         reSample(&Beta, r, avg_e, var_e);
+        cout << "Done for beta = " << Beta << "! StDev in energy = " << sqrt(var_e) << ", no. of anomalies (>4sigma) = " << anomaly_counter;
+        cout << "\nNo. of steps = " << step_const << ", No. of sweeps = " << num_sweeps << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         ref_time = timeCheck(ref_time); // PROFILER STEP
         /*
         if (var_e != 0)
@@ -315,11 +328,6 @@ void Population::run(string kappastr)
         }
         */
         
-        
-        
-        
-        cout << "Done for beta = " << Beta << "!\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-
         // T -= double((T_INIT - T_FINAL)/T_ITER); // "Cooling" the system
         // T = floor((100.*T)+.5)/100;
     } 
@@ -530,18 +538,24 @@ void Population::loadData(string kappastr)
     vector<double> XZCS = xz_clustersize_data;
 
     string timestr = currentDateTime();
-    cout << "Time of completion:" << timestr << "\n";
+    cout << "Time of completion: " << timestr << "\n";
     ofstream run_info;
     ofstream emcx_data;
     string lenstr = to_string(LEN);
     string popstr = to_string(nom_pop);
-    run_info.open("./data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv"); // in SLURM
+    string modestr = (mode == "t") ? "Two-Replica_Method" : "Wolff_Method";
+
+    string filepath = "./production-run/" + modestr + "/" + kappastr + "_kappa/" + lenstr + "_L/" + popstr + "_R/";
+    std::filesystem::create_directories(std::filesystem::path(filepath).parent_path()); // Create intermediate directories
+    // run_info.open("./data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv"); // in SLURM
+    run_info.open(filepath + "parameter_info_" + timestr + ".csv"); // in SLURM ... FOR PRODUCTION RUN
     // run_info.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv"); // in my computer
     run_info << "Kappa,L,Initial Pop. Size,Culling Fraction\n";
     run_info << kappa << "," << LEN << "," << nom_pop << "," << CULLING_FRAC;
     run_info.close();
 
-    emcx_data.open("./data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv");
+    // emcx_data.open("./data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv");
+    emcx_data.open(filepath + "emcx_data_" + timestr + ".csv"); 
     // emcx_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/emcx_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv");
     emcx_data << "Beta,Energy,Energy Squared,Magnetization,Magnetization Squared,Absolute Magnetization,";
     emcx_data << "Specific Heat,Susceptibility,Cluster Size,Non-Wrapping Cluster Size,Wrapping Prob. (Neither),";
@@ -567,6 +581,9 @@ void Population::loadData(string kappastr)
     }
     
     emcx_data.close();  
+    string old_name = filepath + "sfi-data.csv";
+    string new_name = filepath + "sfi_data_" + timestr + ".csv";
+    std::rename(old_name.c_str(), new_name.c_str());
 }
 
 void Population::calculateFamilies(void) {
@@ -943,7 +960,7 @@ void Population::runTR(string kappastr)
     double avg_e = 0.0, var_e = 0.0;
     int tmp_rnd;
     int temp_steps = 0;
-    auto ref_time = chrono::high_resolution_clock::now(); // PROFILER SET-UP
+    auto ref_time = chrono::steady_clock::now(); // PROFILER SET-UP
     
 	for (int i = 0; i < NUM_THREADS; i++) 
     {
@@ -993,7 +1010,7 @@ void Population::runTR(string kappastr)
             gsl_rng_free(r1);
             pop_size -= 1;
         }
-        ref_time = chrono::high_resolution_clock::now(); // PROFILER STEP
+        ref_time = chrono::steady_clock::now(); // PROFILER STEP
         cout << "~~~~~~~~~~~~~~~~~~~~ Pairing and swapping...\n"; // PROFILER STEP
 
         // Pre-make random pairs of indices
@@ -1135,12 +1152,14 @@ void Population::runTR(string kappastr)
 
         calculateFamilies();
         measureOverlap();
-        getOverlapDistribution(indices, temp_steps, kappastr);
+        // getOverlapDistribution(indices, temp_steps, kappastr);
         if (Beta > 0) {
             collectData(&Beta, avg_e, var_e);
         }
         ref_time = timeCheck(ref_time); // PROFILER STEP
         // makeHistograms(kappastr);
+        cout << "Done for beta = " << Beta << "! StDev in energy = " << sqrt(var_e) << ", no. of anomalies (>4sigma) = " << anomaly_counter;
+        cout << "\nNo. of steps = " << step_const << ", No. of sweeps = " << num_sweeps << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing resampling...\n";
         reSample(&Beta, r, avg_e, var_e);
         ref_time = timeCheck(ref_time); // PROFILER STEP
@@ -1154,15 +1173,12 @@ void Population::runTR(string kappastr)
         */
         
         
-        
-        
-        cout << "Done for beta = " << Beta << "! StDev in energy = " << sqrt(var_e) << ", no. of anomalies (>4sigma) = " << anomaly_counter;
-        cout << "\nNo. of steps = " << step_const << ", No. of sweeps = " << num_sweeps << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
 
         // T -= double((T_INIT - T_FINAL)/T_ITER); // "Cooling" the system
         // T = floor((100.*T)+.5)/100;
     } 
     // Load up the data into readable files  
+    cout <<  "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n ~~~~~~~~~~~~~~~~~~~~ Loading data...";
     loadData(kappastr);
 
     Lattice* lattice = &pop_array[0];
@@ -1259,6 +1275,7 @@ void Population::getStructureFactorIntensity(string kappastr, int temp_steps) {
 
     string lenstr = to_string(LEN);
     string popstr = to_string(nom_pop);
+    string modestr = (mode == "t") ? "Two-Replica_Method" : "Wolff_Method";
     std::vector<double> freq_checkers; // Make vector of frequencies to check against
     for (double value = 0.0; value <= 0.25; value += 1/(double)LEN) 
         freq_checkers.push_back(value);
@@ -1275,22 +1292,22 @@ void Population::getStructureFactorIntensity(string kappastr, int temp_steps) {
     }
 
     ofstream sfi_data;
-
+    string timestr = currentDateTime();
+    string filepath = "./production-run/" + modestr + "/" + kappastr + "_kappa/" + lenstr + "_L/" + popstr + "_R/";
     if (temp_steps == 1) {
         // sfi_data.open("./data/" + mode + "/sfi_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv"); // in SLURM
-        sfi_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/sfi_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv"); // in my computer
+        sfi_data.open(filepath + "sfi-data.csv"); // in my computer
         vector<double>::iterator it_d = freq_checkers.begin(); // Get those frequencies in there for reference
         while (it_d != freq_checkers.end()) {
             sfi_data << *it_d << ',';
             it_d++;
-    }
+        }
     sfi_data << "\n";
     } else {
         // sfi_data.open("./data/" + mode + "/sfi_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv", ios::app); // in SLURM
-        sfi_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/sfi_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv", ios::app); // in my computer
+        // sfi_data.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/sfi_data_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R" + ".csv", ios::app); // in my computer
+        sfi_data.open(filepath + "sfi-data.csv", ios::app); // in my computer
     }
-    
-    
 
     // Then we can add the rest
     vector<int>::iterator it = sfi_values.begin();  

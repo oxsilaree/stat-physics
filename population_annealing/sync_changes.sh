@@ -31,7 +31,7 @@ echo "Navigating to the repository directory..."
 cd "$REPO_DIR" || exit 1
 
 echo "Copying changes from local directory to the repository subfolder..."
-rsync -av --exclude 'data' --exclude '.venv' --exclude 'bool_pa' "$LOCAL_DIR"/ population_annealing/
+rsync -av --exclude 'production-run' --exclude 'data' --exclude '.venv' --exclude 'bool_pa' "$LOCAL_DIR"/ population_annealing/
 
 echo "Adding changes to git..."
 git add population_annealing/*

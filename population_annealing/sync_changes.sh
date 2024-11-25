@@ -39,6 +39,9 @@ git add population_annealing/*
 echo "Committing changes..."
 git commit -m "Update population annealing files"
 
+echo "Pulling remote changes to avoid conflicts..."
+git pull origin main --rebase
+
 echo "Pushing changes to the remote repository..."
 git push origin main
 

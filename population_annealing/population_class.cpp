@@ -43,29 +43,29 @@ Population::Population(int nom_pop, gsl_rng *r, double kappa, string mode)
     Population::r = r;
     Population::smoothed_var_e = 0;
     Population::pop_array.reserve(max_pop); // Reserve initial memory for the vector
-    Population::energy_data.reserve((int)2*T_ITER);
-    Population::magnetization_data.reserve((int)2*T_ITER);
-    Population::spec_heat_data.reserve((int)2*T_ITER);
-    Population::susceptibility_data.reserve((int)2*T_ITER);
-    Population::clustersize_data.reserve((int)2*T_ITER);
-    Population::nowrapclustersize_data.reserve((int)2*T_ITER);
-    Population::beta_values.reserve((int)2*T_ITER);
-    Population::energy_sq_data.reserve((int)2*T_ITER);
-    Population::magnetization_sq_data.reserve((int)2*T_ITER);
-    Population::magnetization_abs_data.reserve((int)2*T_ITER);
-    Population::fft_freq_data.reserve((int)2*T_ITER);
-    Population::fft_amp_data.reserve((int)2*T_ITER);
-    Population::rho_t_data.reserve((int)2*T_ITER);
-    Population::unique_families_data.reserve((int)2*T_ITER);
-    Population::overlap_data.reserve((int)2*T_ITER);
-    Population::abs_overlap_data.reserve((int)2*T_ITER);
-    Population::free_energy_data.reserve((int)2*T_ITER);
-    Population::z_wrapping_data.reserve((int)2*T_ITER);
-    Population::x_wrapping_data.reserve((int)2*T_ITER);
-    Population::xz_wrapping_data.reserve((int)2*T_ITER);
-    Population::z_clustersize_data.reserve((int)2*T_ITER);
-    Population::x_clustersize_data.reserve((int)2*T_ITER);
-    Population::xz_clustersize_data.reserve((int)2*T_ITER);
+    Population::energy_data.reserve((int)3*T_ITER);
+    Population::magnetization_data.reserve((int)3*T_ITER);
+    Population::spec_heat_data.reserve((int)3*T_ITER);
+    Population::susceptibility_data.reserve((int)3*T_ITER);
+    Population::clustersize_data.reserve((int)3*T_ITER);
+    Population::nowrapclustersize_data.reserve((int)3*T_ITER);
+    Population::beta_values.reserve((int)3*T_ITER);
+    Population::energy_sq_data.reserve((int)3*T_ITER);
+    Population::magnetization_sq_data.reserve((int)3*T_ITER);
+    Population::magnetization_abs_data.reserve((int)3*T_ITER);
+    Population::fft_freq_data.reserve((int)3*T_ITER);
+    Population::fft_amp_data.reserve((int)3*T_ITER);
+    Population::rho_t_data.reserve((int)3*T_ITER);
+    Population::unique_families_data.reserve((int)3*T_ITER);
+    Population::overlap_data.reserve((int)3*T_ITER);
+    Population::abs_overlap_data.reserve((int)3*T_ITER);
+    Population::free_energy_data.reserve((int)3*T_ITER);
+    Population::z_wrapping_data.reserve((int)3*T_ITER);
+    Population::x_wrapping_data.reserve((int)3*T_ITER);
+    Population::xz_wrapping_data.reserve((int)3*T_ITER);
+    Population::z_clustersize_data.reserve((int)3*T_ITER);
+    Population::x_clustersize_data.reserve((int)3*T_ITER);
+    Population::xz_clustersize_data.reserve((int)3*T_ITER);
 
     for (int i = 0; i < nom_pop; ++i) {
         pop_array.push_back(Lattice(kappa,i));
@@ -181,18 +181,23 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
 
     // THIS IS A DIFFERENT LIFE/DEATH ROUTINE WHERE NEWBORNS ARE PLACED TO THE RIGHT OF THEIR ANCESTORS
     vector<Lattice>::iterator pop_it = pop_array.begin();  
-    // int ii = 0;
-    for (int ii = 0; ii < pop_size; ii++) // Iterate over current set of replicas
+    vector<Lattice>::iterator pop_next;
+    int ii = 0;
+    while (pop_it != pop_array.end() && ii < pop_size) // Iterate over current set of replicas
     {   
         // pop_it->setNewFamily(new_family_counter);
         // pop_it->updateRecentFamilies(new_family_counter);
         if (num_replicas[ii] == 0) {
-            pop_array.erase(pop_it);
+            pop_it = pop_array.erase(pop_it);
             new_pop_size -= 1;
         } else if (num_replicas[ii] == 1) {
-            pop_it += 1;
-        } else {
-            vector<Lattice>::iterator pop_next = pop_it + 1;
+            pop_it++;
+        } else if (num_replicas[ii] > 1) {
+            if (pop_it != pop_array.end()) {
+                pop_next = pop_it + 1;
+            } else {
+                pop_next = pop_array.begin();
+            }
             pop_array.insert(pop_next, num_replicas[ii] - 1, *pop_it);
             pop_it += num_replicas[ii];
             new_pop_size += num_replicas[ii] - 1;
@@ -206,6 +211,7 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
             } */
         }
         new_family_counter += 1;
+        ii++;
     }
 
     pop_size = new_pop_size;
@@ -298,7 +304,7 @@ void Population::run(string kappastr)
             }
         }
         calculateFamilies();
-        getStructureFactorIntensity(kappastr, temp_steps);
+        // getStructureFactorIntensity(kappastr, temp_steps);
                 
         // Cleanup
         fftw_destroy_plan(p);
@@ -961,7 +967,6 @@ void Population::runTR(string kappastr)
     int tmp_rnd;
     int temp_steps = 0;
     auto ref_time = chrono::steady_clock::now(); // PROFILER SET-UP
-    
 	for (int i = 0; i < NUM_THREADS; i++) 
     {
 		tmp_rnd = gsl_rng_uniform_int(r, 10000000) + 1000000;
@@ -1130,7 +1135,7 @@ void Population::runTR(string kappastr)
         for (int m = 0; m < pop_size; m++) {
             pop_array[m].doFFT(p);
         }
-        getStructureFactorIntensity(kappastr, temp_steps);
+        // getStructureFactorIntensity(kappastr, temp_steps);
         // FFT plan Cleanup
         fftw_destroy_plan(p);
         fftw_cleanup();
@@ -1162,6 +1167,9 @@ void Population::runTR(string kappastr)
         cout << "\nNo. of steps = " << step_const << ", No. of sweeps = " << num_sweeps << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing resampling...\n";
         reSample(&Beta, r, avg_e, var_e);
+        if (Beta == MAX_BETA) {
+            break;
+        }
         ref_time = timeCheck(ref_time); // PROFILER STEP
         /*
         if (var_e == 0)
@@ -1171,9 +1179,6 @@ void Population::runTR(string kappastr)
             break;
         }
         */
-        
-        
-
         // T -= double((T_INIT - T_FINAL)/T_ITER); // "Cooling" the system
         // T = floor((100.*T)+.5)/100;
     } 

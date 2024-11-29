@@ -3,6 +3,17 @@ This repository contains my work on the numerical analysis of the Ising model, f
 
 For now, the `population_annealing` folder is up to date, and this contains our latest simulation files that combine Population Annealing and Two-Replica cluster moves for the ANNNI model.
 
+Before going into detail about the repository itself, here is a quick overview of the model we have been investigating:
+
+## The ANNNI Model
+
+The ANNNI model is just like the Ising model, except with added next-nearest neighbor interactions along one axis (regardless of total number of dimensions). This axis is typically denoted as the $z$-axis. The Hamiltonian of this model is
+
+$$ \mathcal{H} = -J \sum_{\langle nn\rangle} \sigma_i \sigma_j - J_1 \sum_{\langle nnn \rangle} \sigma_i \sigma_j \hspace{2pt} , $$
+
+where $J, J_1$ are coupling constants for the different interactions, $\sigma$ denotes individual spins, and the indices of the sums $\langle nn \rangle$ and $\langle nnn \rangle$ indicate that the sums are being taken over nearest neighbors and axial next-nearest neighbors respectively. Typically, $J_1$ takes an opposite sign to $J$, which introduces competing interactions in the system leading to frustration.
+
+
 ## Features
 
 - **Monte Carlo Simulations**: Includes implementations of the Wolff algorithm and two-replica methods.
@@ -29,10 +40,10 @@ For now, the `population_annealing` folder is up to date, and this contains our 
 │       ├── spin_class.h      
 │       ├── lattice_class.h      
 │       └── population_class.h      
-├── data/                       # Any generated data would go here
-├── production-run/             # Large data sets would go here
-├── data_analysis/              # Python scripts for data analysis and visualization
-└── README.md          
+│   ├── data/                       # Any generated data would go here
+│   ├── production-run/             # Large data sets would go here
+│   ├── data_analysis/              # Python scripts for data analysis and visualization
+│   └── README.md          
 ```
 ## Getting Started
 ### Prerequisites
@@ -64,6 +75,7 @@ Follow these steps to set up and run the project:
    - Side length of lattices: $L$
    - Maximum inverse temperature to anneal to: `MAX_BETA`
    - Minimum distance between paired replicas: `MIN_DISTANCE`
+   - Most other parameters are deprecated at this point.
      
    Additionally, at this step you should change the directories in the `collectData` and `loadData` functions for data collection if necessary.
 

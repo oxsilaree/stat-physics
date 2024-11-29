@@ -17,10 +17,9 @@ where $J, J_1$ are coupling constants for the different interactions, $\sigma$ d
 ## Features
 
 - **Monte Carlo Simulations**: Includes implementations of the Wolff algorithm and two-replica methods.
-- **Population Annealing**: A robust approach to simulate systems at different temperatures efficiently.
-- **Statistical Analysis**: Tools to compute observables such as energy, magnetization, and heat capacity.
+- **Population Annealing**: A robust approach to simulate systems at different temperatures efficiently, and allows for parallelization of code.
+- **Statistical Analysis**: Tools to compute observables such as heat capacity, cluster wrapping (in any direction), fourier analysis and more.
 - **Parallelization**: OpenMP-based parallelized algorithms for high performance on multi-core systems.
-- **Checkpointing**: Save and resume simulations for long-running tasks.
 
 ## Repository Structure
 

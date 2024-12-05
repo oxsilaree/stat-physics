@@ -69,7 +69,7 @@ Follow these steps to set up and run the project:
    ```bash
    git clone https://github.com/oxsilaree/stat-physics.git
    ```
-2. **Edit global variables**
+2. **Edit global variables**:
    In `parameters.h`, one might want to change some parameters
    - Side length of lattices: $L$
    - Maximum inverse temperature to anneal to: `MAX_BETA`
@@ -82,7 +82,7 @@ Follow these steps to set up and run the project:
    ```bash
    ./build.sh
    ```
-5. **Run program**
+5. **Run program**:
    To run this program, supply the 3 following parameters:
    - `kappa`: This is the coupling constant ratio $\kappa = -J_1/J$. Typical ranges are float values from 0 to 2.
    - `method`: "t" for Two Replica, and "p" for Wolff ("s" for simulated annealing with Wolff is depreciated at the moment)

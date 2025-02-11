@@ -1,15 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import glob
 
-L = 32
+L = 48
 kappa = 0.6
 kappastr = f"{kappa:.2f}"
-quantity = 11
+quantity = 6
 
 
-R_vals = np.array([50,100,500,1000,2500,5000,7500,10000,15000,20000])
-R_vals = np.array([100,500,2500])
+R_vals = np.array([16000])
+R = R_vals[0]
+# R_vals = np.array([100,500,2500])
 colormap = plt.cm.brg
 num_colors = len(R_vals)
 colors = [colormap(i / num_colors) for i in range(num_colors)]
@@ -17,12 +19,16 @@ markers = [".","x"]
 dfs = []
 
 # Populate dataframes
-info_name = f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/t/parameter_info_{kappastr}_kappa_{L}_L_{R_vals[0]}_R.csv"
-info = np.loadtxt(info_name, dtype = str, delimiter = ',', skiprows = 1)
-culling_frac = info[-1]
-for R in R_vals:
-    fname= f"/Users/shanekeiser/Documents/ANNNI/populationannealing/data/t/emcx_data_{kappastr}_kappa_{L}_L_{R}_R.csv"
-    df = pd.read_csv(fname)
+dirpath = f"/Users/shanekeiser/Documents/ANNNI/populationannealing/production-run/Two-Replica_Method/{kappastr}_kappa/{L}_L/{R}_R"
+dirpath = f"/Users/shanekeiser/Downloads/production-run/Two-Replica_Method/0.60_kappa/48_L/{R}_R"
+filepattern = f"emcx_data_*"
+files = glob.glob(f"{dirpath}/{filepattern}")
+info_name = f"parameter_info*"
+print(files)
+# info = np.loadtxt(dirpath + info_name, dtype = str, delimiter = ',', skiprows = 1)
+# culling_frac = info[-1]
+for i in range(len(R_vals)):
+    df = pd.read_csv(files[i])
     dfs.append(df)
 
 header = list(dfs[0])[quantity]
@@ -35,10 +41,14 @@ for i in range(len(R_vals)):
     else:
         ax.plot(dfs[i]["Beta"], dfs[i][header], marker = markers[i%2], color = colors[i], linewidth = 0, label = f"R = {R_vals[i]}")
 
-ax.set_title(f"Comparison of {header} across population sizes" + "\n" + fr"$\kappa$ = {kappastr}, $L$ = {L}, Culling fraction = {culling_frac}")
+ax.set_title(f"Comparison of {header} across population sizes" + "\n" + fr"$\kappa$ = {kappastr}, $L$ = {L}")#, Culling fraction = {0.05}")
+ax.set_title(f"{header} for R = 1600, S = 100" + "\n" + fr"$\kappa$ = {kappastr}, $L$ = {L}")#, Culling fraction = {0.05}")
 ax.set_xlabel(r"$\beta$")
 ax.set_ylabel(f"{header}")
-plt.legend()
+# plt.legend()
+ax.text(x = 0.15, y = 1.6, s = r"$\Delta \beta = 0.005$", bbox = dict(facecolor='yellow', alpha=0.5))
+ax.text(x = 0.65, y = 1.6, s = r"$\Delta \beta = 0.0005$",bbox = dict(facecolor='yellow', alpha=0.5))
+ax.vlines(x = [0.5], ymin = 0, ymax = 2, linestyle = 'dashed', alpha = 0.5)
 plt.tight_layout()
 plt.show()
 

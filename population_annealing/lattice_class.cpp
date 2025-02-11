@@ -348,6 +348,60 @@ void Lattice::doWolffAlgo(double *Beta, fftw_plan p, int num_steps)
     doFFT(p);
 }
 
+void Lattice::doMetropolisSweep(double *Beta, gsl_rng *r)
+{
+    double dE, pflip, randnum;
+    int left_x, right_x, up_x, down_x,  left_y, right_y, up_y, down_y;  // nearest neighbours
+    int up2_x, down2_x,     up2_y, down2_y; // next-nearest neighbours
+    int root, U, D, L, R, U2, D2;
+    for (int i = 0; i < LEN; i++) // 1 sweep
+    {
+        for (int j = 0; j < LEN; j++)
+        { // We are doing sequential flips (this should be fine)
+            spinSite* flipper = getSpinSite(i,j);
+            
+            left_x = neighbor_table[i][j][0][0];
+            left_y = neighbor_table[i][j][0][1]; 
+            right_x = neighbor_table[i][j][1][0];
+            right_y = neighbor_table[i][j][1][1];
+            up_x = neighbor_table[i][j][2][0];
+            up_y = neighbor_table[i][j][2][1];
+            down_x = neighbor_table[i][j][3][0];
+            down_y = neighbor_table[i][j][3][1];
+            up2_x = neighbor_table[i][j][4][0];
+            up2_y = neighbor_table[i][j][4][1];
+            down2_x = neighbor_table[i][j][5][0];
+            down2_y = neighbor_table[i][j][5][1];
+
+            spinSite* left_s = getSpinSite(left_x,left_y);
+            spinSite* right_s = getSpinSite(right_x,right_y);
+            spinSite* up_s = getSpinSite(up_x, up_y);
+            spinSite* down_s = getSpinSite(down_x, down_y);
+            spinSite* up2_s = getSpinSite(up2_x, up2_y);
+            spinSite* down2_s = getSpinSite(down2_x, down2_y);          
+
+            root = flipper->getSpin();
+            L = left_s->getSpin();
+            R = right_s->getSpin();
+            U = up_s->getSpin();
+            D = down_s->getSpin();
+            U2 = up2_s->getSpin();
+            D2 = down2_s->getSpin();
+
+            dE = 2 * root * ((L+R+U+D) - kappa*(U2+D2));
+            if (dE <= 0)
+            {
+                flipper->Flip();
+            } else {
+                pflip = exp(-dE * *Beta);
+                randnum = gsl_rng_uniform(r);
+                if (randnum <= pflip)
+                    flipper->Flip();
+            }
+        }
+    }
+}
+
 void Lattice::updateTotalEnergy()
 {
     int left_x, right_x, up_x, down_x;   // nearest neighbours

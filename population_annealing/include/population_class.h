@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include "/opt/homebrew/Cellar/libomp/18.1.8/include/omp.h" // For parallelizing
-// include "../lib/libomp/18.1.8/include/omp.h" // For parallelizing in SLURM
+// #include "../lib/libomp/18.1.8/include/omp.h" // For parallelizing in SLURM
 #include <math.h>
 #include <time.h>
 #include <chrono>
@@ -22,6 +22,10 @@
 #include "lattice_class.h"
 #include <deque>
 #include <set>
+#include <filesystem>
+#include <numeric>
+#include <string>
+#include <stdlib.h>     //for using the function sleep
 
 #include <fftw3.h>
 
@@ -76,6 +80,7 @@ public:
     void loadData(string);
     void measureOverlap();
     void getOverlapDistribution(vector<int>, int, string);
+    void getWavenumberEnergies(double Beta, string kappastr, string runstr);
     // bool haveSharedFamily(Lattice* lattice1, Lattice* lattice2);
 
 	int countFamilies(void);

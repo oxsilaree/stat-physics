@@ -92,7 +92,14 @@ void Population::reSample(double *Beta, gsl_rng *r, double avg_e, double var_e)
     double energy_j, weight_j, tau_j, expected_copies_j; // used for reweighting
     int new_family_counter = 0;
 
-    double d_Beta = CULLING_FRAC * sqrt(2 *PI / var_e); // This is a more optimized annealing schedule
+    // double d_Beta = CULLING_FRAC * sqrt(2 *PI / var_e); // This is a more optimized annealing schedule
+    double d_Beta;
+    if (kappa == 0.6)
+        d_Beta = (*Beta < 0.6) ? 0.005 : (*Beta < 0.93) ? 0.0005 : 0.0001; // kappa = 0.6 
+    else if (kappa == 0.3)
+        d_Beta = (*Beta < 0.5) ? 0.005 : (*Beta < 0.7) ? 0.0005 : 0.005; // kappa = 0.3
+    else
+        d_Beta = 0.01;
     if (*Beta + d_Beta < MAX_BETA)
 		*Beta += d_Beta;
 	else if (*Beta < MAX_BETA) {
@@ -463,28 +470,27 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
         xz_wrap_percent = (double)(xz_wrap_counter/(double)(denom));
     }
    
-    if (mode == ("t")) {
-        
-    } else {
-       
-    }
-       
-
-    spec_heat = ((ene_sq/(pop_size*LEN*LEN)) - pow(ene/(pop_size*LEN),2)) * (*Beta * *Beta);
-    susc      = ((mag_sq/(pop_size*LEN*LEN)) - pow(mag_abs/(pop_size*LEN),2)) * *Beta;
+    double divisor = pop_size*LEN*LEN;
+    ene /= divisor;
+    ene_sq /= divisor*LEN*LEN;
+    mag /= divisor;
+    mag_sq /= divisor*LEN*LEN;
+    mag_abs /= divisor;
+    spec_heat = (ene_sq - pow(ene,2)) * (*Beta * *Beta) * (LEN*LEN);
+    susc      = (mag_sq - pow(mag_abs,2)) * *Beta *(LEN*LEN);
     
     beta_values.push_back(*Beta);
     
     // Quantities PER SPIN will have LEN*LEN in the denominator
-    energy_data.push_back(ene/(pop_size*LEN*LEN)); //
-    energy_sq_data.push_back(ene_sq/(pop_size*LEN*LEN));
-    magnetization_data.push_back(mag/(pop_size*LEN*LEN)); // Mag abs should give something nicer
-    magnetization_sq_data.push_back(mag_sq/(pop_size*LEN*LEN)); 
-    magnetization_abs_data.push_back(mag_abs/(pop_size*LEN*LEN));
+    energy_data.push_back(ene); // LOOK AT THIS
+    energy_sq_data.push_back(ene_sq);
+    magnetization_data.push_back(mag); // Mag abs should give something nicer
+    magnetization_sq_data.push_back(mag_sq); 
+    magnetization_abs_data.push_back(mag_abs);
     spec_heat_data.push_back(spec_heat);
     susceptibility_data.push_back(susc);
     clustersize_data.push_back(avg_cluster_size);
-    nowrapclustersize_data.push_back(avg_nowrap_cluster_size); ////// CHECK THIS!!!!!
+    nowrapclustersize_data.push_back(avg_nowrap_cluster_size);
     wrapping_data.push_back(no_wrap_percent);
     fft_freq_data.push_back(freqs/pop_size);
     fft_amp_data.push_back(amps/pop_size);
@@ -501,12 +507,12 @@ void Population::collectData(double *Beta, double avg_e, double var_e)
     x_clustersize_data.push_back(avg_xwrap_cluster_size);      //(pop_size*num_steps));
     xz_clustersize_data.push_back(avg_xzwrap_cluster_size);      //(pop_size*num_steps));
 
-    cout << "Average (non-wrapping) cluster size: " << clustersize_data.back() << " (" << nowrapclustersize_data.back() << ").\n";
-    cout << "E = " << ene/(pop_size*LEN*LEN) << ", C = " << spec_heat << ".\n";
-    cout << "M = " << mag_abs/(pop_size*LEN*LEN) << ", X = " << susc << ".\n";
-    cout << "Dom. Freq. = " << fft_freq_data.back() << ", Dom. Amplitude. = " << fft_amp_data.back() << "\n";
-    cout << "Rho_T = " << rho_t << ", No. of Families = " << unique_families << ".\n";
-    cout << "Absolute Overlap = " << abs_overlap << "\n";
+    // cout << "Average (non-wrapping) cluster size: " << clustersize_data.back() << " (" << nowrapclustersize_data.back() << ").\n";
+    // cout << "E = " << ene << ", C = " << spec_heat << ".\n";
+    // cout << "M = " << mag_abs << ", X = " << susc << ".\n";
+    // cout << "Dom. Freq. = " << fft_freq_data.back() << ", Dom. Amplitude. = " << fft_amp_data.back() << "\n";
+    // cout << "Rho_T = " << rho_t << ", No. of Families = " << unique_families << ".\n";
+    // cout << "Absolute Overlap = " << abs_overlap << "\n";
     if (mode == "t") {
         cout << "Total number of steps (w/ wrapping, %): " << pop_size*num_steps/2 << " (" << wrap_counter << "," << 100*(1-no_wrap_percent) <<"%).\n";
     } else {
@@ -570,13 +576,14 @@ void Population::loadData(string kappastr)
     emcx_data << "Wrapping Prob. (X-dir.),Wrapping Prob. (both dir.),Z-Wrapping Cluster Size,";
     emcx_data << "X-Wrapping Cluster Size,Both-Wrapping Cluster Size\n";
     
+    emcx_data << std::setprecision(10) << std::scientific;
     vector<vector<double>::iterator> iterators = {
         E.begin(), E2.begin(), M.begin(), M2.begin(), MA.begin(), C.begin(), 
         X.begin(), CS.begin(), NWCS.begin(), W.begin(), FR.begin(), AM.begin(), 
         RT.begin(), UF.begin(), OL.begin(), OA.begin(), OV.begin(), FE.begin(), 
         ZW.begin(), XW.begin(), XZW.begin(), ZCS.begin(), XCS.begin(), XZCS.begin()
     };
-
+    
     for (auto it = B.begin(); it != B.end(); ++it) {
         emcx_data << *it;
         for (auto& i : iterators) {
@@ -967,6 +974,10 @@ void Population::runTR(string kappastr)
     int tmp_rnd;
     int temp_steps = 0;
     auto ref_time = chrono::steady_clock::now(); // PROFILER SET-UP
+
+    bool checker = false;
+
+    string runstr = currentDateTime();
 	for (int i = 0; i < NUM_THREADS; i++) 
     {
 		tmp_rnd = gsl_rng_uniform_int(r, 10000000) + 1000000;
@@ -990,8 +1001,11 @@ void Population::runTR(string kappastr)
         } else {
             step_const = ceil((LEN*LEN)/(clustersize_data.back()));
         }
-        num_sweeps = (Beta < 0.35) ? 1 : (Beta < 1.1) ? 10 : 10;
+        num_sweeps = (Beta < 0.35) ? max((int)SR/(nom_pop*10),1) : (int)SR/nom_pop;
+        if (nom_pop == 2)
+            num_sweeps *= 50; // Well this should be pretty big to be able to go up against the population algos, also change annealing schedule
         num_steps = num_sweeps * step_const;
+        
         double *in, *out;
         in = (double*) fftw_alloc_real(LEN);
         out = (double*) fftw_alloc_real(LEN);
@@ -1008,17 +1022,13 @@ void Population::runTR(string kappastr)
 
         // If odd number of replicas, remove a random replica
         if (pop_size % 2 == 1) {
-            gsl_rng *r1 = gsl_rng_alloc(gsl_rng_mt19937); // You can replace gsl_rng_mt19937 with another RNG algorithm if desired
-            gsl_rng_set(r1, time(NULL));
-            int value = gsl_rng_uniform_int(r1, pop_size);
+            int value = gsl_rng_uniform_int(r, pop_size);
             pop_array.erase(pop_array.begin() + value);
-            gsl_rng_free(r1);
             pop_size -= 1;
         }
         ref_time = chrono::steady_clock::now(); // PROFILER STEP
-        cout << "~~~~~~~~~~~~~~~~~~~~ Pairing and swapping...\n"; // PROFILER STEP
 
-        // Pre-make random pairs of indices
+        // Pre-make vector of indices
         vector<int> indices(pop_size);
         for (int i = 0; i < pop_size; i++) {
             indices[i] = i;
@@ -1027,96 +1037,27 @@ void Population::runTR(string kappastr)
         mt19937 g(rd());
         shuffle(indices.begin(), indices.end(), g);
         int half_pop = pop_size/2;
-
-        
-        // Swap replicas if we have correlated pairs
-        /*
-        if (Beta > 0.1) {
-            for (int m = 0; m < half_pop; m++) {
-                vector<int>::iterator it, it2, it3; // Use this to edit the indices vector
-                int it_count = 2;
-                it = indices.begin() + 2*m;                         // v--(d = 50)--v
-                
-                
-                while (abs(indices[2*m] - indices[2*m + 1]) < MIN_DISTANCE) { // "If randomly paired replicas are within d replicas 
-                    vector<int>::iterator swapper = indices.begin() + ((2*m + it_count) % pop_size); // from each other on the population array"
-                    iter_swap(it+1, swapper);                       
-                    it_count++;
-                } 
-                
-                
-                // This one is for k-step look-back
-                
-                while (haveSharedFamily(&pop_array[indices[2*m]], &pop_array[indices[2*m + 1]])) { // "If randomly paired replicas share a family
-                    iter_swap(it+1, it+it_count);                                                       // up to k annealing steps back"
-                    it_count++;
-                }
-                
-                
-                // This one is for single look-back
-                while (pop_array[indices[2*m]].getNewFamily() == pop_array[indices[2*m + 1]].getNewFamily()) { // "If randomly paired replicas are identical"
-                    iter_swap(it+1, it+it_count);
-                    it_count++;
-                }
-                
-                
-            } 
-        }
-        */
-        
-        ref_time = timeCheck(ref_time); // PROFILER STEP
-        /*
-        cout << "~~~~~~~~~~~~~~~~~~~~ Doing Wolff steps... \n";
-        // Decorrelate pairs using Wolff steps
-        
-        double w_padd1 = 1 - exp(-2*Beta*J);
-        double w_padd2 = 1 - exp(-2*Beta*J*kappa);
-        int wolff_steps;
-        if (temp_steps > 5) {
-            wolff_steps = (int)(LEN*LEN)/(nowrapclustersize_data.back());
-            wolff_steps = min(30,wolff_steps);
-            cout << "Number of wolff Steps = " << wolff_steps << "\n";
-        } else {
-            wolff_steps = 1;
-        }
-        #pragma omp parallel for shared(pop_array, w_padd1, w_padd2) schedule(static, 10)
-        for (int m = 0; m < pop_size; m++) {
-            Lattice* lattice_m = &pop_array[m];
-            for (int j = 0; j < wolff_steps; j++) {
-                lattice_m->doStep(&w_padd1, &w_padd2);
-            }
-        }
-        
-        ref_time = timeCheck(ref_time); // PROFILER STEP
-        */
         double padd1 = 1 - exp(-4 * Beta * J);
         double padd2 = 1 - exp(-4 * Beta * J * kappa);
-        
+
+
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing Two-Replica steps...\n";
-        // Pair up lattices and do two replica cluster moves (parallelized) --- only pair once
-        /*
-        #pragma omp parallel for shared(pop_array, padd1, padd2, num_steps, r_thread, indices, wrap_counter) schedule(dynamic, 10)
-        for (int m = 0; m < half_pop; m++) {
-            int thread = omp_get_thread_num();
-            doTwoReplica(padd1, padd2, num_steps, r_thread[thread % NUM_THREADS], indices[2*m], indices[2*m + 1]);
-        }                                            // For some reason, need to mod this above.
-        ref_time = timeCheck(ref_time); // PROFILER STEP
-        */
         
         // Do two replica cluster moves but re-pair replicas every sweep.
         
         for (int sw = 0; sw < num_sweeps; sw++) {
             // Shuffle, swap and fix pairs once per sweep
-            
-            shuffle(indices.begin(), indices.end(), g);
-            for (int m = 0; m < half_pop; m++) {
-                vector<int>::iterator it; // Use this to edit the indices vector
-                int it_count = 2;
-                it = indices.begin() + 2*m;                         // v--(d = ?)--v
-                while (abs(indices[2*m] - indices[2*m + 1]) < MIN_DISTANCE) { // "If randomly paired replicas are within d replicas 
-                    vector<int>::iterator swapper = indices.begin() + (((2*m) + it_count) % pop_size); // from each other on the population array"
-                    iter_swap(it+1, swapper);                       
-                    it_count++;
+            if (nom_pop != 2) {
+                shuffle(indices.begin(), indices.end(), g);
+                for (int m = 0; m < half_pop; m++) {
+                    vector<int>::iterator it; // Use this to edit the indices vector
+                    int it_count = 2;
+                    it = indices.begin() + 2*m;                         // v--(d = ?)--v
+                    while (abs(indices[2*m] - indices[2*m + 1]) < MIN_DISTANCE) { // "If randomly paired replicas are within d replicas 
+                        vector<int>::iterator swapper = indices.begin() + (((2*m) + it_count) % pop_size); // from each other on the population array"
+                        iter_swap(it+1, swapper);                       
+                        it_count++;
+                    }
                 }
             }
             #pragma omp parallel for shared(pop_array, padd1, padd2, r_thread, indices, wrap_counter) schedule(dynamic, 10)
@@ -1126,15 +1067,40 @@ void Population::runTR(string kappastr)
                     doTwoRepStep(padd1, padd2, r_thread[thread % NUM_THREADS], indices[2*m], indices[2*m + 1]);
                 }
             }
+            
         }
-        
+
         ref_time = timeCheck(ref_time); // PROFILER STEP
-        
+
+        if (Beta > 0.9)
+        {
+        // metropolis sweep !!!! (ADDED 23.01.2025)
+        cout << "~~~~~~~~~~~~~~~~~~~~ Doing Metropolis Sweep...\n";
+        #pragma omp parallel for shared(pop_array, padd1, padd2, r_thread, indices, wrap_counter) schedule(dynamic, 10)
+        for (int m = 0; m < pop_size; m++) {
+            int thread = omp_get_thread_num();
+            Lattice* lattice_m = &pop_array[m];    
+            lattice_m->doMetropolisSweep(&Beta, r);
+            }
+        ref_time = timeCheck(ref_time); // PROFILER STEP
+        }
+
+
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing FFTs...\n";
-        #pragma omp parallel for shared (p) schedule(dynamic, 10)
+        #pragma omp parallel for shared (p,checker) schedule(dynamic, 10)
         for (int m = 0; m < pop_size; m++) {
             pop_array[m].doFFT(p);
+            if (checker == false)
+            {
+                if (pop_array[m].getDomFreq() == 0.2500 && pop_array[m].getDomAmplitude() > LEN/sqrt(2)-1)
+                {
+                pop_array[m].printLattice();
+                checker = true;
+                }
+            }
         }
+        if (checker == true)
+            return;
         // getStructureFactorIntensity(kappastr, temp_steps);
         // FFT plan Cleanup
         fftw_destroy_plan(p);
@@ -1155,6 +1121,10 @@ void Population::runTR(string kappastr)
             }
         }
 
+
+        getWavenumberEnergies(Beta, kappastr, runstr);
+
+
         calculateFamilies();
         measureOverlap();
         // getOverlapDistribution(indices, temp_steps, kappastr);
@@ -1166,7 +1136,10 @@ void Population::runTR(string kappastr)
         cout << "Done for beta = " << Beta << "! StDev in energy = " << sqrt(var_e) << ", no. of anomalies (>4sigma) = " << anomaly_counter;
         cout << "\nNo. of steps = " << step_const << ", No. of sweeps = " << num_sweeps << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         cout << "~~~~~~~~~~~~~~~~~~~~ Doing resampling...\n";
-        reSample(&Beta, r, avg_e, var_e);
+        if (nom_pop != 2)
+            reSample(&Beta, r, avg_e, var_e);
+        if (nom_pop == 2)
+            Beta += 0.005;
         if (Beta == MAX_BETA) {
             break;
         }
@@ -1324,4 +1297,146 @@ void Population::getStructureFactorIntensity(string kappastr, int temp_steps) {
     sfi_data.close();
 }
 
+void Population::getWavenumberEnergies(double Beta, string kappastr, string runstr)
+{
 
+    // This function will be run after the resampling step at each beta.
+    //      Maybe start, however, just by running this at exactly 1 beta and then seeing what we get.
+
+    // PSEUDO CODE is as follows
+
+    // For each lattice in the pop_array vector, get the dom_freq and dom_amplitude:
+    //  -  If dom_freq = x   , where x is some integer multiple of 1/L (up to 1/4),
+    //     get dom_amplitude. If dom_amplitude is at max possible value, record energy
+
+    // We could make this a histogram or just get a mean and standard deviation?
+
+    // We would need to define a container of wavenumbers/2pi, say [9/48, 10/48, 11/48, 12/48]
+    // Then Also define containers like so:
+    // energy = [0,0,0,0], energy_sq = [0,0,0,0], energy_std = [0,0,0,0], energy_sq_std = [0,0,0,0]
+    // spec_heat = [0,0,0,0], spec_heat_std = [0,0,0,0]
+
+    // And then write to a file which would make a table with layout like so
+    //      
+    //          9/48    10/48   11/48   12/48
+    //  energy    .       .       .       .
+    //  e_std     .       .       .       .
+    //  esq       .       .       .       .
+    //  esq_std   .       .       .       .
+    //  c         .       .       .       .
+    //  c_std     .       .       .       .
+    double dfreq, damp;
+    double ene1, ene2;
+    int c1 = 0;
+
+
+    double starter = 0.125;
+    double ender = 0.25;
+    double stepper = 1.0/LEN;
+
+    std::vector<double> wn_vals;
+
+    for (double i = starter; i < ender + 1e-9; i += stepper)
+    {
+        wn_vals.push_back(i);
+        
+        c1++;
+    }
+    int n_steps = c1;
+
+    std::vector<double> c_mean(n_steps,0); // I suppose I could do these up in Python since the averages are non-weighted(..?)
+    std::vector<double> c_std(n_steps,0); // But the averages can be weighted by dominant amplitude somehow but idk
+    
+    double e_mean[n_steps];
+    double e_sq_mean[n_steps];
+    double e_std[n_steps];
+    double e_sq_std[n_steps];
+    double frac[n_steps];
+    double dom_ampli[n_steps];
+    
+    std::vector<std::vector<double>> energies(n_steps);
+    std::vector<std::vector<double>> energies_sq(n_steps);
+    // std::vector<double> damps_12, damps_11, damps_10, damps_9;
+    std::vector<int> cc(n_steps, 0);
+
+    for (int i = 0; i < pop_size; i++)
+    {
+        Lattice* lattice = &pop_array[i];
+        dfreq = lattice->getDomFreq();
+        // damp = lattice->getDomAmplitude();
+        ene1 = lattice->getTotalEnergy();
+        ene2 = pow(ene1,2);
+
+        for (int j = 0; j < n_steps; j++)
+        {
+            if (abs(dfreq - wn_vals[j]) < 1e-3)
+            {
+                
+                energies[j].push_back(ene1);
+                energies_sq[j].push_back(ene2);
+                cc[j]++;
+            }
+        }
+    }
+
+    // vector<double> damps[4] = {damps_9,damps_10,damps_11,damps_12};
+    double sum, sum2, average, average2;
+    double sq_sum, sq_sum2, stdev, stdev2;
+    
+    for (int i = 0; i < n_steps; i++)
+    {
+
+
+        vector<double> v = energies[i];
+        vector<double> v2 = energies_sq[i];
+        // vector<double> v3 = damps[i];
+        vector<double> diff(v.size());
+        vector<double> diff2(v2.size());
+        // vector<double> diff3(v3.size());
+        
+
+        sum = std::accumulate(v.begin(), v.end(), 0.0);
+        sum2 = std::accumulate(v2.begin(), v2.end(), 0.0);
+        // sum3 = std::accumulate(v3.begin(), v3.end(), 0.0);
+        average = sum / v.size();
+        average2 = sum2 / v2.size();
+        // average3 = sum2 / v3.size();
+        std::transform(v.begin(), v.end(), diff.begin(), [average](double x) { return x - average; });
+        std::transform(v2.begin(), v2.end(), diff2.begin(), [average2](double x) { return x - average2; });
+        sq_sum = std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
+        sq_sum2 = std::inner_product(diff2.begin(), diff2.end(), diff2.begin(), 0.0);
+        stdev = std::sqrt(sq_sum / v.size());
+        stdev2 = std::sqrt(sq_sum2 / v2.size());
+        
+        double divisor = LEN*LEN;
+        e_mean[i] = average/divisor;
+        e_sq_mean[i] = average2/(divisor*LEN*LEN);
+        e_std[i] = stdev/divisor;
+        e_sq_std[i] = stdev2/(divisor*LEN*LEN);
+        frac[i] = (double)cc[i]/(double)pop_size;
+        // dom_ampli[i] = average3;
+    }
+
+    ofstream wavenum_energy;
+    wavenum_energy << std::setprecision(10) << std::scientific;
+    string lenstr = to_string(LEN);
+    string popstr = to_string(nom_pop);
+    string modestr = (mode == "t") ? "Two-Replica_Method" : "Wolff_Method";
+    string betastr = to_string(Beta);
+    string filepath = "./production-run/" + modestr + "/" + kappastr + "_kappa/" + lenstr + "_L/" + popstr + "_R/" + "wavenum_data/" + runstr + "/";
+    std::filesystem::create_directories(std::filesystem::path(filepath).parent_path()); // Create intermediate directories
+    // run_info.open("./data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv"); // in SLURM
+    wavenum_energy.open(filepath + "beta_" + betastr + ".csv"); // in SLURM ... FOR PRODUCTION RUN
+    // run_info.open("/Users/shanekeiser/Documents/ANNNI/populationannealing/data/" + mode + "/parameter_info_" + kappastr + "_kappa_" + lenstr + "_L_" + popstr + "_R_" + timestr + ".csv"); // in my computer
+    wavenum_energy << "Wavenumber,Energy,Energy std,Energy2,Energy2 std,frac\n";//,avg dom amp\n";
+    for (int i = 0; i < c1; i++)
+    {
+    wavenum_energy << wn_vals[i] << ',' << e_mean[i] << ',' << e_std[i] << ',';
+    wavenum_energy << e_sq_mean[i] << ',' << e_sq_std[i] << ',' << frac[i]; // << ','; << dom_ampli[i];
+    if (i != c1-1)
+        wavenum_energy << "\n";
+    }
+    wavenum_energy.close();
+}
+
+// double Population::getAverage() {}

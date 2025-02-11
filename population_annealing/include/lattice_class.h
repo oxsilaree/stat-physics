@@ -59,6 +59,7 @@ public:
     void doStep(double *padd1, double *padd2);
     void doSweep(double *Beta);
     void doWolffAlgo(double *Beta, fftw_plan p, int num_steps);
+    void doMetropolisSweep(double *Beta, gsl_rng *r);
     void doFFT(fftw_plan p);
     
 

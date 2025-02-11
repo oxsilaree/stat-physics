@@ -98,7 +98,7 @@ try
         return 2;
     }
    
-    
+    gsl_rng_free(r);
 
     auto end = chrono::high_resolution_clock::now(); // For checking duration of program
     chrono::duration<double> elapsed = end - start;
